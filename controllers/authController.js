@@ -1,4 +1,4 @@
-const User = require('../../models/userSchema');
+const User = require('../models/userSchema');
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 
@@ -48,7 +48,7 @@ const loginUser = async (req, res) => {
 
   bcrypt.compare(password, user.password, (err, result) => {
     if (result) {
-      const token = jwt.sign({ userId: user._id, email: user.email },process.env.JWT_SECRET, { expiresIn: "7d"});
+      const token = jwt.sign({ userId: user._id, email: user.email, role: user.role },process.env.JWT_SECRET, { expiresIn: "7d"});
       res.cookie("token",token);
       res.status(201).json({ 
         message: 'user logined successfuly'});
