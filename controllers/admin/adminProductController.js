@@ -18,6 +18,25 @@ const createProduct = async (req, res) => {
   }
 }
 
+const updateProduct = async (req, res) => {
+
+
+  const product = await Product.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { returnDocument: "after" }
+  );
+
+  res.json(product);
+}
+
+const deleteProduct = async (req, res) => {
+
+  const product = await Product.findByIdAndDelete(req.params.id);
+
+  res.json(product);
+}
+
 const getAllProducts = async (req, res) => {
 
   const products = await Product.find();
@@ -27,5 +46,7 @@ const getAllProducts = async (req, res) => {
 
 module.exports = {
   createProduct, 
-  getAllProducts
+  getAllProducts,
+  updateProduct,
+  deleteProduct
 }
