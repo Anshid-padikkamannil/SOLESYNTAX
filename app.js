@@ -16,11 +16,13 @@ app.use(cookiesParser());
 // Routes
 const authRouter = require('./routes/User/authRouter');
 const profileRouter = require('./routes/User/profileRouter');
+const productRouter = require('./routes/admin/productRouter');
 
 
 app.use('/api/users', profileRouter);
 app.use('/api/users', authRouter);
 app.use('/api/admin', require('./routes/admin/admin-test'));
+app.use('/api/admin/products', productRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
