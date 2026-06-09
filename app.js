@@ -16,13 +16,15 @@ app.use(cookiesParser());
 // Routes
 const authRouter = require('./routes/User/authRouter');
 const profileRouter = require('./routes/User/profileRouter');
-const productRouter = require('./routes/admin/productRouter');
+const adminProductRouter = require('./routes/admin/adminProductRouter');
+const productRouter = require('./routes/productRouter');
 
 
 app.use('/api/users', profileRouter);
 app.use('/api/users', authRouter);
 app.use('/api/admin', require('./routes/admin/admin-test'));
-app.use('/api/admin/products', productRouter);
+app.use('/api/admin/products', adminProductRouter);
+app.use('/api/products', productRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
