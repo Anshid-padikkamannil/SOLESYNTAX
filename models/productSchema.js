@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-const productSchema = new mongoose.Schema({
+const productSchema = new Schema({
   productName: {
     type: String,
     required: true
@@ -35,7 +36,8 @@ const productSchema = new mongoose.Schema({
   },
   sizes: [
     {
-      type: Number
+      type: Number,
+      enum: [5, 6, 7, 8]
     }
   ],
   images: [

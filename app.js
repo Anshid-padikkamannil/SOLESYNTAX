@@ -19,6 +19,7 @@ const profileRouter = require('./routes/User/profileRouter');
 const adminProductRouter = require('./routes/admin/adminProductRouter');
 const productRouter = require('./routes/productRouter');
 const cartRouter = require('./routes/User/cartRouter');
+const orderRouter = require('./routes/User/orderRouter');
 
 
 app.use('/api/users', profileRouter);
@@ -27,6 +28,7 @@ app.use('/api/admin', require('./routes/admin/admin-test'));
 app.use('/api/admin/products', adminProductRouter);
 app.use('/api/products', productRouter);
 app.use('/api/cart', cartRouter);
+app.use('/api/order',orderRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
