@@ -11,15 +11,42 @@ const productSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    required: true
+    required: true,
+    enum: [
+      "Men",
+      "Women"
+    ]
   },
   brand: {
     type: String,
     required: true
   },
+  shoeType: {
+    type: String,
+    enum: [
+      "Running",
+      "Casual",
+      "Sneakers",
+      "Basketball",
+      "Training",
+      "Formal"
+    ],
+    required: true
+  },
+  sizes: [
+    {
+      type: Number
+    }
+  ],
+  images: [
+    {
+      type: String
+    }
+  ],
   price: {
     type: Number,
-    required: true
+    required: true,
+    min: 0
   },
   stock: {
     type: Number,

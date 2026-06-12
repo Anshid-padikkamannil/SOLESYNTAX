@@ -70,11 +70,31 @@ const getAllProducts = async (req, res) => {
 
   try {
 
-    const products = await Product.find();
+    const filter = {};
 
-    res.json(products);
+    if (req.query.brand) {
+      filter.brand = req.query.brand;
+
+    }
+
+    if (req.query.shoeType) {
+      filter.shoeType = req.query.shoeType
+    }
+
+    const products = await Product.find(filter);
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      products
+    });
+
   } catch (err) {
-    res.status(500).json({ message: err.message });
+
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
 
   }
 
