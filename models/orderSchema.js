@@ -15,7 +15,7 @@ const orderSchema = new Schema({
     unique: true
   },
   orderItems: [{
-    prodcut: {
+    product: {
       type: Schema.Types.ObjectId,
       ref:'Product',
       required: true
@@ -32,8 +32,8 @@ const orderSchema = new Schema({
     },
     price: {
       type: Number,
-      required: ture,
-      man: 0
+      required: true,
+      min: 0
     },
     name: String,
     productImage: [String],
@@ -44,17 +44,51 @@ const orderSchema = new Schema({
     },
     cancelStatus: {
       type: String,
-      enum: ['Cmopleted', 'Cancelled'],
+      enum: ['Completed', 'Cancelled'],
       default: 'Completed'
     },
-    returnReson: String,
+    returnReason: String,
     returnRequestedAt: Date 
   }],
-
-});
+  totalPrice: { type: Number, required: true, min: 0 },
+  finalAmount: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  address: {
+    addressType: { type: String, required: true },
+    name: { type: String, required: true },
+    city: { type: String, required: true },
+    landMark: String,
+    state: { type: String, required: true },
+    pincode: { type: Number, required: true },
+    phone: { type: String, required: true },
+    altPhone: String
+  },
+  paymentMethod: {
+    type: String,
+    required: true,
+    enum: ['COD', 'Razorpay', 'wallet']
+  },
+  status: {
+    type: String,
+    required: true,
+    enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Return Request', 'Returned'],
+    default: 'Pending'
+  },
+  discount: { type: Number, default: 0 },
+  couponDiscount: { type: Number, default: 0 },
+  couponApplied: { type: Boolean, default: false },
+  couponCode: String
+},
+{
+  timestamps:true
+}
+);
 
 // Index for faster queries
-orderSchema.index({ userId: 1, createdOn: -1 });
+orderSchema.index({ userId: 1, createdAt: -1 });
 
 const Order = mongoose.model('Order', orderSchema);
 module.exports = Order;

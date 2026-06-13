@@ -13,6 +13,11 @@ const cartSchema = new Schema({
       ref: 'Product',
       required: true
     },
+    size: {  // ← ADD THIS
+      type: Number,
+      enum: [5, 6, 7, 8],
+      required: true
+    },  
     quantity: {
       type: Number,
       required: true,
