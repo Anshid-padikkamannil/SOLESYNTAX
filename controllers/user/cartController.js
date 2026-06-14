@@ -10,6 +10,7 @@ const addToCart = async (req, res) => {
 
     const { productId } = req.body;
     const quantity = Number(req.body.quantity);
+    const size = Number(req.body.size)
     const userId = req.user.userId || req.user._id;
 
     // Find user's cart
@@ -19,7 +20,7 @@ const addToCart = async (req, res) => {
     if (!cart) {
       cart = new Cart({
         userId: userId,
-        items: [{ productId: productId, quantity: quantity }]
+        items: [{ productId: productId, quantity: quantity, size: size}]
       });
     }
 
@@ -33,7 +34,7 @@ const addToCart = async (req, res) => {
       existingItem.quantity += quantity;
     } else {
       // Add new item
-      cart.items.push({ productId: productId, quantity: quantity });
+      cart.items.push({ productId: productId, quantity: quantity, size: size });
     }
 
     await cart.save();

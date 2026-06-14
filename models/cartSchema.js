@@ -16,7 +16,6 @@ const cartSchema = new Schema({
     size: {  // ← ADD THIS
       type: Number,
       enum: [5, 6, 7, 8],
-      required: true
     },  
     quantity: {
       type: Number,

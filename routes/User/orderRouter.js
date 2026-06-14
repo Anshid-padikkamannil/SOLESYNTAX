@@ -3,9 +3,13 @@ const router = express.Router();
 
 const { isLoggedIn } = require('../../middlewares/auth')
 
-const { createOrder } = require('../../controllers/user/orederController');
+const { createOrder, allOrders, getOrderById  } = require('../../controllers/user/orederController');
 
-router.post('/', isLoggedIn, createOrder);
+router.use(isLoggedIn)
+
+router.post('/', createOrder);
+router.get('/', allOrders)
+router.get('/:id',getOrderById)
 
 
 module.exports = router;
