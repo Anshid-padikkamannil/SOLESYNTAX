@@ -80,6 +80,16 @@ const getAllProducts = async (req, res) => {
     if (req.query.shoeType) {
       filter.shoeType = req.query.shoeType
     }
+    
+    if (req.query.category) {
+      filter.category = req.query.category
+    }
+
+    // if (minPrice || maxPrice) {
+    //   filter.price = {};
+    //   if (minPrice) filter.price.$gte = Number(minPrice);
+    //   if (maxPrice) filter.price.$gte = Number(maxPrice)
+    // }
 
     const products = await Product.find(filter);
 
@@ -93,7 +103,7 @@ const getAllProducts = async (req, res) => {
 
     res.status(500).json({
       success: false,
-      message: error.message
+      message: err.message
     });
 
   }
