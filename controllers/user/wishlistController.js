@@ -1,6 +1,7 @@
 const Wishlist = require('../../models/wishlistSchema');
 const User = require('../../models/userSchema');
-const Product = require('../../models/productSchema')
+const Product = require('../../models/productSchema');
+const paginate = require('../../utils/pagination');
 
 const getWishlist = async (req, res) => {
 
@@ -8,14 +9,21 @@ const getWishlist = async (req, res) => {
   
     const userId = req.user.userId || req.user._id;
 
-    const wishlist = await Wishlist.findOne({ userId})
-      .populate('products.productId', 'productName price images' );
+    const result = await paginate(
+      Wishlist,
+      { userId },
+      {
+        page: req.query.page,
+        limit: req.query.limit,
+        sort: { createdAt: -1 },
+        populate: 'product.productId'
+      }
+    )
 
-    if (!wishlist) {
-      return res.json({ products: [] });
-    }  
-
-    res.json({ success: true, wishlist});
+    res.json({ 
+      success: true,
+      ...result
+    });
 
   } catch (err) {
 

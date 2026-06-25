@@ -37,7 +37,7 @@ const productSchema = new Schema({
   sizes: [
     {
       type: Number,
-      enum: [5, 6, 7, 8],
+      enum: [4, 5, 6, 7, 8, 9, 10, 11],
     }
   ],
   images: [

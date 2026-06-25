@@ -2,20 +2,27 @@ const User = require('../../models/userSchema');
 const Product = require('../../models/productSchema');
 const Cart = require('../../models/cartSchema');
 const Order = require('../../models/orderSchema');
+const paginate = require('../../utils/pagination');
 
 
 const adminGetAllOrders = async (req, res) => {
   
   try {
-    
-    const orders = await Order.find()
-      .populate('userId', 'name email')
-      .sort({ createdAt: -1 });
+
+    const result = await paginate(
+      Order,
+      {},
+      {
+        page: req.query.page,
+        limit: req.query.limit || 20,
+        sort: { createdAt: -1 },
+        populate: 'userId'
+      }
+    )
 
     res.status(200).json({
       success: true,
-      count: orders.length,
-      orders
+      ...result
     });
 
   } catch (err) {

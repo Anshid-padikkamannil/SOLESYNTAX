@@ -1,4 +1,5 @@
 const Product = require('../../models/productSchema');
+const paginate = require('../../utils/pagination')
 
 // Create a new product
 const createProduct = async (req, res) => {
@@ -88,15 +89,23 @@ const getAllProducts = async (req, res) => {
     // if (minPrice || maxPrice) {
     //   filter.price = {};
     //   if (minPrice) filter.price.$gte = Number(minPrice);
-    //   if (maxPrice) filter.price.$gte = Number(maxPrice)
+    //   if (maxPrice) filter.price.$lte = Number(maxPrice)
     // }
 
-    const products = await Product.find(filter);
+    const result = await paginate(
+      Product,
+      filter,
+      {
+        page: req.query.page,
+        limit: req.query.limit,
+        sort: { price: 1 },
+        select: 'productName price images brand'
+      }
+    )
 
     res.status(200).json({
       success: true,
-      count: products.length,
-      products
+      ...result
     });
 
   } catch (err) {

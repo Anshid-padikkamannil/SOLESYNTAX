@@ -1,8 +1,7 @@
-const User = require('../../models/userSchema');
 const Product = require('../../models/productSchema');
 const Cart = require('../../models/cartSchema');
 const Order = require('../../models/orderSchema');
-const mongoose = require('mongoose');
+const paginate = require('../../utils/pagination');
 
 const createOrder  = async (req, res) => {
 
@@ -92,11 +91,20 @@ const allOrders =  async (req, res) => {
 
     const userId = req.user.userId || req.user._id;
 
-    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+    const result = await paginate(
+      Order,
+      { userId },
+      {
+        page: req.query.page,
+        limit: req.query.limit || 10,
+        sort: { createdAt: -1 },
+        populate: 'orderItems.product'
+      }
+    )
 
     res.status(200).json({
       success: true,
-      orders
+      ...result
     });
 
   } catch (err) {

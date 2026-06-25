@@ -36,3 +36,5 @@ const paginate = async (model, filter = {}, options = {}) => {
     }
   }
 }
+
+module.exports = paginate;
