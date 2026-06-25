@@ -22,6 +22,7 @@ const cartRouter = require('./routes/User/cartRouter');
 const orderRouter = require('./routes/User/orderRouter');
 const adminOrderRouter = require('./routes/admin/adminOrderRouter');
 const wishlist = require('./routes/User/wishlistRouter');
+const customerRouter = require('./routes/admin/customerRouter');
 
 
 app.use('/api/users', profileRouter);
@@ -33,6 +34,7 @@ app.use('/api/cart', cartRouter);
 app.use('/api/order',orderRouter);
 app.use('/api/admin/orders', adminOrderRouter);
 app.use('/api/wishlist', wishlist);
+app.use('/api/admin', customerRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
