@@ -18,6 +18,13 @@ const createOrder  = async (req, res) => {
 
     for (const item of cart.items) {
       const product = await Product.findById(item.productId._id);
+
+      if(!product) {
+        return res.status(404).json({
+          message: 'Product not found'
+        });
+      }
+
       if (product.stock < item.quantity) {
         return res.status(400).json({
           message: `${product.productName} has only ${product.stock} units available. You requested ${item.quantity}.`
@@ -146,8 +153,72 @@ const getOrderById = async (req, res) => {
   }
 }
 
+const cancelOrder = async (req, res) => {
+  try {
+    
+    const userId = req.user.userId || req.user._id;
+    const { id } = req.params;
+
+    const order = await Order.findOne({ _id: id, userId });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found'
+      });
+    }
+
+    const cancelabelStatuses = ['Pending', 'Processing'];
+    if (!cancelabelStatuses.includes(order.status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Order cannot be cancelled. Current status: ${order.status}`
+      });
+    }
+
+    try {
+      
+      for(const item of order.orderItems) {
+        await Product.findByIdAndUpdate(
+          item.product,
+          { $inc: { stock: item.quantity } },
+          //{ session }
+        );
+      }
+
+      order.status = 'Cancelled';
+      order.cancellationReason = req.body.reason || 'Cancelled by user';
+      order.cancellationRequestedAt = new Date();
+      order.cancellationApprovedAt = new Date();
+
+      // await order.save({ session });
+
+      // await session.commitTransaction();
+
+      res.status(200).json({
+        success: true,
+        message: 'Order cancelled successfully',
+        order
+      });
+
+
+    } catch (err) {
+      // await session.aboutTransaction();
+      throw error;
+    } finally {
+      // session.endSession();
+    }
+
+  } catch (err) {
+    
+    res.status(500).json({ message: err.message });
+    
+  }
+}
+
 module.exports = {
   createOrder,
   allOrders,
-  getOrderById
+  getOrderById,
+  cancelOrder
 }

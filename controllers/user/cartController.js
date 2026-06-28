@@ -15,6 +15,14 @@ const addToCart = async (req, res) => {
 
     // Find user's cart
     let cart = await Cart.findOne({ userId: userId });
+   
+    //added
+    if (!size) {
+      return res.status(400).json({
+        success: false,
+        message: 'size is required available sizes:...'
+      })
+    }
 
     // If no cart exists, create one
     if (!cart) {
