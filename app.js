@@ -25,8 +25,8 @@ const wishlist = require('./routes/User/wishlistRouter');
 const customerRouter = require('./routes/admin/customerRouter');
 
 
-app.use('/api/users', profileRouter);
 app.use('/api/users', authRouter);
+app.use('/api/users', profileRouter);
 app.use('/api/admin', require('./routes/admin/admin-test'));
 app.use('/api/admin/products', adminProductRouter);
 app.use('/api/products', productRouter);
