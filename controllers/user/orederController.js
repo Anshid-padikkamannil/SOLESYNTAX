@@ -2,11 +2,32 @@ const Product = require('../../models/productSchema');
 const Cart = require('../../models/cartSchema');
 const Order = require('../../models/orderSchema');
 const paginate = require('../../utils/pagination');
+const Address = require('../../models/addressSchema');
 
 const createOrder  = async (req, res) => {
 
   try {
     const userId = req.user.userId || req.user._id;
+    const { addressId, paymentMethod = 'COD' } = req.body || {};
+
+    let address;
+
+    // If addressId not provided, get default address
+    if (!addressId) {
+      address = await Address.findOne({ userId, isDefault: true });
+      if (!address) {
+        return res.status(400).json({
+          message: 'No default address found. Please provide an address ID.'
+        });
+      }
+    } else {
+      address = await Address.findOne({ _id: addressId, userId });
+      if (!address) {
+        return res.status(404).json({
+          message: 'Address not found or does not belong to you'
+        });
+      }
+    }
 
     const cart = await Cart.findOne({ userId }).populate('items.productId');
 
@@ -54,13 +75,17 @@ const createOrder  = async (req, res) => {
       orderItems,
       totalPrice,
       finalAmount : totalPrice,
-      address: {  // Dummy address for testing
-        addressType: "Home",
-        name: "Test User",
-        city: "Test City",
-        state: "Test State",
-        pincode: 123456,
-        phone: "1234567890"
+      address: {
+        addressType: address.addressType,
+        name: address.name,
+        city: address.city,
+        state: address.state,
+        pincode: address.pincode,
+        phone: address.phone,
+        altPhone: address.altPhone || '',
+        landmark: address.landmark || '',
+        addressLine1: address.addressLine1,
+        addressLine2: address.addressLine2 || ''
       },
       paymentMethod: "COD",  // Default for testing
       status: 'Pending',
