@@ -3,12 +3,13 @@ const Cart = require('../../models/cartSchema');
 const Order = require('../../models/orderSchema');
 const paginate = require('../../utils/pagination');
 const Address = require('../../models/addressSchema');
+const { applyCouponToOrder } = require('../../utils/couponHelper');
 
 const createOrder  = async (req, res) => {
 
   try {
     const userId = req.user.userId || req.user._id;
-    const { addressId, paymentMethod = 'COD' } = req.body || {};
+    const { addressId, paymentMethod = 'COD', couponCode } = req.body || {};
 
     let address;
 
@@ -68,6 +69,30 @@ const createOrder  = async (req, res) => {
       totalPrice += item.price * item.quantity;
     }
 
+    // Aplly coupon if porvided
+    let finalAmount = totalPrice;
+    let couponApplied = false;
+    let couponDiscount = 0;
+    let appliedCouponCode = null;
+
+    if (couponCode) {
+      const productIds = cart.items.map(item => item.productId._id);
+      const couponResult = await applyCouponToOrder(
+        null, // orderData not needed yet 
+        userId,
+        couponCode,
+        productIds,
+        totalPrice
+      );
+
+      finalAmount = couponResult.finalAmount;
+      couponApplied = couponResult.couponApplied;
+      couponDiscount = couponResult.couponDiscount;
+      appliedCouponCode = couponResult.couponCode;
+    } else {
+      finalAmount = totalPrice;
+    }
+
     // 4. Create order
     const order = new Order({
       userId,
@@ -89,12 +114,15 @@ const createOrder  = async (req, res) => {
       },
       paymentMethod: "COD",  // Default for testing
       status: 'Pending',
+      couponApplied,
+      couponCode: appliedCouponCode,
+      couponDiscount,
       invoiceDate: new Date(),
       createdOn: new Date()
     });
 
     await order.save();
-       // ⭐ ADD: Update product stock
+       //  ADD: Update product stock
       for (const item of cart.items) {
           await Product.findByIdAndUpdate(
             item.productId._id,

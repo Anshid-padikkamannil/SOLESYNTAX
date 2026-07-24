@@ -59,8 +59,10 @@ const orderSchema = new Schema({
   address: {
     addressType: { type: String, required: true },
     name: { type: String, required: true },
+    addressLine1: { type: String, required: true },
+    addressLine2: { type: String },   
+    landmark: String,                   
     city: { type: String, required: true },
-    landMark: String,
     state: { type: String, required: true },
     pincode: { type: Number, required: true },
     phone: { type: String, required: true },
@@ -81,7 +83,7 @@ const orderSchema = new Schema({
   discount: { type: Number, default: 0 },
   couponDiscount: { type: Number, default: 0 },
   couponApplied: { type: Boolean, default: false },
-  couponCode: String
+  couponCode: { type: String, default: null }
 },
 {
   timestamps:true
