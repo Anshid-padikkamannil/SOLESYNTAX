@@ -9,7 +9,7 @@ const createOrder  = async (req, res) => {
 
   try {
     const userId = req.user.userId || req.user._id;
-    const { addressId, paymentMethod = 'COD', couponCode } = req.body || {};
+    const { addressId, paymentMethod = "COD", couponCode } = req.body || {};
 
     let address;
 
@@ -93,13 +93,22 @@ const createOrder  = async (req, res) => {
       finalAmount = totalPrice;
     }
 
+    const allowedPaymentMethods = ["COD", "Razorpay", "wallet"];
+
+    if (!allowedPaymentMethods.includes(paymentMethod)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment method"
+      });
+    }
+
     // 4. Create order
     const order = new Order({
       userId,
       orderId: `ORD-${Date.now()}`,
       orderItems,
       totalPrice,
-      finalAmount : totalPrice,
+      finalAmount,
       address: {
         addressType: address.addressType,
         name: address.name,
@@ -112,7 +121,7 @@ const createOrder  = async (req, res) => {
         addressLine1: address.addressLine1,
         addressLine2: address.addressLine2 || ''
       },
-      paymentMethod: "COD",  // Default for testing
+      paymentMethod,
       status: 'Pending',
       couponApplied,
       couponCode: appliedCouponCode,

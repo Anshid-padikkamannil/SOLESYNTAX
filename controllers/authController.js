@@ -49,7 +49,11 @@ const loginUser = async (req, res) => {
   bcrypt.compare(password, user.password, (err, result) => {
     if (result) {
       const token = jwt.sign({ userId: user._id, email: user.email, role: user.role },process.env.JWT_SECRET,);
-      res.cookie("token",token);
+      res.cookie("token", token, {
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 24 * 60 * 60 * 1000 // 1 day
+      });
       res.status(201).json({ 
         message: 'user logined successfuly'});
     } else {

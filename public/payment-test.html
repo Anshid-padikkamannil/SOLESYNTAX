@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razorpay Payment Testing</title>
+
+    <link rel="stylesheet" href="payment-test.css">
+
+    <!-- Razorpay Checkout Library -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Razorpay Payment Testing</h1>
+
+        <div class="section">
+
+            <h3>Step 1 : Create Order</h3>
+
+            <button id="createOrderBtn">
+                Create Order
+            </button>
+
+        </div>
+
+        <div class="section">
+
+            <h3>Step 2 : Pay with Razorpay</h3>
+
+            <button id="payBtn" disabled>
+                Pay Now
+            </button>
+
+        </div>
+
+        <div class="section">
+
+            <h3>Payment Result</h3>
+
+            <p>
+                <strong>App Order ID :</strong>
+                <span id="appOrderId">-</span>
+            </p>
+
+            <p>
+                <strong>Razorpay Order ID :</strong>
+                <span id="razorpayOrderId">-</span>
+            </p>
+
+            <p>
+                <strong>Payment ID :</strong>
+                <span id="paymentId">-</span>
+            </p>
+
+            <p>
+                <strong>Signature :</strong>
+                <span id="signature">-</span>
+            </p>
+
+            <p>
+                <strong>Status :</strong>
+                <span id="status">Waiting...</span>
+            </p>
+
+        </div>
+
+    </div>
+
+    <script src="payment-test.js"></script>
+
+</body>
+</html>

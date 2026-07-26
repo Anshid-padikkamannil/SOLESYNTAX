@@ -2,6 +2,8 @@ const express = require('express');
 const cookiesParser = require('cookie-parser');
 const dotenv = require('dotenv').config();
 
+const path = require("path");
+
 const connectDB = require('./config/db');
 
 connectDB();
@@ -12,6 +14,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookiesParser());
+
+app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 const authRouter = require('./routes/User/authRouter');
@@ -25,6 +29,7 @@ const wishlist = require('./routes/User/wishlistRouter');
 const customerRouter = require('./routes/admin/customerRouter');
 const adminCouponRouter = require('./routes/admin/couponRouter');
 const userCouponRouter = require('./routes/User/couponRouter');
+const paymentRouter = require('./routes/paymentRouter');
 
 
 app.use('/api/users', authRouter);
@@ -39,6 +44,7 @@ app.use('/api/wishlist', wishlist);
 app.use('/api/admin', customerRouter);
 app.use('/api/admin/coupons', adminCouponRouter);
 app.use('/api/coupons', userCouponRouter);
+app.use('/api/payment', paymentRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
