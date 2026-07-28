@@ -120,9 +120,26 @@ const getAllProducts = async (req, res) => {
   
 }
 
+const getHomePage = async (req, res) => {
+  try {
+    
+    const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .limit(16);
+    
+      res.render('index', {
+        products
+      })
+
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
 module.exports = {
   createProduct, 
   getAllProducts,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getHomePage
 }

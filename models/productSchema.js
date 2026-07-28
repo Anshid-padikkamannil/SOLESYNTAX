@@ -53,6 +53,14 @@ const productSchema = new Schema({
   stock: {
     type: Number,
     required: true
+  },
+  averageRating: {
+    type: Number,
+    default: 0
+  },
+  totalReviews: {
+    type: Number,
+    default: 0
   }
   
 },

@@ -22,7 +22,7 @@ async function login() {
       return;
     }
 
-    const response = await fetch("/api/users/login", {
+    const response = await fetch("/users/login", {
       method: "POST",
 
       credentials: "include",
@@ -48,7 +48,7 @@ async function login() {
 
     setTimeout(() => {
 
-      window.location.href = "/payment-test.html";
+      window.location.href = "/";
 
     }, 1000);
 

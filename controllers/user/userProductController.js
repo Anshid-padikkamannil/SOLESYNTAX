@@ -15,11 +15,11 @@ const productDetails = async (req, res) => {
     const reviews = await Review.find({ productId: product._id })
       .populate('userId', 'name');
     
-    res.json({
+    res.render('product-detail',{
       product,
       reviews,
-      averageRating: product.averageRating,
-      totalReviews: product.totalReviews
+      averageRating: product.averageRating || 0,
+      totalReviews: product.totalReviews || 0
     });
     
   } catch (err) {

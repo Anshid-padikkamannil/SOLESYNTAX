@@ -15,6 +15,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookiesParser());
 
+app.set("view engine", "ejs");
+app.set("views", "./views");
 app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
@@ -31,20 +33,25 @@ const adminCouponRouter = require('./routes/admin/couponRouter');
 const userCouponRouter = require('./routes/User/couponRouter');
 const paymentRouter = require('./routes/paymentRouter');
 
+// Public
 
-app.use('/api/users', authRouter);
-app.use('/api/users', profileRouter);
-app.use('/api/admin', require('./routes/admin/admin-test'));
-app.use('/api/admin/products', adminProductRouter);
-app.use('/api/products', productRouter);
-app.use('/api/cart', cartRouter);
-app.use('/api/order',orderRouter);
-app.use('/api/admin/orders', adminOrderRouter);
-app.use('/api/wishlist', wishlist);
-app.use('/api/admin', customerRouter);
-app.use('/api/admin/coupons', adminCouponRouter);
-app.use('/api/coupons', userCouponRouter);
-app.use('/api/payment', paymentRouter);
+app.use('/', productRouter);
+
+// User
+app.use('/users', authRouter);
+app.use('/users', profileRouter);
+app.use('/cart', cartRouter);
+app.use('/order',orderRouter);
+app.use('/wishlist', wishlist);
+app.use('/coupons', userCouponRouter);
+app.use('/payment', paymentRouter);
+
+// Admin
+app.use('/admin', require('./routes/admin/admin-test'));
+app.use('/admin/products', adminProductRouter);
+app.use('/admin/orders', adminOrderRouter);
+app.use('/admin', customerRouter);
+app.use('/admin/coupons', adminCouponRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
