@@ -13,8 +13,8 @@ router.use(isLoggedIn);
 
 router.post('/add-to-cart', addToCart);
 router.get('/', getCart);
-router.put('/update/:productId',validateId(), updateCartItem);
-router.delete('/remove/:productId', validateId(),removeCartItem)
+router.put('/update/:productId/:size',validateId("productId"), updateCartItem);
+router.delete('/remove/:productId/:size', validateId("productId"),removeCartItem)
 router.delete('/remove', clearCart);
 
 module.exports = router;

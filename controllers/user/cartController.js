@@ -106,13 +106,24 @@ const getCart = async (req, res) => {
 
   try {
     const userId = req.user.userId || req.user._id;
-    const cart = await Cart.findOne({ userId: userId }).populate('items.productId', 'productName description category brand price');
+    const cart = await Cart.findOne({ userId: userId }).populate('items.productId', 'productName brand price images stock ');
 
     if (!cart ||cart.items.length === 0) {
-      return res.status(404).json({ message: 'Cart not found' });
+      return res.res.render("/cart", {
+        cart: null
+      });
     }
 
-    res.status(200).json({cart });
+    let subtotal = 0;
+    
+    cart.items.forEach(item => {
+      subtotal += item.productId.price * item.quantity;
+    });
+
+    res.render("cart", {
+      cart,
+      subtotal
+    });
 
   } catch (err) {
 
@@ -124,8 +135,19 @@ const updateCartItem = async (req, res) => {
   try {
     
     const userId = req.user.userId || req.user._id;
-    const { productId } = req.params;
+    const { productId, size } = req.params;
     const { quantity } = req.body;
+
+    const product = await Product.findById(productId);
+
+    const allowedQuantity = Math.min(product.stock, 10);
+
+    if (quantity < 1 || quantity > allowedQuantity) {
+      return res.status(400).json({
+        success: false,
+        message: `Quantity must be between 1 and ${allowedQuantity}.`
+      })
+    }
 
     const cart = await Cart.findOne({ userId: userId });
 
@@ -133,9 +155,12 @@ const updateCartItem = async (req, res) => {
       return res.status(404).json({ message: 'Cart not found'});
     }
 
-    const item = cart.items.find(
-      item => item.productId && item.productId.toString() === productId
-    );
+    const item = cart.items.find(item => {
+      return (
+        item.productId && item.productId.toString() === productId &&
+        item.size === Number(size)
+      )
+    });
 
     if (!item) {
       return res.status(404).json({ message: 'Product not found in cart' });
@@ -164,7 +189,7 @@ const removeCartItem = async (req, res) => {
   try {
 
     const userId = req.user.userId || req.user._id;
-    const { productId } = req.params;
+    const { productId, size } = req.params;
 
     const cart = await Cart.findOne({ userId });
 
@@ -172,9 +197,20 @@ const removeCartItem = async (req, res) => {
       return res.status(404).json({ message: 'Cart not found'})
     }
 
-    cart.items = cart.items.filter(
-      item => item.productId.toString() !== productId
-    );
+    const itemsBefore = cart.items.length;
+
+    cart.items = cart.items.filter(item => {
+      return !(
+        item.productId.toString() === productId &&
+        item.size === Number(size)
+      )
+    });
+
+    if (itemsBefore === cart.items.length) {
+      return res.status(404).json({
+        message: 'Cart item not found'
+      });
+    }
 
     await cart.save();
     res.status(200).json({ message: 'Cart item removed successfully', cart});
