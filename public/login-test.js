@@ -1,63 +1,63 @@
-const loginBtn = document.getElementById("loginBtn");
+// const loginBtn = document.getElementById("loginBtn");
 
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+// const emailInput = document.getElementById("email");
+// const passwordInput = document.getElementById("password");
 
-const message = document.getElementById("message");
+// const message = document.getElementById("message");
 
-loginBtn.addEventListener("click", login);
+// loginBtn.addEventListener("click", login);
 
-async function login() {
-  try {
+// async function login() {
+//   try {
     
-    message.textContent = "Logging in...";
+//     message.textContent = "Logging in...";
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+//     const email = emailInput.value.trim();
+//     const password = passwordInput.value;
 
-    if (!email || !password) {
+//     if (!email || !password) {
 
-      message.textContent = "Email and password are required.";
+//       message.textContent = "Email and password are required.";
 
-      return;
-    }
+//       return;
+//     }
 
-    const response = await fetch("/users/login", {
-      method: "POST",
+//     const response = await fetch("/users/login", {
+//       method: "POST",
 
-      credentials: "include",
+//       credentials: "include",
 
-      headers: {
-          "Content-Type": "application/json"
-      },
+//       headers: {
+//           "Content-Type": "application/json"
+//       },
 
-      body: JSON.stringify({
-          email,
-          password
-      })
-    });
+//       body: JSON.stringify({
+//           email,
+//           password
+//       })
+//     });
 
-        const data = await response.json();
+//         const data = await response.json();
 
-    if (!response.ok) {
-      throw new Error(data.message);
-    }
+//     if (!response.ok) {
+//       throw new Error(data.message);
+//     }
 
-    message.style.color = "green";
-    message.textContent = "Login successful!";
+//     message.style.color = "green";
+//     message.textContent = "Login successful!";
 
-    setTimeout(() => {
+//     setTimeout(() => {
 
-      window.location.href = "/";
+//       window.location.href = "/";
 
-    }, 1000);
+//     }, 1000);
 
-  } catch (error) {
+//   } catch (error) {
     
-    message.textContent = "Something went wrong.";
+//     message.textContent = "Something went wrong.";
 
-    console.error(error);
+//     console.error(error);
 
-  }
+//   }
   
-}
+// }

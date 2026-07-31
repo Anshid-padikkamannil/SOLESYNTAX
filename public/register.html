@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles/register.css">
+  <link rel="icon" href="images/icon.png" type="image/x-icon">
+  <title>Sign Up</title>
+</head>
+
+<body>
+  <div class="container bg-img">
+    <div class="content">
+      <nav class="navbar">
+        <a class="beta" href="index.html"><img class="logo-md" src="images/Copilot_20260731_064128.png"
+            alt="quill logo"></a>
+      </nav>
+      <div class="form-blob">
+        <img src="images/blob.svg" class="blob-img blob-img-1" alt="form blob">
+        <img src="images/blob.svg" class="blob-img blob-img-2" alt="form blob">
+        <img src="images/blob.svg" class="blob-img blob-img-3" alt="form blob">
+      </div>
+      <div class="form-header">
+        <h4>Create your account</h4>
+        <p>Join us today! It takes only few steps</p>
+      </div>
+      <form action="/submit-login" method="POST" class="form-box">
+        <div class="input-box">
+          <input type="email" id="email" name="email" placeholder=" " required>
+          <label for="email">Email</label>
+        </div>
+        <div class="input-box">
+          <input type="text" id="username" name="username" placeholder=" " required>
+          <label for="username">Username</label>
+        </div>
+        <div class="input-box">
+          <input type="password" id="password" name="password" placeholder=" " required>
+          <label for="password">Password</label>
+        </div>
+        <div class="checkbox-box">
+          <label><input type="checkbox" required><span>agree to our <a class="tag-a" href="#">Terms of Use</a> and <a
+                href="#" class="tag-a">Privacy Policy</a></span></label>
+        </div>
+
+        <button type="submit" class="btn login-btn">Create Account</button>
+      </form>
+      <div class="form-divider">
+        <p>Or</p>
+      </div>
+      <div class="form-bottom">
+        <div class="form-socials">
+          <a href="#" aria-label="Sign up with google"><img src="images/google.svg" alt="google logo"
+              class="btn-icon"></a>
+          <a href="#" aria-label="Sign up with facebook"><img src="images/facebook -singup.svg" alt="facebook logo"
+              class="btn-icon"></a>
+          <a href="#" aria-label="Sign up with apple"><img src="images/apple.svg" alt="apple logo" class="btn-icon"></a>
+        </div>
+      </div>
+      <div class="form-footer">
+        <p>Already have an account? <a href="login.html">Login</a></p>
+      </div>
+    </div>
+
+  </div>
+  <footer class="footer">
+    <a href="index.html"><img class="logo-sm" src="images/quill.svg" alt="quill logo"></a>
+    <ul class="social-icons-container">
+      <li><a href="https://www.instagram.com/"><img class="social-icons" src="images/instagram.svg"
+            alt="instagram logo"></a></li>
+      <li><a href="https://www.facebook.com/"><img class="social-icons " src="images/facebook.svg"
+            alt="facebook logo"></a></li>
+      <li><a href="https://www.tiktok.com/"><img class="social-icons" src="images/tiktok.svg" alt="tiktok logo"></a>
+      </li>
+      <li><a href="https://www.linkedin.com/"><img class="social-icons" src="images/linkedin.svg"
+            alt="linkedin logo"></a></li>
+      <li><a href="https://www.youtube.com/"><img class="social-icons" src="images/youtube.svg" alt="youtube logo"></a>
+      </li>
+    </ul>
+    <ul class="footer-links-container">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
+
+    <p class="small-text">Made with <span class="heart-icon"> ♥︎ </span> in Kerala</p>
+  </footer>
+
+  <style>
+    :root {
+      /* FORNT ZISE */
+      --sm: 1.2rem;
+      --base: 1.6rem;
+      --text-paragraph: 2rem;
+      --text-h5: 2.4rem;
+      --text-h4: 3.2rem;
+      --text-h3: 4rem;
+      --text-h2: 4.8rem;
+      --text-h1: 6.2rem;
+
+
+      /* FONT WEIGHT */
+      --font-weight-normal: 400;
+      --font-weight-bold: 700;
+
+      /* LINE HEIGHTS */
+      --line-height-tight: 1.2;
+      --line-height-normal: 1.5;
+
+      /* LETTER SPACING */
+      --letter-spacing-tight: -2px;
+
+      /* FONT FAMILY */
+      --font-family: 'poppins', sans-serif;
+
+      /* COLORS  */
+      --primary-base: #339af0;
+      --primary-tint: #d0ebff;
+      --primary-shade: #1c7ed6;
+      --secondary-base: #9775fa;
+      --secondary-tint: #e5dbff;
+      --secondary-shade: #7048e8;
+      --thrtiary-base: #ff922b;
+      --thrtiary-tint: #ffe8cc;
+      --thrtiary-shade: #f76707;
+      --grey-base: #495057;
+      --grey-tint: #f1f3f5;
+      --grey-shade: #212529;
+      --White: #ffffff;
+      --Black: #000000;
+
+      /* MISCELLANEOUS */
+      --nave-height: 100px
+        /* "11:37" */
+
+
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 62.5%;
+      /* 10px / 16px = 62.5% */
+    }
+
+    body {
+      font-family: var(--font-family);
+      font-weight: var(--font-weight-normal);
+      line-height: var(--line-height-normal);
+      color: var(--grey-base);
+    }
+
+    h4 {
+      font-size: var(--text-h4);
+      font-weight: var(--font-weight-normal);
+      line-height: var(--line-height-tight);
+      letter-spacing: var(--letter-spacing-tight);
+      color: var(--Black);
+    }
+
+    a {
+      text-decoration: none;
+      /* display: inline-block; */
+      font-size: var(--base);
+    }
+
+    p {
+      margin-top: 0.5rem;
+      font-size: 1.6rem;
+    }
+
+    label {
+      font-size: var(--base);
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .logo-sm {
+      width: 65px;
+    }
+
+    .bg-img {
+      background: url("../images/singup-bg-img.png") no-repeat center center/cover;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 2rem;
+    }
+
+    .content {
+      /* background-color: #e8eff5; */
+      padding: 3rem 4rem 5rem 4rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px #0000001a;
+      max-width: 450px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-header {
+      position: relative;
+      z-index: 1;
+    }
+
+    .form-box {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      margin-top: 5rem;
+    }
+
+    .input-box {
+      position: relative;
+      display: flex;
+    }
+
+    .input-box input {
+      height: 48px;
+      padding-inline: 1.4rem;
+      border: 1px solid var(--grey-base);
+      border-radius: 4px;
+      width: 100%;
+      outline: none;
+    }
+
+    #password {
+      padding-right: 1.5rem;
+    }
+
+    .input-box label {
+      position: absolute;
+      top: 50%;
+      left: 8px;
+      transform: translateY(-50%);
+      padding-inline: 6px;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    .input-box input:focus+label,
+    .input-box input:not(:placeholder-shown)+label {
+      top: 0;
+      left: 8px;
+      transform: translateY(-50%);
+      font-size: var(--sm);
+    }
+
+    .input-box input:focus {
+      border-color: var(--primary-base);
+    }
+
+    .input-box input:not(:focus):not(:placeholder-shown) {
+      border-color: var(--grey-shade);
+    }
+
+    .checkbox-box label,
+    .tag-a {
+      font-size: var(--sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag-a:hover {
+      text-decoration: underline;
+    }
+
+    .login-btn {
+      width: 100%;
+      height: 4rem;
+      padding: 1rem 2rem;
+      font-size: var(--base);
+      font-weight: var(--font-weight-normal);
+      background-color: var(--primary-base);
+      color: var(--White);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.5s
+    }
+
+    .login-btn:hover {
+      background-color: var(--primary-shade);
+      transform: scale(1.05, 1.05);
+      box-shadow: 0px 3px 6px var(--grey-base);
+    }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2rem;
+    }
+
+    .form-divider::before,
+    .form-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background-color: var(--grey-base);
+    }
+
+    .form-socials {
+      display: flex;
+      justify-content: space-around;
+      gap: 2rem;
+    }
+
+    .btn-icon {
+      width: 35px;
+      height: 35px;
+      cursor: pointer;
+    }
+
+    .btn-icon:hover {
+      transform: scale(1.2, 1.2);
+      transition: all 0.3s ease;
+    }
+
+    .form-footer {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .form-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .form-blob {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      top: 0;
+      right: 0;
+      z-index: 0;
+    }
+
+    .blob-img {
+      position: absolute;
+      rotate: 205deg;
+      pointer-events: none;
+      transform: scale(0.5) translateX(100px);
+    }
+
+    .blob-img-1 {
+      top: -125px;
+      right: -150px;
+      animation: welcomIn 1.2s ease-in-out 0.3s forwards;
+      --fanal-opacity: 1;
+    }
+
+    .blob-img-2 {
+      top: -120px;
+      right: -150px;
+      animation: welcomIn 1.2s ease-in-out 0.5s forwards;
+      --fanal-opacity: 0.6;
+    }
+
+    .blob-img-3 {
+      top: -115px;
+      right: -150px;
+      animation: welcomIn 1.2s ease-in-out 0.7s forwards;
+      --fanal-opacity: 0.3;
+    }
+
+    /* footer */
+
+    .footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      background-color: aliceblue;
+    }
+
+    .social-icons-container {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links-container {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-icons {
+      width: 20px;
+    }
+
+    .heart-icon {
+      color: var(--secondary-base);
+    }
+
+    .logo-sm {
+      width: 70px;
+    }
+
+    .small-text {
+      font-size: var(--sm);
+    }
+
+    .logo-md {
+      width: 120px;
+    }
+
+    @keyframes welcomIn {
+      0% {
+        transform: scale(0.5) translateX(100px) rotate(180deg);
+        opacity: 0;
+      }
+
+      60% {
+        transform: scale(0.5) translateX(-10px) rotate(200deg);
+        opacity: calc(var(--fanal-opacity)* 0.7);
+      }
+
+      100% {
+        transform: scale(0.6) translateX(0px) rotate(205deg);
+        opacity: calc(var(--fanal-opacity));
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      .content {
+        padding: 2.5rem 1.5rem;
+        max-width: 70%;
+      }
+
+    }
+
+    @media (max-width: 502px) {
+      html {
+        font-size: 43.75%;
+        /* 7px / 16px = 43.75% */
+      }
+
+    }
+
+    /* Mobile screens */
+    @media (max-width: 480px) {
+
+      html {
+        font-size: 43.75%;
+        /* 7px / 16px = 43.75% */
+      }
+
+      .content {
+        padding: 2rem 2rem;
+        border-radius: 6px;
+      }
+
+      h4 {
+        letter-spacing: var(--line-height-normal);
+      }
+
+      .input-box input {
+        height: 35px;
+      }
+
+      .btn-icon {
+        width: 30px;
+        height: 30px;
+      }
+    }
+
+    @media (max-width: 399px) {
+
+      html {
+        font-size: 37.5%;
+        /* 6px / 16 = 37.5% */
+      }
+
+      .btn-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .input-box input {
+        height: 30px;
+      }
+
+    }
+  </style>
+
+</body>
+
+</html>

@@ -32,9 +32,12 @@ const customerRouter = require('./routes/admin/customerRouter');
 const adminCouponRouter = require('./routes/admin/couponRouter');
 const userCouponRouter = require('./routes/User/couponRouter');
 const paymentRouter = require('./routes/paymentRouter');
+const attachUser = require('./middlewares/attachUser');
+
+
+app.use(attachUser);
 
 // Public
-
 app.use('/', productRouter);
 
 // User

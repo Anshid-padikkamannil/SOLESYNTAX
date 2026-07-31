@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <style>
+    :root {
+      /* FORNT ZISE */
+      --sm: 1.2rem;
+      --base: 1.6rem;
+      --text-paragraph: 2rem;
+      --text-h5: 2.4rem;
+      --text-h4: 3.2rem;
+      --text-h3: 4rem;
+      --text-h2: 4.8rem;
+      --text-h1: 6.2rem;
+
+
+      /* FONT WEIGHT */
+      --font-weight-normal: 400;
+      --font-weight-bold: 700;
+
+      /* LINE HEIGHTS */
+      --line-height-tight: 1.2;
+      --line-height-normal: 1.5;
+
+      /* LETTER SPACING */
+      --letter-spacing-tight: -2px;
+
+      /* FONT FAMILY */
+      --font-family: "Rokkitt", Georgia, serif, sans-serif;
+
+      /* COLORS  */
+      --primary-base: #339af0;
+      --primary-tint: #d0ebff;
+      --primary-shade: #1c7ed6;
+      --secondary-base: #9775fa;
+      --secondary-tint: #e5dbff;
+      --secondary-shade: #7048e8;
+      --thrtiary-base: #ff922b;
+      --thrtiary-tint: #ffe8cc;
+      --thrtiary-shade: #f76707;
+      --grey-base: #495057;
+      --grey-tint: #f1f3f5;
+      --grey-shade: #212529;
+      --White: #ffffff;
+      --Black: #000000;
+
+      /* MISCELLANEOUS */
+      --nave-height: 100px
+        /* "11:37" */
+
+
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 62.5%;
+      /* 10px / 16px = 62.5% */
+    }
+
+    body {
+      font-family: var(--font-family);
+      font-weight: var(--font-weight-normal);
+      line-height: var(--line-height-normal);
+      color: #b3b3b3;
+      /* background-color: var(--grey-tint); */
+    }
+
+    h2 {
+      font-weight: var(--font-weight-normal);
+      line-height: var(--line-height-tight);
+      letter-spacing: var(--line-height-tight);
+      color: var(--Black);
+      font-size: var(--text-h3);
+    }
+
+    a {
+      text-decoration: none;
+      display: inline-block;
+      color: var(--grey-base);
+      font-size: var(--base)
+    }
+
+    p {
+      margin-top: 0.5rem;
+      font-size: 1.6rem;
+    }
+
+    label {
+      font-size: var(--base);
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo-md {
+      width: 150px;
+    }
+
+    .main-container {
+      height: 100vh;
+      max-width: 1200px;
+      width: 90%;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: 0fr 1fr;
+    }
+
+    .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 2rem 0 2rem;
+    }
+
+    .input-box {
+      position: relative;
+      width: 350px;
+      margin: 3rem 0;
+      border-bottom: 2px solid
+    }
+
+    .input-box label {
+      position: absolute;
+      top: 50%;
+      left: 5px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      transition: .5s;
+    }
+
+    .input-box input:focus~label,
+    .input-box input:valid~label {
+      top: -5px;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 1rem 0.5rem;
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 0 3.5rem 0 0.5rem;
+    }
+
+    .checkbox-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .checkbox-box a:hover {
+      text-decoration: underline;
+    }
+
+    .login-btn {
+      width: 100%;
+      height: 40px;
+      padding: 1rem 2rem;
+      font-size: var(--sm);
+      background-color: var(--primary-base);
+      color: var(--White);
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.5s
+    }
+
+    .login-btn:hover {
+      background-color: var(--primary-shade);
+      transform: scale(1.05, 1.05);
+      box-shadow: 0px 3px 6px var(--grey-base);
+    }
+
+    .register-link {
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .register-link a {
+      font-weight: var(--font-weight-bold);
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    .img-fluid {
+      max-width: 520px;
+      width: 100%;
+      height: auto;
+    }
+
+    /* footer */
+
+    .footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .social-icons-container {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links-container {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .social-icons {
+      width: 20px;
+    }
+
+    .heart-icon {
+      color: var(--secondary-base);
+    }
+
+    .logo-sm {
+      width: 70px;
+    }
+
+    .small-text {
+      font-size: var(--sm);
+    }
+
+    @media (max-width: 72rem) {
+      /* 1138px / 16px = 71.125rem */
+      /* 71.125rem X 16px = 1152px */
+
+      html {
+        font-size: 56.25%;
+        /* 9px / 16px = 56.25% */
+      }
+    }
+
+    @media (max-width: 68rem) {
+
+      /* 1088px / 16px = 68rem */
+      /* 68rem X 16px = 1088px */
+      html {
+        font-size: 50%;
+        /* 9px / 16px = 56.25% */
+      }
+    }
+
+    @media (max-width: 62rem) {
+      /* 992px / 16px = 62rem */
+      /* 62rem X 16px = 992px */
+
+      html {
+        font-size: 56.25%;
+        /* 8px / 16px = 56.25% */
+      }
+
+      .container {
+        flex-direction: column;
+        text-align: center;
+        gap: 4rem;
+        margin: auto;
+      }
+
+      .image img {
+        max-width: 60%;
+      }
+    }
+
+    @media (max-width: 48rem) {
+
+      /* 768px / 16px = 48rem */
+      /* 48rem X 16px = 768px */
+      html {
+        font-size: 43.75%;
+        /* 7px / 16px = 43.75% */
+      }
+
+      .input-box {
+        width: 100%;
+      }
+
+      .main-container {
+        width: 95%;
+      }
+
+      .container {
+        padding: 1rem;
+      }
+
+      .image img {
+        max-width: 70%;
+      }
+
+    }
+
+    @media (max-width: 30rem) {
+
+      /* 480px / 16px = 30rem */
+      /* 30rem X 16px = 480px */
+      html {
+        font-size: 37.5%;
+        /* 6px / 16 = 37.5% */
+      }
+
+      .main-container {
+        width: 95%;
+      }
+
+      .image img {
+        max-width: 80%;
+      }
+    }
+  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet">
+  <!-- <link rel="stylesheet" href="styles/login.css"> -->
+  <link rel="icon" href="images/icon.png" type="image/x-icon">
+  <title>Login Page</title>
+</head>
+
+<body>
+  <section>
+    <div class="main-container">
+      <nav class="navbar">
+        <a class="beta" href="/"><img class="logo-md" src="/images/Copilot_20260731_064128.png" alt="quill logo"></a>
+      </nav>
+      <div class="container">
+        <div class="content">
+          <h2>Sign in to <span><img class="logo-sm" src="/images/Copilot_20260731_064128.png" alt=""></span></h2>
+          <p>The ultimate bullet journal app to document, reflect, <br> and embrace your personal journey</p>
+          <form id="loginForm" class="login-form">
+            <div class="input-box">
+              <input type="email" id="email" name="email" placeholder=" " required>
+              <label for="email">Email:</label>
+            </div>
+
+            <div class="input-box">
+              <input type="password" id="password" name="password" placeholder=" " required>
+              <label for="password">Password:</label>
+            </div>
+            <div class="checkbox-box">
+              <label><input type="checkbox"> Remember me</label>
+              <a href="#">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn login-btn">Login</button>
+          </form>
+          <div class="register-link">
+            <p>Don't have an account? <a href="register.html">Register here</a></p>
+          </div>
+        </div>
+        <div>
+          <img class="img-fluid" src="/images/signupimg.jpg" alt="login-page-img ">
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="footer">
+    <a href="index.html"><img class="logo-sm" src="/images/Copilot_20260731_064128.png" alt="quill logo"></a>
+    <ul class="social-icons-container">
+      <li><a href="https://www.instagram.com/"><img class="social-icons" src="/images/instagram.svg"
+            alt="instagram logo"></a></li>
+      <li><a href="https://www.facebook.com/"><img class="social-icons " src="/images/facebook.svg"
+            alt="facebook logo"></a></li>
+      <li><a href="https://www.tiktok.com/"><img class="social-icons" src="/images/tiktok.svg" alt="tiktok logo"></a>
+      </li>
+      <li><a href="https://www.linkedin.com/"><img class="social-icons" src="/images/linkedin.svg"
+            alt="linkedin logo"></a></li>
+      <li><a href="https://www.youtube.com/"><img class="social-icons" src="/images/youtube.svg" alt="youtube logo"></a>
+      </li>
+    </ul>
+    <ul class="footer-links-container">
+      <li><a href="/">Home</a></li>
+      <li><a href="/register">Register</a></li>
+    </ul>
+
+    <p class="small-text">Made with <span class="heart-icon"> ♥︎ </span> in Kerala</p>
+  </footer>
+
+  <script src="/js/login.js"></script>
+
+  
+
+</body>
+
+</html>
