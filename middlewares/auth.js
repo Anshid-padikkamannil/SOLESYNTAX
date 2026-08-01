@@ -5,6 +5,13 @@ const isLoggedIn = (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
+
+    if (req.accepts("html")) {
+      return res.redirect(
+        `/users/login?redirect=${encodeURIComponent(req.originalUrl)}`
+      );
+    }
+
     return res.status(401).json({
       message: 'Unauthorized, please login first'
     });

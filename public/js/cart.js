@@ -129,6 +129,13 @@ async function updateCart(productId, size, quantity) {
 
   });
 
+  
+    if (response.status === 401) {
+      window.location.href =`/users/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`;
+
+      return;
+    }
+
   const data = await response.json();
 
   if (!response.ok) {

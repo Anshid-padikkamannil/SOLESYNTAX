@@ -31,9 +31,9 @@
       --font-family: "Rokkitt", Georgia, serif, sans-serif;
 
       /* COLORS  */
-      --primary-base: #339af0;
+      --primary-base: #88c8bc;
       --primary-tint: #d0ebff;
-      --primary-shade: #1c7ed6;
+      --primary-shade: #24a68e;
       --secondary-base: #9775fa;
       --secondary-tint: #e5dbff;
       --secondary-shade: #7048e8;
@@ -116,7 +116,7 @@
       width: 90%;
       margin: 0 auto;
       display: grid;
-      grid-template-rows: 0fr 1fr;
+      /* grid-template-rows: 0fr 1fr; */
     }
 
     .container {
@@ -333,20 +333,18 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
     rel="stylesheet">
-  <!-- <link rel="stylesheet" href="styles/login.css"> -->
   <link rel="icon" href="images/icon.png" type="image/x-icon">
   <title>Login Page</title>
 </head>
 
 <body>
-  <section>
     <div class="main-container">
-      <nav class="navbar">
+      <!-- <nav class="navbar">
         <a class="beta" href="/"><img class="logo-md" src="/images/Copilot_20260731_064128.png" alt="quill logo"></a>
-      </nav>
+      </nav> -->
       <div class="container">
         <div class="content">
-          <h2>Sign in to <span><img class="logo-sm" src="/images/Copilot_20260731_064128.png" alt=""></span></h2>
+          <h2>Sign in to <span><img class="logo-md" src="/images/icon.1.1.png" alt=""></span></h2>
           <p>The ultimate bullet journal app to document, reflect, <br> and embrace your personal journey</p>
           <form id="loginForm" class="login-form">
             <div class="input-box">
@@ -366,7 +364,7 @@
             <button type="submit" class="btn login-btn">Login</button>
           </form>
           <div class="register-link">
-            <p>Don't have an account? <a href="register.html">Register here</a></p>
+            <p>Don't have an account? <a href="/users/register">Register here</a></p>
           </div>
         </div>
         <div>
@@ -374,28 +372,10 @@
         </div>
       </div>
     </div>
-  </section>
-  <footer class="footer">
-    <a href="index.html"><img class="logo-sm" src="/images/Copilot_20260731_064128.png" alt="quill logo"></a>
-    <ul class="social-icons-container">
-      <li><a href="https://www.instagram.com/"><img class="social-icons" src="/images/instagram.svg"
-            alt="instagram logo"></a></li>
-      <li><a href="https://www.facebook.com/"><img class="social-icons " src="/images/facebook.svg"
-            alt="facebook logo"></a></li>
-      <li><a href="https://www.tiktok.com/"><img class="social-icons" src="/images/tiktok.svg" alt="tiktok logo"></a>
-      </li>
-      <li><a href="https://www.linkedin.com/"><img class="social-icons" src="/images/linkedin.svg"
-            alt="linkedin logo"></a></li>
-      <li><a href="https://www.youtube.com/"><img class="social-icons" src="/images/youtube.svg" alt="youtube logo"></a>
-      </li>
-    </ul>
-    <ul class="footer-links-container">
-      <li><a href="/">Home</a></li>
-      <li><a href="/register">Register</a></li>
-    </ul>
-
-    <p class="small-text">Made with <span class="heart-icon"> ♥︎ </span> in Kerala</p>
-  </footer>
+ 
+  <script>
+    const redirectAfterLogin = "<%= redirect %>";
+  </script>  
 
   <script src="/js/login.js"></script>
 

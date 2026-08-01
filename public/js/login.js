@@ -35,7 +35,7 @@ async function loginUser(e) {
 
     alert(data.message);
 
-    window.location.href = '/'
+    window.location.href = redirectAfterLogin || "/";
 
   } catch (err) {
 
