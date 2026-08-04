@@ -127,7 +127,7 @@ const getHomePage = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(16);
     
-      res.render('index', {
+      res.render("store/index", {
         products
       })
 

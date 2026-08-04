@@ -74,14 +74,14 @@ const loginUser = async (req, res) => {
 }
 
 const loadRegisterPage = (req, res) => {
-  res.render('register');
+  res.render("auth/register");
 }
 
 const getLoginPage = (req, res) => {
 
   const redirect = req.query.redirect || "/";
 
-  res.render('login', {
+  res.render("auth/login", {
     redirect
   });
 }

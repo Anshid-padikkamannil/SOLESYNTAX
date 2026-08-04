@@ -109,7 +109,7 @@ const getCart = async (req, res) => {
     const cart = await Cart.findOne({ userId: userId }).populate('items.productId', 'productName brand price images stock ');
 
     if (!cart ||cart.items.length === 0) {
-      return res.res.render("/cart", {
+      return res.res.render("store/cart", {
         cart: null
       });
     }
@@ -120,7 +120,7 @@ const getCart = async (req, res) => {
       subtotal += item.productId.price * item.quantity;
     });
 
-    res.render("cart", {
+    res.render("store/cart", {
       cart,
       subtotal
     });

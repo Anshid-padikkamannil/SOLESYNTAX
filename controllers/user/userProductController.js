@@ -15,7 +15,7 @@ const productDetails = async (req, res) => {
     const reviews = await Review.find({ productId: product._id })
       .populate('userId', 'name');
     
-    res.render('product-detail',{
+    res.render("store/product-detail",{
       product,
       reviews,
       averageRating: product.averageRating || 0,
