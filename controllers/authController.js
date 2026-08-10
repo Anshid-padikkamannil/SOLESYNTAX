@@ -74,7 +74,7 @@ const loginUser = async (req, res) => {
 }
 
 const loadRegisterPage = (req, res) => {
-  res.render("auth/register");
+  res.render("auth/register", { layout: false });
 }
 
 const getLoginPage = (req, res) => {
@@ -82,7 +82,8 @@ const getLoginPage = (req, res) => {
   const redirect = req.query.redirect || "/";
 
   res.render("auth/login", {
-    redirect
+    redirect,
+    layout: false
   });
 }
 

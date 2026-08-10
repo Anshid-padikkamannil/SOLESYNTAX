@@ -19,7 +19,8 @@ const productDetails = async (req, res) => {
       product,
       reviews,
       averageRating: product.averageRating || 0,
-      totalReviews: product.totalReviews || 0
+      totalReviews: product.totalReviews || 0,
+      layout: false
     });
     
   } catch (err) {

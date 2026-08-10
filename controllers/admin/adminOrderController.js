@@ -42,7 +42,7 @@ const adminUpdateOrderStatus = async (req, res) => {
     const order = await Order.findByIdAndUpdate(
       id,
       { status },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     if (!order) {

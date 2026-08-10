@@ -1,0 +1,228 @@
+<h4 class="mb-3"><i class="fas fa-map-marker-alt" style="color:#88c8bc;"></i> Addresses</h4>
+
+<div class="row">
+    <% addresses.forEach(addr => { %>
+        <div class="col-md-6 mb-4">
+            <div class="address-card <%= addr.isDefault ? 'default' : '' %> p-3 border rounded bg-white shadow-sm">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong><%= addr.addressType %></strong>
+                        <% if (addr.isDefault) { %>
+                            <span class="badge bg-success ms-2">Default</span>
+                        <% } %>
+                    </div>
+                    <div>
+                        <button class="btn btn-sm btn-outline-primary edit-address-btn" 
+                                data-address='<%= JSON.stringify(addr).replace(/'/g, "&#39;") %>'>
+                            Edit
+                        </button>
+                        <form action="/account/address/<%= addr._id %>/delete" method="POST" style="display:inline-block;">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" 
+                                    onclick="return confirm('Delete this address?')">Delete</button>
+                        </form>
+                        <% if (!addr.isDefault) { %>
+                            <form action="/account/address/<%= addr._id %>/default" method="POST" style="display:inline-block;">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">Set Default</button>
+                            </form>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Summary (always visible) – without labels, clean -->
+                <div class="address-summary mt-2">
+                    <p class="mb-1 small">
+                        <strong>Name:</strong> <%= addr.name %><br>
+                        <strong>Address Line 1:</strong> <%= addr.addressLine1 %><br>
+                        <% if (addr.addressLine2) { %>
+                            <strong>Address Line 2:</strong> <%= addr.addressLine2 %>
+                        <% } %>
+                    </p>
+                </div>
+
+                <!-- Full details (hidden by default) – with labels for all fields -->
+                <div id="details-<%= addr._id %>" class="address-details mt-2" style="display:none;">
+                    <p class="mb-1 small">
+                        <strong>City:</strong> <%= addr.city %><br>
+                        <strong>State:</strong> <%= addr.state %><br>
+                        <strong>Pincode:</strong> <%= addr.pincode %><br>
+                        <% if (addr.landmark) { %>
+                            <strong>Landmark:</strong> <%= addr.landmark %><br>
+                        <% } %>
+                        <strong>Phone:</strong> <%= addr.phone %><br>
+                        <% if (addr.altPhone) { %>
+                            <strong>Alternate Phone:</strong> <%= addr.altPhone %><br>
+                        <% } %>
+                    </p>
+                </div>
+
+                <!-- Single toggle button – always at the bottom -->
+                <button class="btn btn-link btn-sm p-0 mt-2 toggle-details" data-target="details-<%= addr._id %>">
+                    Show more <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+        </div>
+    <% }); %>
+</div>
+
+    <% if (addresses.length < 5) { %>
+        <button class="btn btn-primary btn-sm mt-3" id="addAddressBtn"><i class="fas fa-plus"></i> Add Address</button>
+    <% } else { %>
+        <button class="btn btn-secondary btn-sm mt-3" disabled>
+            <i class="fas fa-check"></i> Maximum 5 Addresses
+        </button>
+        <small class="text-muted d-block mt-2" style="color: #dc3545 !important;">
+            You can have a maximum of 5 addresses!
+        </small>
+    <% } %>
+
+<!-- ===== Add / Edit Address Form ===== -->
+<div id="addressFormContainer" style="display:none;" class="mt-4 p-4 border rounded bg-light">
+    <h5 id="addressFormTitle">Add New Address</h5>
+    <form id="addressForm" method="POST">
+        <input type="hidden" name="_method" id="formMethod" value="POST">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Address Type</label>
+                <select class="form-select" name="addressType" id="addressType" required>
+                    <option value="Home">Home</option>
+                    <option value="Work">Work</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" name="name" id="addressName" placeholder="Recipient name" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Phone</label>
+                <input type="text" class="form-control" name="phone" id="addressPhone" placeholder="Primary phone" required>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Alternate Phone (optional)</label>
+                <input type="text" class="form-control" name="altPhone" id="addressAltPhone" placeholder="Alternate phone">
+            </div>
+            <div class="col-12">
+                <label class="form-label">Address Line 1</label>
+                <input type="text" class="form-control" name="addressLine1" id="addressLine1" placeholder="Street address" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Address Line 2 (optional)</label>
+                <input type="text" class="form-control" name="addressLine2" id="addressLine2" placeholder="Apartment, suite, etc.">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" name="city" id="addressCity" placeholder="City" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">State</label>
+                <input type="text" class="form-control" name="state" id="addressState" placeholder="State" required>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Pincode</label>
+                <input type="number" class="form-control" name="pincode" id="addressPincode" placeholder="Pincode" required>
+            </div>
+            <div class="col-12">
+                <label class="form-label">Landmark (optional)</label>
+                <input type="text" class="form-control" name="landmark" id="addressLandmark" placeholder="Nearby landmark">
+            </div>
+            <div class="col-12">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="isDefault" id="addressDefault" value="true">
+                    <label class="form-check-label" for="addressDefault">
+                        Set as default address
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary" id="addressSubmitBtn">Save Address</button>
+            <button type="button" class="btn btn-outline-secondary" id="cancelAddressForm">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ---- Toggle form visibility ----
+        const addBtn = document.getElementById('addAddressBtn');
+        const formContainer = document.getElementById('addressFormContainer');
+        const cancelBtn = document.getElementById('cancelAddressForm');
+        const form = document.getElementById('addressForm');
+        const formTitle = document.getElementById('addressFormTitle');
+        const submitBtn = document.getElementById('addressSubmitBtn');
+        const methodInput = document.getElementById('formMethod');
+
+        function resetForm() {
+            form.reset();
+            document.getElementById('addressType').value = 'Home';
+            document.getElementById('addressDefault').checked = false;
+            form.action = '/account/address';
+            methodInput.value = 'POST';
+            formTitle.textContent = 'Add New Address';
+            submitBtn.textContent = 'Save Address';
+        }
+
+        if (addBtn) {
+            addBtn.addEventListener('click', function() {
+                resetForm();
+                formContainer.style.display = 'block';
+                formContainer.scrollIntoView({ behavior: 'smooth', block:
+                'center' });
+            });    
+        }
+        
+            
+            
+             
+        
+
+        cancelBtn.addEventListener('click', function() {
+            formContainer.style.display = 'none';
+        });
+
+        // ---- Edit button: populate form with address data ----
+        document.querySelectorAll('.edit-address-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const addr = JSON.parse(this.dataset.address);
+                // Fill form
+                document.getElementById('addressType').value = addr.addressType || 'Home';
+                document.getElementById('addressName').value = addr.name || '';
+                document.getElementById('addressPhone').value = addr.phone || '';
+                document.getElementById('addressAltPhone').value = addr.altPhone || '';
+                document.getElementById('addressLine1').value = addr.addressLine1 || '';
+                document.getElementById('addressLine2').value = addr.addressLine2 || '';
+                document.getElementById('addressCity').value = addr.city || '';
+                document.getElementById('addressState').value = addr.state || '';
+                document.getElementById('addressPincode').value = addr.pincode || '';
+                document.getElementById('addressLandmark').value = addr.landmark || '';
+                document.getElementById('addressDefault').checked = addr.isDefault || false;
+
+                // Set form action to update endpoint
+                form.action = '/account/address/' + addr._id + '/update';
+                methodInput.value = 'POST'; // we'll use POST with a hidden _method=PUT if needed, but we can keep POST
+                // If your framework supports PUT, you can set methodInput to 'PUT' and use method override
+                // For simplicity, we'll use POST to the update route.
+                formTitle.textContent = 'Edit Address';
+                submitBtn.textContent = 'Update Address';
+                formContainer.style.display = 'block';
+                formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+
+        // ---- Toggle details (show more / less) ----
+        // Single toggle button – works for all cards
+        document.querySelectorAll('.toggle-details').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetId = this.dataset.target;
+                const details = document.getElementById(targetId);
+                if (details.style.display === 'none') {
+                    details.style.display = 'block';
+                    this.innerHTML = 'Show less <i class="fas fa-chevron-up"></i>';
+                } else {
+                    details.style.display = 'none';
+                    this.innerHTML = 'Show more <i class="fas fa-chevron-down"></i>';
+                }
+            });
+        });
+    });
+</script>

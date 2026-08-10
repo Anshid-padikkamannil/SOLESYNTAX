@@ -128,7 +128,8 @@ const getHomePage = async (req, res) => {
       .limit(16);
     
       res.render("store/index", {
-        products
+        products,
+        layout: false
       })
 
   } catch (err) {

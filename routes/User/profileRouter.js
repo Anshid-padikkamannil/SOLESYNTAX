@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const {
-
-  profileHandler,
+  dashboard,
+  profile,
+  updateProfile,
   addAddress,
   getAddresses,
   getAddressById,
@@ -14,19 +15,27 @@ const {
 
 } = require('../../controllers/user/profileController');
 
+const { allOrders, getOrderById } = require('../../controllers/user/orederController');
+
 const { isLoggedIn } = require('../../middlewares/auth');
 router.use(isLoggedIn);
 
-router.get('/profile', profileHandler);
+router.get('/account', dashboard);
+
+router.get('/account/profile', profile);
+router.post('/account/profile/update', updateProfile);
+
+router.get('/account/orders', allOrders);
+router.get('/account/order-details/:id', getOrderById);
 
 //address
-router.post('/address', addAddress);
-router.get('/address', getAddresses);
+router.post('/account/address', addAddress);
+router.get('/account/addresses', getAddresses);
 router.get('/address/:id', getAddressById);
-router.put('/address/:id', updateAddress);
-router.put('/address/:id/default', setDefaultAddress);
-router.get('/address/default', getDefaultAddress);
-router.delete('/address/:id', deleteAddress)
+router.post('/account/address/:id/update', updateAddress);
+router.post('/account/address/:id/default', setDefaultAddress);
+router.get('/account/address/default', getDefaultAddress);
+router.post('/account/address/:id/delete', deleteAddress)
 
 
 module.exports = router;

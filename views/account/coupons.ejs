@@ -1,0 +1,14 @@
+<h4 class="mb-3"><i class="fas fa-ticket-alt" style="color:#88c8bc;"></i> Coupons</h4>
+
+<div class="row">
+    <% coupons.forEach(coupon => { %>
+        <div class="col-md-4 mb-3">
+            <div class="coupon-card">
+                <div class="coupon-code"><%= coupon.code %></div>
+                <div class="coupon-discount"><%= coupon.discount %></div>
+                <div class="coupon-expiry"><%= coupon.validity %></div>
+                <span class="badge <%= coupon.statusBadge %> mt-2"><%= coupon.status %></span>
+            </div>
+        </div>
+    <% }); %>
+</div>

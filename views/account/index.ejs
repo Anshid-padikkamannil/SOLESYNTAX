@@ -1,0 +1,41 @@
+<div class="container account-wrapper">
+    <div class="row">
+
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-md-4">
+            <%- include("../partials/account/sidebar") %>
+        </div>
+
+        <!-- Content -->
+        <div class="col-lg-9 col-md-8">
+            <div class="account-content">
+
+                <% if (activeMenu === "dashboard") { %>
+                    <%- include("./dashboard") %>
+                <% } %>
+
+                <% if (activeMenu === "orders") { %>
+                    <%- include("./orders") %>
+                <% } %>
+
+                <% if (activeMenu === "order-details") { %>
+                    <%- include("./order-detail") %>
+                <% } %>
+                    
+                <% if (activeMenu === "addresses") { %>
+                    <%- include("./addresses") %>
+                <% } %>
+
+                <% if (activeMenu === "wishlist") { %>
+                    <%- include("./wishlist") %>
+                <% } %>
+
+                <% if (activeMenu === "profile") { %>
+                    <%- include("./profile") %>
+                <% } %>
+
+            </div>
+        </div>
+
+    </div>
+</div>

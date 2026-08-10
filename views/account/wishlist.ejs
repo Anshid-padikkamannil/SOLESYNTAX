@@ -1,0 +1,36 @@
+<h4 class="mb-3"><i class="fas fa-heart" style="color:#88c8bc;"></i> Wishlist</h4>
+
+<% if (wishlist && wishlist.length) { %>
+    <% wishlist.forEach(item => { %>
+        <div class="wishlist-item">
+            <img src="<%= item.image %>" alt="<%= item.name %>">
+            <div class="product-info">
+                <h6><%= item.name %></h6>
+                <span class="price">₹<%= item.price %></span>
+            </div>
+            <div>
+                <button class="btn btn-sm btn-success move-to-cart" data-id="<%= item.id %>"><i class="fas fa-shopping-cart"></i> Move to Cart</button>
+                <button class="btn btn-sm btn-outline-danger remove-wishlist" data-id="<%= item.id %>"><i class="fas fa-trash"></i></button>
+            </div>
+        </div>
+    <% }); %>
+<% } else { %>
+    <p class="text-muted">Your wishlist is empty.</p>
+<% } %>
+
+<script>
+    // Demo actions
+    document.querySelectorAll('.move-to-cart').forEach(btn => {
+        btn.addEventListener('click', function() {
+            alert('Item moved to cart! (demo)');
+            this.closest('.wishlist-item').remove();
+        });
+    });
+    document.querySelectorAll('.remove-wishlist').forEach(btn => {
+        btn.addEventListener('click', function() {
+            if (confirm('Remove from wishlist?')) {
+                this.closest('.wishlist-item').remove();
+            }
+        });
+    });
+</script>

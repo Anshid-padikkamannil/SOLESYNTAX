@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | SOLESYNTAX</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rokkitt:100,300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        /* ===== CSS Variables (theme) ===== */
+        :root {
+            --primary: #88c8bc;
+            --primary-dark: #66a59b;
+            --primary-light: #f0f9f7;
+            --gray: #f8f9fa;
+            --gray-dark: #6c757d;
+            --text: #555;
+            --text-dark: #333;
+            --border: #e0e0e0;
+            --shadow: 0 4px 20px rgba(0,0,0,0.06);
+            --radius: 12px;
+            --font: "Poppins", sans-serif;
+            --font-heading: "Rokkitt", Georgia, serif;
+        }
+
+        /* ===== Reset & Base ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--font);
+            background: #f8f9fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        ul { list-style: none; }
+
+        /* ===== Container & Grid ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -15px;
+        }
+        .col {
+            flex: 1 0 0%;
+            padding: 0 15px;
+        }
+        .col-6 { flex: 0 0 50%; max-width: 50%; }
+        .col-3 { flex: 0 0 25%; max-width: 25%; }
+        .col-4 { flex: 0 0 33.333%; max-width: 33.333%; }
+        .col-8 { flex: 0 0 66.666%; max-width: 66.666%; }
+        .col-9 { flex: 0 0 75%; max-width: 75%; }
+        .col-12 { flex: 0 0 100%; max-width: 100%; }
+
+        /* Responsive columns */
+        @media (max-width: 992px) {
+            .col-lg-3 { flex: 0 0 25%; max-width: 25%; }
+            .col-lg-9 { flex: 0 0 75%; max-width: 75%; }
+            .col-md-4 { flex: 0 0 33.333%; max-width: 33.333%; }
+            .col-md-8 { flex: 0 0 66.666%; max-width: 66.666%; }
+            .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+        }
+        @media (max-width: 768px) {
+            .col-sm-3 { flex: 0 0 25%; max-width: 25%; }
+            .col-sm-8 { flex: 0 0 66.666%; max-width: 66.666%; }
+            .col-sm-6 { flex: 0 0 50%; max-width: 50%; }
+            .col-sm-12 { flex: 0 0 100%; max-width: 100%; }
+            .col-6 { flex: 0 0 50%; max-width: 50%; }
+            .col-3 { flex: 0 0 25%; max-width: 25%; }
+            .row { margin: 0 -10px; }
+            .col, .col-*, .col-sm-* { padding: 0 10px; }
+        }
+        @media (max-width: 576px) {
+            .col-6 { flex: 0 0 100%; max-width: 100%; }
+            .col-sm-3 { flex: 0 0 50%; max-width: 50%; }
+        }
+
+        /* ===== Utilities ===== */
+        .text-center { text-align: center; }
+        .text-muted { color: #6c757d; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .d-flex { display: flex; }
+        .align-items-center { align-items: center; }
+        .justify-content-between { justify-content: space-between; }
+        .justify-content-center { justify-content: center; }
+        .flex-wrap { flex-wrap: wrap; }
+        .flex-column { flex-direction: column; }
+        .gap-2 { gap: 8px; }
+        .gap-3 { gap: 16px; }
+        .w-100 { width: 100%; }
+
+        .mt-2 { margin-top: 8px; }
+        .mt-3 { margin-top: 16px; }
+        .mt-4 { margin-top: 24px; }
+        .mt-5 { margin-top: 32px; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-3 { margin-bottom: 16px; }
+        .mb-4 { margin-bottom: 24px; }
+        .ml-2 { margin-left: 8px; }
+        .ml-3 { margin-left: 16px; }
+        .mr-2 { margin-right: 8px; }
+        .p-3 { padding: 16px; }
+        .p-4 { padding: 24px; }
+        .py-4 { padding-top: 24px; padding-bottom: 24px; }
+        .py-2 { padding-top: 8px; padding-bottom: 8px; }
+        .px-4 { padding-left: 24px; padding-right: 24px; }
+
+        .border { border: 1px solid var(--border); }
+        .border-bottom { border-bottom: 1px solid var(--border); }
+        .rounded { border-radius: var(--radius); }
+        .bg-light { background: #f8f9fa; }
+        .bg-white { background: #fff; }
+        .shadow-sm { box-shadow: var(--shadow); }
+
+        /* ===== Buttons ===== */
+        .btn {
+            display: inline-block;
+            padding: 6px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            text-align: center;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1.5;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+        .btn-outline-primary {
+            background: transparent;
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+        .btn-outline-primary:hover {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: #fff;
+            border-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .btn-outline-danger {
+            background: transparent;
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-outline-danger:hover {
+            background: #dc3545;
+            color: #fff;
+        }
+        .btn-success {
+            background: #28a745;
+            color: #fff;
+            border-color: #28a745;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn-outline-secondary {
+            background: transparent;
+            color: #6c757d;
+            border-color: #6c757d;
+        }
+        .btn-outline-secondary:hover {
+            background: #6c757d;
+            color: #fff;
+        }
+        .btn-sm { padding: 4px 12px; font-size: 13px; }
+        .btn-link {
+            background: transparent;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        .btn-link:hover { color: var(--primary-dark); }
+
+        /* ===== Badge ===== */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 20px;
+        }
+        .badge-success { background: #28a745; color: #fff; }
+        .badge-secondary { background: #6c757d; color: #fff; }
+        .badge-danger { background: #dc3545; color: #fff; }
+
+        /* ===== Navbar ===== */
+        .colorlib-nav {
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+        }
+        .navbar-brand {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 32px;
+            letter-spacing: 1px;
+            color: var(--primary);
+            text-transform: uppercase;
+        }
+        .navbar-brand:hover { color: var(--primary-dark); }
+        .navbar-toggler {
+            background: transparent;
+            border: 2px solid var(--primary);
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+        .navbar-toggler span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background: var(--primary);
+            margin: 5px 0;
+            border-radius: 3px;
+        }
+        .navbar-collapse {
+            flex-basis: 100%;
+            flex-grow: 1;
+            display: none;
+        }
+        .navbar-collapse.show { display: block; }
+        .navbar-nav {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 0;
+        }
+        .nav-item { padding: 5px 0; }
+        .nav-link {
+            font-family: var(--font-heading);
+            font-weight: 500;
+            font-size: 16px;
+            text-transform: uppercase;
+            color: #555;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s;
+        }
+        .nav-link i { width: 20px; text-align: center; font-size: 16px; }
+        .nav-link:hover, .nav-item.active .nav-link { color: var(--primary); }
+        .nav-link::after {
+            content: '';
+            display: block;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after, .nav-item.active .nav-link::after {
+            width: 100%;
+        }
+
+        @media (min-width: 992px) {
+            .navbar-collapse { display: flex !important; flex-basis: auto; }
+            .navbar-nav { flex-direction: row; align-items: center; }
+            .nav-item { padding: 0; }
+            .navbar-toggler { display: none; }
+        }
+        @media (max-width: 991px) {
+            .nav-link::after { display: none; }
+            .navbar-nav .nav-link { border-bottom: 1px solid #f0f0f0; }
+        }
+
+        /* ===== Sale Banner ===== */
+        .sale {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            padding: 12px 0;
+        }
+        .sale h3 {
+            margin: 0;
+            font-family: var(--font-heading);
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+        .sale h3 a { color: #fff; }
+        .sale h3 a:hover { text-decoration: underline; }
+
+        /* ===== Owl‑like Carousel (simple) ===== */
+        .owl-carousel2 {
+            position: relative;
+            overflow: hidden;
+        }
+        .owl-carousel2 .owl-stage {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        .owl-carousel2 .item {
+            min-width: 100%;
+            padding: 0 10px;
+        }
+        .owl-carousel2 .owl-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        .owl-carousel2 .owl-nav button {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: #fff;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 20px;
+            pointer-events: auto;
+        }
+        .owl-carousel2 .owl-nav button:hover { background: rgba(255,255,255,0.6); }
+
+        /* ===== Account Layout ===== */
+        .account-wrapper { margin: 30px 0 60px; }
+        .account-sidebar {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px 0;
+        }
+        .account-sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 24px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+            border-left: 3px solid transparent;
+            transition: 0.2s;
+        }
+        .account-sidebar .nav-link i {
+            width: 22px;
+            text-align: center;
+            font-size: 16px;
+            color: var(--primary);
+        }
+        .account-sidebar .nav-link:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+        .account-sidebar .nav-link.active {
+            background: var(--primary-light);
+            border-left-color: var(--primary);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        .account-content {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 30px;
+            min-height: 500px;
+        }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* ===== Stat Cards ===== */
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: var(--radius);
+            padding: 20px;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        .stat-card .stat-icon { font-size: 32px; color: var(--primary); margin-bottom: 8px; }
+        .stat-card .stat-number { font-size: 28px; font-weight: 600; color: var(--text-dark); }
+        .stat-card .stat-label { font-size: 14px; color: #888; margin-top: 4px; }
+
+        /* ===== Order Item ===== */
+        .order-item {
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            background: #fafafa;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .order-item .order-info { flex: 2; }
+        .order-item .order-info strong { font-size: 16px; }
+        .order-item .order-status {
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+        }
+        .order-status.delivered { background: #d4edda; color: #155724; }
+        .order-status.pending { background: #fff3cd; color: #856404; }
+        .order-status.shipped { background: #cce5ff; color: #004085; }
+        .order-status.cancelled { background: #f8d7da; color: #721c24; }
+
+        /* ===== Address Card ===== */
+        .address-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            background: #fff;
+            transition: 0.2s;
+        }
+        .address-card.default {
+            border-color: var(--primary);
+            background: #f8fffe;
+        }
+        .address-card .address-tag {
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--primary);
+            color: #fff;
+            padding: 2px 12px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+        .address-card .address-tag.default-tag { background: #28a745; }
+
+        /* ===== Wishlist Item ===== */
+        .wishlist-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #eee;
+            padding: 16px 0;
+        }
+        .wishlist-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .wishlist-item .product-info { flex: 1; }
+        .wishlist-item .product-info h6 { margin: 0; font-weight: 600; }
+        .wishlist-item .product-info .price { color: var(--primary); font-weight: 600; }
+
+        /* ===== Coupon Card ===== */
+        .coupon-card {
+            border: 1px dashed #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background: #fafafa;
+        }
+        .coupon-card .coupon-code {
+            font-family: monospace;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: var(--primary);
+            color: #fff;
+            padding: 4px 20px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        .coupon-card .coupon-discount { font-size: 24px; font-weight: 700; color: var(--text-dark); }
+        .coupon-card .coupon-expiry { font-size: 13px; color: #888; }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 767px) {
+            .account-sidebar .nav-link { padding: 8px 16px; font-size: 13px; }
+            .account-content { padding: 20px 16px; }
+            .order-item { flex-direction: column; align-items: stretch; gap: 12px; }
+            .stat-card .stat-number { font-size: 22px; }
+            .col-md-4 { flex: 0 0 100%; max-width: 100%; }
+            .col-md-6 { flex: 0 0 100%; max-width: 100%; }
+            .col-sm-3 { flex: 0 0 50%; max-width: 50%; }
+        }
+        @media (max-width: 576px) {
+            .col-sm-3 { flex: 0 0 100%; max-width: 100%; }
+        }
+
+        /* ===== Form ===== */
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 4px; }
+        .form-control {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .form-control:focus { border-color: var(--primary); outline: none; }
+
+        /* ===== Footer ===== */
+        .footer {
+            text-align: center;
+            padding: 24px 0;
+            background: #f8f9fa;
+            margin-top: 32px;
+        }
+        .footer small { color: #6c757d; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="colorlib-nav">
+        <div class="container">
+            <div class="navbar">
+                <a href="/" class="navbar-brand">SOLESYNTAX</a>
+                <button class="navbar-toggler" id="navbarToggler" aria-label="Toggle navigation">
+                    <span></span><span></span><span></span>
+                </button>
+                <div class="navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/shop"><i class="fas fa-store"></i> Shop</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/wishlist"><i class="fas fa-heart"></i> Wishlist</a></li>
+                        <li class="nav-item active"><a class="nav-link" href="/account"><i class="fas fa-user-circle"></i> My Account</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/users/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SALE BANNER (Carousel) ===== -->
+    <div class="sale">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div class="owl-carousel2" id="saleCarousel">
+                        <div class="owl-stage" id="saleStage">
+                            <div class="item"><h3><a href="#">25% off (Almost) Everything! Use Code: Summer Sale</a></h3></div>
+                            <div class="item"><h3><a href="#">Our biggest sale yet 50% off all summer shoes</a></h3></div>
+                        </div>
+                        <div class="owl-nav">
+                            <button id="salePrev">‹</button>
+                            <button id="saleNext">›</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ACCOUNT SECTION ===== -->
+    <div class="container account-wrapper">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="account-sidebar">
+                    <nav class="flex-column" id="accountSidebar">
+                        <a class="nav-link active" data-page="dashboard" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        <a class="nav-link" data-page="profile" href="#"><i class="fas fa-user"></i> My Profile</a>
+                        <a class="nav-link" data-page="orders" href="#"><i class="fas fa-box"></i> My Orders</a>
+                        <a class="nav-link" data-page="addresses" href="#"><i class="fas fa-map-marker-alt"></i> Addresses</a>
+                        <a class="nav-link" data-page="wishlist" href="#"><i class="fas fa-heart"></i> Wishlist</a>
+                        <a class="nav-link" data-page="coupons" href="#"><i class="fas fa-ticket-alt"></i> Coupons</a>
+                        <a class="nav-link" data-page="password" href="#"><i class="fas fa-key"></i> Change Password</a>
+                        <a class="nav-link" data-page="logout" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-md-8 col-lg-9">
+                <div class="account-content">
+
+                    <!-- ===== DASHBOARD ===== -->
+                    <div class="page-section active" id="page-dashboard">
+                        <h4 class="mb-3"><i class="fas fa-tachometer-alt" style="color:#88c8bc;"></i> Dashboard</h4>
+                        <p class="text-muted">👋 Hi, <strong>John Doe</strong>! Welcome back.</p>
+
+                        <div class="row mt-4">
+                            <div class="col-6 col-sm-3 mb-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+                                    <div class="stat-number">12</div>
+                                    <div class="stat-label">Total Orders</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3 mb-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                                    <div class="stat-number">3</div>
+                                    <div class="stat-label">Pending Orders</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3 mb-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-map-pin"></i></div>
+                                    <div class="stat-number">2</div>
+                                    <div class="stat-label">Saved Addresses</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3 mb-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                                    <div class="stat-number">4</div>
+                                    <div class="stat-label">Wishlist Items</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h5>Recent Order</h5>
+                            <div class="order-item">
+                                <div class="order-info">
+                                    <strong>#ORD-2026-08</strong> <span class="text-muted">· Aug 1, 2026</span>
+                                    <span class="order-status delivered ml-2">Delivered</span>
+                                    <div class="text-muted small">Total: ₹3,999</div>
+                                </div>
+                                <a href="#" class="btn btn-outline-primary btn-sm view-order-btn" data-order="ORD-2026-08">View Details</a>
+                            </div>
+                            <a href="#" class="btn btn-primary btn-sm mt-2" data-page="orders"><i class="fas fa-list"></i> View All Orders</a>
+                        </div>
+                    </div>
+
+                    <!-- ===== PROFILE ===== -->
+                    <div class="page-section" id="page-profile">
+                        <h4 class="mb-3"><i class="fas fa-user" style="color:#88c8bc;"></i> My Profile</h4>
+                        <div class="profile-display">
+                            <p><strong>Name:</strong> John Doe</p>
+                            <p><strong>Email:</strong> john@example.com</p>
+                            <p><strong>Phone:</strong> +91 98765 43210</p>
+                            <button class="btn btn-outline-primary btn-sm" id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button>
+                        </div>
+                        <div class="profile-edit mt-3" style="display:none;">
+                            <form id="profileForm">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" class="form-control" value="John Doe">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email</label>
+                                    <input type="email" class="form-control" value="john@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Phone</label>
+                                    <input type="text" class="form-control" value="+91 98765 43210">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelEditProfile">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ===== ORDERS ===== -->
+                    <div class="page-section" id="page-orders">
+                        <h4 class="mb-3"><i class="fas fa-box" style="color:#88c8bc;"></i> My Orders</h4>
+                        <div id="ordersList">
+                            <div class="order-item">
+                                <div class="order-info">
+                                    <strong>#ORD-2026-08</strong> <span class="text-muted">· Aug 1, 2026</span><br>
+                                    <span class="order-status delivered">Delivered</span>
+                                    <span class="ml-3">₹3,999</span>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-08">View Details</a>
+                            </div>
+                            <div class="order-item">
+                                <div class="order-info">
+                                    <strong>#ORD-2026-07</strong> <span class="text-muted">· Jul 25, 2026</span><br>
+                                    <span class="order-status shipped">Shipped</span>
+                                    <span class="ml-3">₹1,299</span>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-07">View Details</a>
+                            </div>
+                            <div class="order-item">
+                                <div class="order-info">
+                                    <strong>#ORD-2026-06</strong> <span class="text-muted">· Jul 10, 2026</span><br>
+                                    <span class="order-status pending">Pending</span>
+                                    <span class="ml-3">₹5,450</span>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-06">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== ORDER DETAIL ===== -->
+                    <div class="page-section" id="page-order-detail">
+                        <h4 class="mb-3"><i class="fas fa-file-invoice" style="color:#88c8bc;"></i> Order Details <span id="orderDetailId"></span></h4>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6>Products</h6>
+                                <div class="wishlist-item border-bottom pb-2">
+                                    <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Shoe" alt="product">
+                                    <div class="product-info">
+                                        <h6>Nike Air Max</h6>
+                                        <span class="text-muted">Qty: 1</span>
+                                        <span class="price ml-3">₹3,999</span>
+                                    </div>
+                                </div>
+                                <div class="wishlist-item border-bottom pb-2">
+                                    <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Bag" alt="product">
+                                    <div class="product-info">
+                                        <h6>Leather Backpack</h6>
+                                        <span class="text-muted">Qty: 2</span>
+                                        <span class="price ml-3">₹1,298</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3"><strong>Total: ₹5,297</strong></div>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Shipping Address</h6>
+                                <p class="small">John Doe<br>123, MG Road,<br>Mumbai - 400001</p>
+                                <h6>Payment</h6>
+                                <p class="small">UPI / Credit Card • **** 1234</p>
+                                <h6>Status</h6>
+                                <span class="order-status delivered">Delivered on Aug 3, 2026</span>
+                                <h6 class="mt-3">Tracking</h6>
+                                <p class="small">Track ID: <strong>TRK-987654</strong><br> <a href="#">Track package</a></p>
+                                <button class="btn btn-outline-secondary btn-sm mt-2"><i class="fas fa-file-pdf"></i> Download Invoice</button>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-link mt-3" data-page="orders"><i class="fas fa-arrow-left"></i> Back to Orders</a>
+                    </div>
+
+                    <!-- ===== ADDRESSES ===== -->
+                    <div class="page-section" id="page-addresses">
+                        <h4 class="mb-3"><i class="fas fa-map-marker-alt" style="color:#88c8bc;"></i> Addresses</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="address-card default">
+                                    <div class="d-flex justify-content-between">
+                                        <span><strong>Home</strong></span>
+                                        <span class="address-tag default-tag">Default</span>
+                                    </div>
+                                    <p class="mb-1 small">John Doe<br>123, MG Road,<br>Mumbai - 400001</p>
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-primary edit-address" data-address="home">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger delete-address" data-address="home">Delete</button>
+                                        <button class="btn btn-sm btn-outline-secondary set-default-address" data-address="home">Set Default</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="address-card">
+                                    <div class="d-flex justify-content-between">
+                                        <span><strong>Work</strong></span>
+                                    </div>
+                                    <p class="mb-1 small">John Doe<br>456, BKC,<br>Mumbai - 400051</p>
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-primary edit-address" data-address="work">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger delete-address" data-address="work">Delete</button>
+                                        <button class="btn btn-sm btn-outline-secondary set-default-address" data-address="work">Set Default</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-sm mt-3" id="addAddressBtn"><i class="fas fa-plus"></i> Add Address</button>
+                        <div id="addAddressForm" style="display:none;" class="mt-3 p-3 border rounded">
+                            <h6>Add New Address</h6>
+                            <form>
+                                <div class="form-group">
+                                    <label>Address Label</label>
+                                    <input type="text" class="form-control" placeholder="e.g. Home, Work">
+                                </div>
+                                <div class="form-group">
+                                    <label>Full Address</label>
+                                    <textarea class="form-control" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Save Address</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelAddAddress">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ===== WISHLIST ===== -->
+                    <div class="page-section" id="page-wishlist">
+                        <h4 class="mb-3"><i class="fas fa-heart" style="color:#88c8bc;"></i> Wishlist</h4>
+                        <div class="wishlist-item">
+                            <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Nike" alt="product">
+                            <div class="product-info">
+                                <h6>Nike Air Max</h6>
+                                <span class="price">₹4,999</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-success move-to-cart"><i class="fas fa-shopping-cart"></i> Move to Cart</button>
+                                <button class="btn btn-sm btn-outline-danger remove-wishlist"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="wishlist-item">
+                            <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Adidas" alt="product">
+                            <div class="product-info">
+                                <h6>Adidas Ultraboost</h6>
+                                <span class="price">₹3,299</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-success move-to-cart"><i class="fas fa-shopping-cart"></i> Move to Cart</button>
+                                <button class="btn btn-sm btn-outline-danger remove-wishlist"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== COUPONS ===== -->
+                    <div class="page-section" id="page-coupons">
+                        <h4 class="mb-3"><i class="fas fa-ticket-alt" style="color:#88c8bc;"></i> Coupons</h4>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="coupon-card">
+                                    <div class="coupon-code">SAVE10</div>
+                                    <div class="coupon-discount">10% OFF</div>
+                                    <div class="coupon-expiry">Valid until Aug 31, 2026</div>
+                                    <span class="badge badge-success mt-2">Available</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="coupon-card">
+                                    <div class="coupon-code">FLAT50</div>
+                                    <div class="coupon-discount">₹50 OFF</div>
+                                    <div class="coupon-expiry">Valid until Sep 15, 2026</div>
+                                    <span class="badge badge-secondary mt-2">Used</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="coupon-card">
+                                    <div class="coupon-code">SUMMER25</div>
+                                    <div class="coupon-discount">25% OFF</div>
+                                    <div class="coupon-expiry">Expired on Jul 30, 2026</div>
+                                    <span class="badge badge-danger mt-2">Expired</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== CHANGE PASSWORD ===== -->
+                    <div class="page-section" id="page-password">
+                        <h4 class="mb-3"><i class="fas fa-key" style="color:#88c8bc;"></i> Change Password</h4>
+                        <form>
+                            <div class="form-group">
+                                <label>Current Password</label>
+                                <input type="password" class="form-control" placeholder="Enter current password">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" class="form-control" placeholder="Enter new password">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password</label>
+                                <input type="password" class="form-control" placeholder="Confirm new password">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Change Password</button>
+                        </form>
+                    </div>
+
+                    <!-- ===== LOGOUT ===== -->
+                    <div class="page-section" id="page-logout">
+                        <h4 class="mb-3"><i class="fas fa-sign-out-alt" style="color:#88c8bc;"></i> Logout</h4>
+                        <p>Are you sure you want to log out?</p>
+                        <button class="btn btn-danger" id="confirmLogoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </div>
+
+                </div><!-- /account-content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <small>© 2026 SOLESYNTAX. All rights reserved.</small>
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS (Vanilla JS) ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // ---- Navbar Toggle ----
+            const toggler = document.getElementById('navbarToggler');
+            const collapse = document.getElementById('mainNavbar');
+            toggler.addEventListener('click', function() {
+                collapse.classList.toggle('show');
+            });
+
+            // ---- Sale Carousel ----
+            const stage = document.getElementById('saleStage');
+            const items = stage.querySelectorAll('.item');
+            let currentSlide = 0;
+            const total = items.length;
+            document.getElementById('salePrev').addEventListener('click', function() {
+                currentSlide = (currentSlide - 1 + total) % total;
+                stage.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+            });
+            document.getElementById('saleNext').addEventListener('click', function() {
+                currentSlide = (currentSlide + 1) % total;
+                stage.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+            });
+            // Auto‑play
+            setInterval(function() {
+                currentSlide = (currentSlide + 1) % total;
+                stage.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+            }, 4000);
+
+            // ---- Sidebar Navigation ----
+            const sidebarLinks = document.querySelectorAll('#accountSidebar .nav-link');
+            const sections = document.querySelectorAll('.page-section');
+
+            function showPage(pageId) {
+                sections.forEach(function(s) { s.classList.remove('active'); });
+                const target = document.getElementById('page-' + pageId);
+                if (target) target.classList.add('active');
+                sidebarLinks.forEach(function(l) { l.classList.remove('active'); });
+                document.querySelector('#accountSidebar .nav-link[data-page="' + pageId + '"]').classList.add('active');
+            }
+
+            sidebarLinks.forEach(function(link) {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var page = this.dataset.page;
+                    if (page === 'logout') {
+                        showPage('logout');
+                        return;
+                    }
+                    showPage(page);
+                });
+            });
+
+            // ---- View Order Details ----
+            document.querySelectorAll('.view-order-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var orderId = this.dataset.order;
+                    document.getElementById('orderDetailId').textContent = ' - ' + orderId;
+                    showPage('order-detail');
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            // ---- Back to Orders (from order detail) ----
+            document.querySelector('#page-order-detail .btn-link[data-page="orders"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('orders');
+            });
+
+            // ---- Edit Profile Toggle ----
+            document.getElementById('editProfileBtn').addEventListener('click', function() {
+                document.querySelector('.profile-display').style.display = 'none';
+                document.querySelector('.profile-edit').style.display = 'block';
+            });
+            document.getElementById('cancelEditProfile').addEventListener('click', function() {
+                document.querySelector('.profile-display').style.display = 'block';
+                document.querySelector('.profile-edit').style.display = 'none';
+            });
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Profile updated successfully! (demo)');
+                document.querySelector('.profile-display').style.display = 'block';
+                document.querySelector('.profile-edit').style.display = 'none';
+            });
+
+            // ---- Address Actions ----
+            document.getElementById('addAddressBtn').addEventListener('click', function() {
+                var form = document.getElementById('addAddressForm');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+            document.getElementById('cancelAddAddress').addEventListener('click', function() {
+                document.getElementById('addAddressForm').style.display = 'none';
+            });
+            document.querySelectorAll('.edit-address').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    alert('Edit address: ' + this.dataset.address + ' (demo)');
+                });
+            });
+            document.querySelectorAll('.delete-address').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (confirm('Delete this address?')) {
+                        this.closest('.address-card').remove();
+                    }
+                });
+            });
+            document.querySelectorAll('.set-default-address').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    var card = this.closest('.address-card');
+                    document.querySelectorAll('.address-card').forEach(function(c) {
+                        c.classList.remove('default');
+                        var tag = c.querySelector('.address-tag.default-tag');
+                        if (tag) tag.remove();
+                    });
+                    card.classList.add('default');
+                    var tag = document.createElement('span');
+                    tag.className = 'address-tag default-tag';
+                    tag.textContent = 'Default';
+                    card.querySelector('.d-flex').appendChild(tag);
+                    alert('Default address updated!');
+                });
+            });
+
+            // ---- Wishlist Actions ----
+            document.querySelectorAll('.move-to-cart').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    alert('Item moved to cart! (demo)');
+                    this.closest('.wishlist-item').remove();
+                });
+            });
+            document.querySelectorAll('.remove-wishlist').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (confirm('Remove from wishlist?')) {
+                        this.closest('.wishlist-item').remove();
+                    }
+                });
+            });
+
+            // ---- Logout Confirm ----
+            document.getElementById('confirmLogoutBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    alert('Logging out... (redirect to home)');
+                    // window.location.href = '/users/logout';
+                }
+            });
+
+            // ---- Close mobile menu after link click ----
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 992) {
+                        collapse.classList.remove('show');
+                    }
+                });
+            });
+
+            // ---- Auto‑show dashboard on load (already active) ----
+        })();
+    </script>
+
+</body>
+</html>

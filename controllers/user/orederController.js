@@ -171,16 +171,32 @@ const allOrders =  async (req, res) => {
       }
     )
 
-    res.status(200).json({
-      success: true,
-      ...result
-    });
+    const formattedOrders = result.data.map(order => ({
+      id: order._id,
+      date: new Date(order.createdAt).toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      }),
+      total: order.finalAmount,
+      status: order.status,
+      statusClass: order.status
+        .toLowerCase()
+        .replace(/\s+/g, "-")
+    }));
+
+    res.render("account/index", {
+      activeMenu: "orders",
+      title: "Orders",
+      orders: formattedOrders,
+      pagination: result.pagination
+    })
 
   } catch (err) {
+    console.error("All Orders Error:", err);
 
-    res.status(500).json({
-      success: false,
-      message: err.message
+    res.status(500).render("error", {
+      message: "This is a test error page."
     });
 
   }
@@ -194,7 +210,7 @@ const getOrderById = async (req, res) => {
     const { id } = req.params;
 
     const order = await Order.findOne({ _id: id, userId})
-      // .populate('orderItems.porduct', 'productName price images')
+      .populate('orderItems.product', 'images')
 
     if (!order) {
       return res.status(404).json({
@@ -203,15 +219,18 @@ const getOrderById = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
+    res.render("account/index", {
+      activeMenu: "order-details",
+      title: "Order Details",
       order
     })
     
   } catch (err) {
+    console.error("TEST ERROR:", err);
 
-    res.status(500).json({ message: err.message });
-    
+    res.status(500).render("error", {
+      message: "Something went wrong."
+    });  
   }
 }
 

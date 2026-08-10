@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>My Account | SOLESYNTAX</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rokkitt:100,300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <!-- Brand overrides (colors, fonts, custom styles) -->
+    <style>
+        /* Override Bootstrap primary color */
+        :root {
+            --bs-primary: #88c8bc;
+            --bs-primary-rgb: 136, 200, 188;
+        }
+        .btn-primary {
+            background-color: #88c8bc;
+            border-color: #88c8bc;
+        }
+        .btn-primary:hover {
+            background-color: #66a59b;
+            border-color: #66a59b;
+        }
+        .btn-outline-primary {
+            color: #88c8bc;
+            border-color: #88c8bc;
+        }
+        .btn-outline-primary:hover {
+            background-color: #88c8bc;
+            border-color: #88c8bc;
+        }
+
+        /* Brand fonts */
+        .navbar-brand {
+            font-family: "Rokkitt", Georgia, serif;
+            font-weight: 600;
+            font-size: 32px;
+            color: #88c8bc !important;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .navbar-brand:hover { color: #66a59b !important; }
+
+        .sale {
+            background: linear-gradient(to right, #88c8bc, #66a59b);
+            padding: 12px 0;
+        }
+        .sale h3 {
+            margin: 0;
+            font-family: "Rokkitt", Georgia, serif;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+        .sale h3 a { color: #fff; text-decoration: none; }
+        .sale h3 a:hover { text-decoration: underline; }
+
+        /* Account sidebar customisations */
+        .account-sidebar .nav-link {
+            color: #555;
+            font-weight: 500;
+            padding: 10px 24px;
+            border-left: 3px solid transparent;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .account-sidebar .nav-link i {
+            width: 22px;
+            text-align: center;
+            font-size: 16px;
+            color: #88c8bc;
+        }
+        .account-sidebar .nav-link:hover {
+            background: #f0f9f7;
+            color: #66a59b;
+        }
+        .account-sidebar .nav-link.active {
+            background: #f0f9f7;
+            border-left-color: #88c8bc;
+            color: #66a59b;
+            font-weight: 600;
+        }
+
+        /* Stat cards */
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+        .stat-card .stat-icon { font-size: 32px; color: #88c8bc; margin-bottom: 8px; }
+        .stat-card .stat-number { font-size: 28px; font-weight: 600; color: #333; }
+        .stat-card .stat-label { font-size: 14px; color: #888; margin-top: 4px; }
+
+        /* Order status badges (overrides) */
+        .order-status {
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            display: inline-block;
+        }
+        .order-status.delivered { background: #d4edda; color: #155724; }
+        .order-status.pending { background: #fff3cd; color: #856404; }
+        .order-status.shipped { background: #cce5ff; color: #004085; }
+        .order-status.cancelled { background: #f8d7da; color: #721c24; }
+
+        /* Wishlist item */
+        .wishlist-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-bottom: 1px solid #eee;
+            padding: 16px 0;
+        }
+        .wishlist-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .wishlist-item .product-info { flex: 1; }
+        .wishlist-item .price { color: #88c8bc; font-weight: 600; }
+
+        /* Coupon card */
+        .coupon-card {
+            border: 1px dashed #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            background: #fafafa;
+        }
+        .coupon-card .coupon-code {
+            font-family: monospace;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            background: #88c8bc;
+            color: #fff;
+            padding: 4px 20px;
+            border-radius: 30px;
+            display: inline-block;
+        }
+        .coupon-card .coupon-discount { font-size: 24px; font-weight: 700; color: #333; }
+        .coupon-card .coupon-expiry { font-size: 13px; color: #888; }
+
+        /* profile */
+        .avatar-circle {
+          width: 80px;
+          height: 80px;
+          background: #88c8bc;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 32px;
+          color: #fff;
+          font-weight: 600;
+          flex-shrink: 0;
+        }
+
+        /* Responsive fixes */
+        @media (max-width: 767px) {
+            .account-sidebar .nav-link { padding: 8px 16px; font-size: 13px; }
+            .account-content { padding: 20px 16px; }
+            .order-item { flex-direction: column; align-items: stretch; gap: 12px; }
+            .stat-card .stat-number { font-size: 22px; }
+        }
+
+        .account-content {
+            min-height: 500px;
+        }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER / NAVBAR ===== -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/">SOLESYNTAX</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/shop"><i class="fas fa-store"></i> Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/cart"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/wishlist"><i class="fas fa-heart"></i> Wishlist</a></li>
+                    <li class="nav-item active"><a class="nav-link" href="/account"><i class="fas fa-user-circle"></i> My Account</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/users/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== SALE BANNER (Bootstrap Carousel) ===== -->
+    <div class="sale">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <div id="saleCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <h3><a href="#">25% off (Almost) Everything! Use Code: Summer Sale</a></h3>
+                            </div>
+                            <div class="carousel-item">
+                                <h3><a href="#">Our biggest sale yet 50% off all summer shoes</a></h3>
+                            </div>
+                        </div>
+                        <!-- Optional controls if needed -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#saleCarousel" data-bs-slide="prev" style="width:5%;">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#saleCarousel" data-bs-slide="next" style="width:5%;">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ACCOUNT SECTION ===== -->
+    <div class="container my-4">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-3 col-md-4 mb-4">
+                <div class="account-sidebar bg-white rounded shadow-sm p-3">
+                    <nav class="nav flex-column" id="accountSidebar">
+                        <a class="nav-link active" data-page="dashboard" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                        <a class="nav-link" data-page="profile" href="#"><i class="fas fa-user"></i> My Profile</a>
+                        <a class="nav-link" data-page="orders" href="#"><i class="fas fa-box"></i> My Orders</a>
+                        <a class="nav-link" data-page="addresses" href="#"><i class="fas fa-map-marker-alt"></i> Addresses</a>
+                        <a class="nav-link" data-page="wishlist" href="#"><i class="fas fa-heart"></i> Wishlist</a>
+                        <a class="nav-link" data-page="coupons" href="#"><i class="fas fa-ticket-alt"></i> Coupons</a>
+                        <a class="nav-link" data-page="password" href="#"><i class="fas fa-key"></i> Change Password</a>
+                        <a class="nav-link" data-page="logout" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="col-lg-9 col-md-8">
+                <div class="account-content bg-white rounded shadow-sm p-4">
+
+                    <!-- ===== DASHBOARD ===== -->
+                    <div class="page-section active" id="page-dashboard">
+                        <h4 class="mb-3"><i class="fas fa-tachometer-alt" style="color:#88c8bc;"></i> Dashboard</h4>
+                        <p class="text-muted">👋 Hi, <strong>John Doe</strong>! Welcome back.</p>
+
+                        <div class="row g-3 mt-3">
+                            <div class="col-6 col-sm-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+                                    <div class="stat-number">12</div>
+                                    <div class="stat-label">Total Orders</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                                    <div class="stat-number">3</div>
+                                    <div class="stat-label">Pending Orders</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-map-pin"></i></div>
+                                    <div class="stat-number">2</div>
+                                    <div class="stat-label">Saved Addresses</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                                    <div class="stat-number">4</div>
+                                    <div class="stat-label">Wishlist Items</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h5>Recent Order</h5>
+                            <div class="order-item d-flex flex-wrap align-items-center justify-content-between p-3 border rounded bg-light">
+                                <div>
+                                    <strong>#ORD-2026-08</strong> <span class="text-muted">· Aug 1, 2026</span>
+                                    <span class="order-status delivered ms-2">Delivered</span>
+                                    <div class="text-muted small">Total: ₹3,999</div>
+                                </div>
+                                <a href="#" class="btn btn-outline-primary btn-sm view-order-btn" data-order="ORD-2026-08">View Details</a>
+                            </div>
+                            <a href="#" class="btn btn-primary btn-sm mt-2" data-page="orders"><i class="fas fa-list"></i> View All Orders</a>
+                        </div>
+                    </div>
+
+                    
+                    <!-- ===== PROFILE ===== -->
+<div class="page-section" id="page-profile">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-4">
+                <div class="avatar-circle me-4" style="width:80px; height:80px; background:#88c8bc; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; color:#fff; font-weight:600;">
+                    JD
+                </div>
+                <div>
+                    <h4 class="mb-0">John Doe</h4>
+                    <p class="text-muted mb-0">Member since 2026</p>
+                </div>
+            </div>
+
+            <!-- Display mode -->
+            <div class="profile-display">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <i class="fas fa-user-circle me-3 text-primary" style="font-size:20px;"></i>
+                            <div>
+                                <small class="text-muted d-block">Full Name</small>
+                                <strong>John Doe</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <i class="fas fa-envelope me-3 text-primary" style="font-size:20px;"></i>
+                            <div>
+                                <small class="text-muted d-block">Email</small>
+                                <strong>john@example.com</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <i class="fas fa-phone me-3 text-primary" style="font-size:20px;"></i>
+                            <div>
+                                <small class="text-muted d-block">Phone</small>
+                                <strong>+91 98765 43210</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button class="btn btn-outline-primary" id="editProfileBtn">
+                        <i class="fas fa-edit me-2"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- Edit mode -->
+            <div class="profile-edit mt-4" style="display:none;">
+                <form id="profileForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editName" value="John Doe" placeholder="Full Name">
+                                <label for="editName"><i class="fas fa-user me-2"></i>Full Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="editEmail" value="john@example.com" placeholder="Email">
+                                <label for="editEmail"><i class="fas fa-envelope me-2"></i>Email</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editPhone" value="+91 98765 43210" placeholder="Phone">
+                                <label for="editPhone"><i class="fas fa-phone me-2"></i>Phone</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-save me-2"></i> Save Changes
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="cancelEditProfile">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- ===== ORDERS ===== -->
+                    <div class="page-section" id="page-orders">
+                        <h4 class="mb-3"><i class="fas fa-box" style="color:#88c8bc;"></i> My Orders</h4>
+                        <div id="ordersList">
+                            <div class="order-item d-flex flex-wrap align-items-center justify-content-between p-3 border rounded bg-light">
+                                <div>
+                                    <strong>#ORD-2026-08</strong> <span class="text-muted">· Aug 1, 2026</span><br>
+                                    <span class="order-status delivered">Delivered</span>
+                                    <span class="ms-3">₹3,999</span>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-08">View Details</a>
+                            </div>
+                            <div class="order-item d-flex flex-wrap align-items-center justify-content-between p-3 border rounded bg-light">
+                                <div>
+                                    <strong>#ORD-2026-07</strong> <span class="text-muted">· Jul 25, 2026</span><br>
+                                    <span class="order-status shipped">Shipped</span>
+                                    <span class="ms-3">₹1,299</span>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-07">View Details</a>
+                            </div>
+                            <div class="order-item d-flex flex-wrap align-items-center justify-content-between p-3 border rounded bg-light">
+                                <div>
+                                    <strong>#ORD-2026-06</strong> <span class="text-muted">· Jul 10, 2026</span><br>
+                                    <span class="order-status pending">Pending</span>
+                                    <span class="ms-3">₹5,450</span>
+                                </div>
+                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-06">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== ORDER DETAIL ===== -->
+                    <div class="page-section" id="page-order-detail">
+                        <h4 class="mb-3"><i class="fas fa-file-invoice" style="color:#88c8bc;"></i> Order Details <span id="orderDetailId"></span></h4>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h6>Products</h6>
+                                <div class="wishlist-item border-bottom pb-2">
+                                    <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Shoe" alt="product">
+                                    <div class="product-info">
+                                        <h6>Nike Air Max</h6>
+                                        <span class="text-muted">Qty: 1</span>
+                                        <span class="price ms-3">₹3,999</span>
+                                    </div>
+                                </div>
+                                <div class="wishlist-item border-bottom pb-2">
+                                    <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Bag" alt="product">
+                                    <div class="product-info">
+                                        <h6>Leather Backpack</h6>
+                                        <span class="text-muted">Qty: 2</span>
+                                        <span class="price ms-3">₹1,298</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3"><strong>Total: ₹5,297</strong></div>
+                            </div>
+                            <div class="col-md-4">
+                                <h6>Shipping Address</h6>
+                                <p class="small">John Doe<br>123, MG Road,<br>Mumbai - 400001</p>
+                                <h6>Payment</h6>
+                                <p class="small">UPI / Credit Card • **** 1234</p>
+                                <h6>Status</h6>
+                                <span class="order-status delivered">Delivered on Aug 3, 2026</span>
+                                <h6 class="mt-3">Tracking</h6>
+                                <p class="small">Track ID: <strong>TRK-987654</strong><br> <a href="#">Track package</a></p>
+                                <button class="btn btn-outline-secondary btn-sm mt-2"><i class="fas fa-file-pdf"></i> Download Invoice</button>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-link mt-3" data-page="orders"><i class="fas fa-arrow-left"></i> Back to Orders</a>
+                    </div>
+
+                    <!-- ===== ADDRESSES ===== -->
+                    <div class="page-section" id="page-addresses">
+                        <h4 class="mb-3"><i class="fas fa-map-marker-alt" style="color:#88c8bc;"></i> Addresses</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="address-card border rounded p-3 mb-3 default" style="border-color:#88c8bc; background:#f8fffe;">
+                                    <div class="d-flex justify-content-between">
+                                        <span><strong>Home</strong></span>
+                                        <span class="badge bg-success">Default</span>
+                                    </div>
+                                    <p class="mb-1 small">John Doe<br>123, MG Road,<br>Mumbai - 400001</p>
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-primary edit-address" data-address="home">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger delete-address" data-address="home">Delete</button>
+                                        <button class="btn btn-sm btn-outline-secondary set-default-address" data-address="home">Set Default</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="address-card border rounded p-3 mb-3">
+                                    <div class="d-flex justify-content-between">
+                                        <span><strong>Work</strong></span>
+                                    </div>
+                                    <p class="mb-1 small">John Doe<br>456, BKC,<br>Mumbai - 400051</p>
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-outline-primary edit-address" data-address="work">Edit</button>
+                                        <button class="btn btn-sm btn-outline-danger delete-address" data-address="work">Delete</button>
+                                        <button class="btn btn-sm btn-outline-secondary set-default-address" data-address="work">Set Default</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-sm mt-2" id="addAddressBtn"><i class="fas fa-plus"></i> Add Address</button>
+                        <div id="addAddressForm" style="display:none;" class="mt-3 p-3 border rounded">
+                            <h6>Add New Address</h6>
+                            <form>
+                                <div class="mb-3">
+                                    <label class="form-label">Address Label</label>
+                                    <input type="text" class="form-control" placeholder="e.g. Home, Work">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Full Address</label>
+                                    <textarea class="form-control" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm">Save Address</button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelAddAddress">Cancel</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- ===== WISHLIST ===== -->
+                    <div class="page-section" id="page-wishlist">
+                        <h4 class="mb-3"><i class="fas fa-heart" style="color:#88c8bc;"></i> Wishlist</h4>
+                        <div class="wishlist-item">
+                            <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Nike" alt="product">
+                            <div class="product-info">
+                                <h6>Nike Air Max</h6>
+                                <span class="price">₹4,999</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-success move-to-cart"><i class="fas fa-shopping-cart"></i> Move to Cart</button>
+                                <button class="btn btn-sm btn-outline-danger remove-wishlist"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                        <div class="wishlist-item">
+                            <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Adidas" alt="product">
+                            <div class="product-info">
+                                <h6>Adidas Ultraboost</h6>
+                                <span class="price">₹3,299</span>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-success move-to-cart"><i class="fas fa-shopping-cart"></i> Move to Cart</button>
+                                <button class="btn btn-sm btn-outline-danger remove-wishlist"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== COUPONS ===== -->
+                    <div class="page-section" id="page-coupons">
+                        <h4 class="mb-3"><i class="fas fa-ticket-alt" style="color:#88c8bc;"></i> Coupons</h4>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="coupon-card">
+                                    <div class="coupon-code">SAVE10</div>
+                                    <div class="coupon-discount">10% OFF</div>
+                                    <div class="coupon-expiry">Valid until Aug 31, 2026</div>
+                                    <span class="badge bg-success mt-2">Available</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="coupon-card">
+                                    <div class="coupon-code">FLAT50</div>
+                                    <div class="coupon-discount">₹50 OFF</div>
+                                    <div class="coupon-expiry">Valid until Sep 15, 2026</div>
+                                    <span class="badge bg-secondary mt-2">Used</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="coupon-card">
+                                    <div class="coupon-code">SUMMER25</div>
+                                    <div class="coupon-discount">25% OFF</div>
+                                    <div class="coupon-expiry">Expired on Jul 30, 2026</div>
+                                    <span class="badge bg-danger mt-2">Expired</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===== CHANGE PASSWORD ===== -->
+                    <div class="page-section" id="page-password">
+                        <h4 class="mb-3"><i class="fas fa-key" style="color:#88c8bc;"></i> Change Password</h4>
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Current Password</label>
+                                <input type="password" class="form-control" placeholder="Enter current password">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">New Password</label>
+                                <input type="password" class="form-control" placeholder="Enter new password">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Confirm New Password</label>
+                                <input type="password" class="form-control" placeholder="Confirm new password">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-sm">Change Password</button>
+                        </form>
+                    </div>
+
+                    <!-- ===== LOGOUT ===== -->
+                    <div class="page-section" id="page-logout">
+                        <h4 class="mb-3"><i class="fas fa-sign-out-alt" style="color:#88c8bc;"></i> Logout</h4>
+                        <p>Are you sure you want to log out?</p>
+                        <button class="btn btn-danger" id="confirmLogoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    </div>
+
+                </div><!-- /account-content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="text-center py-4 bg-light mt-4">
+        <div class="container">
+            <small class="text-muted">© 2026 SOLESYNTAX. All rights reserved.</small>
+        </div>
+    </footer>
+
+    <!-- ===== BOOTSTRAP 5 JS BUNDLE ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ===== CUSTOM SCRIPTS (side navigation, actions) ===== -->
+    <script>
+        (function() {
+            'use strict';
+
+            // Sidebar navigation
+            const sidebarLinks = document.querySelectorAll('#accountSidebar .nav-link');
+            const sections = document.querySelectorAll('.page-section');
+
+            function showPage(pageId) {
+                sections.forEach(s => s.classList.remove('active'));
+                const target = document.getElementById('page-' + pageId);
+                if (target) target.classList.add('active');
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                document.querySelector('#accountSidebar .nav-link[data-page="' + pageId + '"]').classList.add('active');
+            }
+
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var page = this.dataset.page;
+                    if (page === 'logout') {
+                        showPage('logout');
+                        return;
+                    }
+                    showPage(page);
+                });
+            });
+
+            // View order details
+            document.querySelectorAll('.view-order-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    var orderId = this.dataset.order;
+                    document.getElementById('orderDetailId').textContent = ' - ' + orderId;
+                    showPage('order-detail');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            // Back to orders
+            document.querySelector('#page-order-detail .btn-link[data-page="orders"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('orders');
+            });
+
+            // Edit profile toggle
+            document.getElementById('editProfileBtn').addEventListener('click', function() {
+                document.querySelector('.profile-display').style.display = 'none';
+                document.querySelector('.profile-edit').style.display = 'block';
+            });
+            document.getElementById('cancelEditProfile').addEventListener('click', function() {
+                document.querySelector('.profile-display').style.display = 'block';
+                document.querySelector('.profile-edit').style.display = 'none';
+            });
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Profile updated successfully! (demo)');
+                document.querySelector('.profile-display').style.display = 'block';
+                document.querySelector('.profile-edit').style.display = 'none';
+            });
+
+            // Address actions
+            document.getElementById('addAddressBtn').addEventListener('click', function() {
+                var form = document.getElementById('addAddressForm');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+            document.getElementById('cancelAddAddress').addEventListener('click', function() {
+                document.getElementById('addAddressForm').style.display = 'none';
+            });
+            document.querySelectorAll('.edit-address').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('Edit address: ' + this.dataset.address + ' (demo)');
+                });
+            });
+            document.querySelectorAll('.delete-address').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('Delete this address?')) {
+                        this.closest('.address-card').remove();
+                    }
+                });
+            });
+            document.querySelectorAll('.set-default-address').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var card = this.closest('.address-card');
+                    document.querySelectorAll('.address-card').forEach(c => {
+                        c.classList.remove('default');
+                        c.style.borderColor = '#e0e0e0';
+                        c.style.background = '#fff';
+                        var badge = c.querySelector('.bg-success');
+                        if (badge) badge.remove();
+                    });
+                    card.classList.add('default');
+                    card.style.borderColor = '#88c8bc';
+                    card.style.background = '#f8fffe';
+                    var badge = document.createElement('span');
+                    badge.className = 'badge bg-success ms-2';
+                    badge.textContent = 'Default';
+                    card.querySelector('.d-flex').appendChild(badge);
+                    alert('Default address updated!');
+                });
+            });
+
+            // Wishlist actions
+            document.querySelectorAll('.move-to-cart').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    alert('Item moved to cart! (demo)');
+                    this.closest('.wishlist-item').remove();
+                });
+            });
+            document.querySelectorAll('.remove-wishlist').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('Remove from wishlist?')) {
+                        this.closest('.wishlist-item').remove();
+                    }
+                });
+            });
+
+            // Logout confirm
+            document.getElementById('confirmLogoutBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    alert('Logging out... (redirect to home)');
+                    // window.location.href = '/users/logout';
+                }
+            });
+
+            // Close mobile menu on link click
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    const collapse = document.getElementById('mainNavbar');
+                    if (window.innerWidth < 992) {
+                        const bsCollapse = bootstrap.Collapse.getInstance(collapse);
+                        if (bsCollapse) bsCollapse.hide();
+                    }
+                });
+            });
+
+        })();
+    </script>
+
+</body>
+</html>

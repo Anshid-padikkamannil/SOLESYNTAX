@@ -1,0 +1,37 @@
+<h4 class="mb-3"><i class="fas fa-file-invoice" style="color:#88c8bc;"></i> Order Details <span class="text-muted">#<%= order.id %></span></h4>
+
+<div class="row">
+    <div class="col-md-8">
+        <h6>Products</h6>
+        <% order.orderItems.forEach(item => { %>
+            <div class="wishlist-item border-bottom pb-2">
+                <img src="<%= item.product.images[0] %>"
+                alt="<%= item.name %>"
+                style="width:80px;height:80px;object-fit:cover;border-radius:8px;">
+                <div class="product-info">
+                    <h6><%= item.name %></h6>
+                    <span class="text-muted">Qty: <%= item.quantity %></span>
+                    <br>
+                    <span class="text-muted">Size: <%= item.size %></span>
+                    <span class="price ml-3">₹<%= item.price.toLocaleString('en-IN') %></span>
+                </div>
+            </div>
+        <% }); %>
+        <div class="mt-3"><strong>Total: ₹<%= order.finalAmount.toLocaleString('en-IN')  %></strong></div>
+    </div>
+    <div class="col-md-4">
+        <h6>Shipping Address</h6>
+        <p class="small"><%= order.address.name %><br><%= order.address.addressLine1 %><br><%= order.address.city %> - <%= order.address.pincode %></p>
+        <h6>Payment</h6>
+        <p class="small"><%= order.paymentMethod %>  <%= order.payment %></p>
+        <h6>Status</h6>
+        <span class="order-status <%= order.statusClass %>"><%= order.status %></span>
+        <% if (order.status === 'Delivered') { %>
+            <span class="order-status small mt-2">Delivered on <%= order.deliveredDate %></span>
+        <% } %>
+        <h6 class="mt-3">Tracking</h6>
+        <p class="small">Track ID: <strong><%= order.trackingId %></strong><br> <a href="#">Track package</a></p>
+        <button class="btn btn-outline-secondary btn-sm mt-2"><i class="fas fa-file-pdf"></i> Download Invoice</button>
+    </div>
+</div>
+<a href="/account/orders" class="btn btn-link mt-3"><i class="fas fa-arrow-left"></i> Back to Orders</a>

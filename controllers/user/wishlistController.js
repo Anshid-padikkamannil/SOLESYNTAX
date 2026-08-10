@@ -16,7 +16,7 @@ const getWishlist = async (req, res) => {
         page: req.query.page,
         limit: req.query.limit,
         sort: { createdAt: -1 },
-        populate: 'product.productId'
+        populate: 'products.productId'
       }
     )
 

@@ -1,0 +1,16 @@
+<h4 class="mb-3"><i class="fas fa-box" style="color:#88c8bc;"></i> My Orders</h4>
+
+<% if (orders && orders.length) { %>
+    <% orders.forEach(order => { %>
+        <div class="order-item">
+            <div class="order-info">
+                <strong>#ORD-<%= order.id %></strong> <span class="text-muted">· <%= order.date %></span><br>
+                <span class="order-status <%= order.statusClass %>"><%= order.status %></span>
+                <span class="ml-3">₹<%= order.total.toLocaleString('en-IN') %></span>
+            </div>
+            <a href="/account/order-details/<%= order.id %>" class="btn btn-sm btn-outline-primary">View Details</a>
+        </div>
+    <% }); %>
+<% } else { %>
+    <p class="text-muted">You have no orders yet.</p>
+<% } %>

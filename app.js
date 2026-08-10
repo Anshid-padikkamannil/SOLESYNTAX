@@ -19,6 +19,12 @@ app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(express.static(path.join(__dirname, "public")));
 
+// express-ejs-layouts
+const expressLayouts = require('express-ejs-layouts');
+app.use(expressLayouts);
+app.set('layout', 'layouts/account-layout'); //default layout
+
+
 // Routes
 const authRouter = require('./routes/User/authRouter');
 const profileRouter = require('./routes/User/profileRouter');
@@ -33,6 +39,7 @@ const adminCouponRouter = require('./routes/admin/couponRouter');
 const userCouponRouter = require('./routes/User/couponRouter');
 const paymentRouter = require('./routes/paymentRouter');
 const attachUser = require('./middlewares/attachUser');
+const { title } = require('process');
 
 
 app.use(attachUser);
@@ -42,7 +49,7 @@ app.use('/', productRouter);
 
 // User
 app.use('/users', authRouter);
-app.use('/users', profileRouter);
+app.use('/', profileRouter);
 app.use('/cart', cartRouter);
 app.use('/order',orderRouter);
 app.use('/wishlist', wishlist);
@@ -55,6 +62,30 @@ app.use('/admin/products', adminProductRouter);
 app.use('/admin/orders', adminOrderRouter);
 app.use('/admin', customerRouter);
 app.use('/admin/coupons', adminCouponRouter);
+
+// 404 handler 
+app.use((req, res) => {
+  res.status(404).render('error', {
+    layout: false,
+    status: 404,
+    title: 'Page Not Found',
+    message: "Oops! The page you're looking for doesn't exist or has been moved. Let's get you back on track."
+  });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  const status = err.status || 500;
+  res.status(status).render('error', {
+    layout: false,
+    status: status,
+    title: status === 500 ? 'Server Error' : 'Error',
+    message: status === 500
+    ? 'Something went wrong on our end. Please try again later.'
+    : err.message || 'An unexpected error occurred.'
+  })
+})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

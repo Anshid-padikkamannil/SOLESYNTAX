@@ -3232,7 +3232,7 @@ display: inline-block;
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
   color: #fff;
-  background-color: #007bff; }
+  background-color: #007bff }
 
 .nav-fill .nav-item {
   -webkit-box-flex: 1;
@@ -7150,10 +7150,10 @@ button.bg-dark:focus {
   color: #fff !important; }
 
 .text-primary {
-  color: #007bff !important; }
+  color: #007bff ; }
 
 a.text-primary:hover, a.text-primary:focus {
-  color: #0062cc !important; }
+  color: #0062cc ; }
 
 .text-secondary {
   color: #6c757d !important; }

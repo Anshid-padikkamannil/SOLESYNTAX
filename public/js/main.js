@@ -275,13 +275,13 @@
 		}
 	};
 
-	var datePicker = function() {
-		// jQuery('#time').timepicker();
-		jQuery('.date').datepicker({
-		  'format': 'm/d/yyyy',
-		  'autoclose': true
-		});
-	};
+	// var datePicker = function() {
+	// 	// jQuery('#time').timepicker();
+	// 	jQuery('.date').datepicker({
+	// 	  'format': 'm/d/yyyy',
+	// 	  'autoclose': true
+	// 	});
+	// };
 
 
 
@@ -297,7 +297,7 @@
 		loaderPage();
 		owlCrouselFeatureSlide();
 		parallax();
-		datePicker();
+		// datePicker();
 	});
 
 

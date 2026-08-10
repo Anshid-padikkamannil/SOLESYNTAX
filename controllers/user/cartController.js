@@ -110,7 +110,8 @@ const getCart = async (req, res) => {
 
     if (!cart ||cart.items.length === 0) {
       return res.res.render("store/cart", {
-        cart: null
+        cart: null,
+        layout: false
       });
     }
 
@@ -122,7 +123,8 @@ const getCart = async (req, res) => {
 
     res.render("store/cart", {
       cart,
-      subtotal
+      subtotal,
+      layout: false
     });
 
   } catch (err) {

@@ -1,12 +1,131 @@
 const User = require('../../models/userSchema');
 const Address = require('../../models/addressSchema');
+const Order = require('../../models/orderSchema');
+const wishlist = require('../../models/wishlistSchema');
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+const Wishlist = require('../../models/wishlistSchema');
 
-const profileHandler = async (req, res) => {
-  res.status(200).json({
-    message: 'Welcome to your profile page'
-  });
+const dashboard = async (req, res) => {
+  try {
+    
+    const userId = req.user.userId || req.user._id;
+
+
+    const [
+      user,
+      totalOrders,
+      pendingOrders,
+      savedAddresses,
+      wishlist,
+      recentOrder
+    ] = await Promise.all([
+      User.findById(userId),
+      Order.countDocuments({ userId }),
+      Order.countDocuments({
+      userId,
+      status: "Pending"
+      }),
+      Address.countDocuments({ userId }),
+      Wishlist.findOne({ userId }),
+      Order.findOne({ userId })
+        .sort({ createdAt: -1 })
+
+      ]);
+
+      const wishlistItems = wishlist?.products?.length || 0;
+
+      let formattedRecentOrder = null;
+
+      if (recentOrder) {
+        formattedRecentOrder = {
+          id: recentOrder.orderId,
+          date: new Date(recentOrder.createdAt).toLocaleDateString("en-IN",{
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+          }),
+          total: recentOrder.finalAmount,
+          status: recentOrder.status? recentOrder.status.toLowerCase().replace(/\s+/g, "-") : "unknown"
+        };
+      }
+
+      res.render("account/index", {
+        activeMenu: "dashboard",
+        title: "SOLESYNTAX",
+        user,
+        totalOrders,
+        pendingOrders,
+        savedAddresses,
+        wishlistItems,
+        recentOrder: formattedRecentOrder
+      });
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).render("error", {
+      message: "Something went wrong."
+    })
+  }
+};
+
+const profile = async (req, res) => {
+
+  try {
+    
+    const userId = req.user.userId || req.user._id
+
+    const user = await User.findById( userId );
+
+    if (!user) {
+      return res.redirect("/users/login");
+    }
+    
+    res.render("account/index", {
+      activeMenu: "profile",
+      title: "profile",
+      user
+
+    })
+
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).render("error", {
+      message: "Something went wrong."
+    })
+  }
+}
+
+const updateProfile = async (req, res) => {
+
+  try {
+
+    const userId = req.user.userId || req.user._id;
+
+    const { name, phone} = req.body;
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.redirect("/users/login");
+    }
+
+    user.name = name;
+    user.phone = phone;
+
+    await user.save();
+    
+    res.redirect("/account/profile");
+
+  } catch (err) {
+    console.error("UPDATE PROFILE ERROR:", err);
+
+    res.status(500).render("error", {
+      message: "Something went wrong"
+    });   
+  }
 }
 
 const addAddress = async (req, res) => {
@@ -43,17 +162,14 @@ const addAddress = async (req, res) => {
 
     await address.save();
 
-    res.status(201).json({
-      success: true,
-      message: 'Address added successfully',
-      address
-    })
+    res.redirect("/account/addresses");
+    
     
   } catch (err) {
-    
-    res.status(500).json({
-      success: false,
-      message: err.message
+    console.error(err);
+
+    res.status(500).render("error", {
+      message: "Something went wrong."
     })
   }
 }
@@ -68,17 +184,20 @@ const getAddresses = async (req, res) => {
       .sort({ isDefault: -1, createdAt: -1
     });
 
-    res.status(200).json({
-      success: true,
-      count: addresses.length,
+    res.render("account/index", {
+      activeMenu: "addresses",
+      title: "Addresses",
       addresses
     });
 
   } catch (err) {
-    
-    res.status(500).json({
-      success: false,
-      message: err.message
+    console.error("Get Addresses Error:", err);
+
+    res.status(500).render("error", {
+      layout: false,
+      status: 500,
+      title: "Server Error",
+      message: "Something went wrong while loading your addresses."
     });
 
   }
@@ -94,9 +213,11 @@ const getAddressById = async (req, res) => {
     const address = await Address.findOne({ _id: id, userId });
 
     if (!address) {
-      return res.status(404).json({
-        success: false,
-        message: 'Address not found'
+      return res.status(404).render("error", {
+        layout: false,
+        status: 404,
+        title: "Address Not Found",
+        message: "The address you're looking for doesn't exist."
       });
     }
 
@@ -125,14 +246,16 @@ const updateAddress = async (req, res) => {
     const address = await Address.findOne({ _id: id, userId });
 
     if (!address) {
-      return res.status(404).json({
-        success: false,
-        message: 'Address not found'
+      return res.status(404).render("error", {
+        layout: false,
+        status: 404,
+        title: "Address Not Found",
+        message: "The address you're looking for doesn't exist."
       });
     }
 
     // If setting as default, remove default from other addresses
-    if (updateData.isDefault && !addAddress.isDefault) {
+    if (updateData.isDefault && !address.isDefault) {
       await Address.updateMany(
         { userId },
         { isDefault: false }
@@ -146,18 +269,14 @@ const updateAddress = async (req, res) => {
       {new: true, runValidators: true }
     );
 
-    res.status(200).json({
-      success: true,
-      message: 'Address updated Successfully',
-      address: updatedAddress
-    });
+    res.redirect("/account/addresses");
 
   } catch (err) {
-    
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
+    console.error(err);
+
+    res.status(500).render("error", {
+      message: "Something went wrong."
+    })
   }
 };
 
@@ -171,9 +290,11 @@ const setDefaultAddress = async (req, res) => {
     const address = await Address.findOne({ _id: id , userId });
 
     if (!address) {
-      return res.status(404).json({
-        success: false,
-        message: 'Address not found'
+      return res.status(404).render("error", {
+        layout: false,
+        status: 404,
+        title: "Address Not Found",
+        message: "The address you're looking for doesn't exist."
       });
     }
 
@@ -187,18 +308,14 @@ const setDefaultAddress = async (req, res) => {
     address.isDefault = true;
     await address.save();
 
-    res.status(200).json({
-      success: true,
-      message: 'Default address updated',
-      address
-    });
+    res.redirect("/account/addresses");
 
   } catch (err) {
-    
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
+    console.error(err);
+
+    res.status(500).render("error", {
+      message: "Something went wrong."
+    })
   }
 };
 
@@ -212,9 +329,11 @@ const getDefaultAddress = async (req, res) => {
     
 
     if (!address) {
-      return res.status(404).json({
-        success: false,
-        message: 'No default address found'
+      return res.status(404).render("error", {
+        layout: false,
+        status: 404,
+        title: "Address Not Found",
+        message: "The address you're looking for doesn't exist."
       });
     }
 
@@ -236,15 +355,17 @@ const deleteAddress = async (req, res) => {
 
   try {
     
-    const userId = req.userId || req.user._id;
+    const userId = req.user.userId || req.user._id;
     const { id } = req.params;
 
     const address = await Address.findByIdAndDelete({ _id: id, userId });
 
     if (!address) {
-      return res.status(404).json({
-        success: false,
-        message: 'Address not found'
+      return res.status(404).render("error", {
+        layout: false,
+        status: 404,
+        title: "Address Not Found",
+        message: "The address you're looking for doesn't exist."
       });
     }
 
@@ -257,22 +378,21 @@ const deleteAddress = async (req, res) => {
       }
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'Address deleted successfully'
-    });
+    res.redirect("/account/addresses");
 
   } catch (err) {
-    
-    res.status(500).json({
-      success: false,
-      message: err.message
-    });
+    console.error(err);
+
+    res.status(500).render("error", {
+      message: "Something went wrong."
+    })
   }
 };
 
 module.exports = {
-  profileHandler,
+  dashboard,
+  profile,
+  updateProfile,
   addAddress,
   getAddresses,
   getAddressById,

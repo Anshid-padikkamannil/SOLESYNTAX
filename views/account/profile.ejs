@@ -1,0 +1,117 @@
+<!-- ===== PROFILE ===== -->
+<div class="page-section" id="page-profile">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex align-items-center mb-4">
+                <!-- Avatar with user initials -->
+                <div class="avatar-circle me-4" style="width:80px; height:80px; background:#88c8bc; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; color:#fff; font-weight:600;">
+                    <%= user && user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'JD' %>
+                </div>
+                <div>
+                    <h4 class="mb-0"><%= user.name %></h4>
+                    <p class="text-muted mb-0">
+                        Member since <%= user && user.createdAt ? new Date(user.createdAt).getFullYear() : '2026' %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Display mode -->
+            <div class="profile-display">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <i class="fas fa-user-circle me-3 text-primary" style="font-size:20px;"></i>
+                            <div>
+                                <small class="text-muted d-block">Name</small>
+                                <strong><%= user.name %></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <i class="fas fa-envelope me-3 text-primary" style="font-size:20px;"></i>
+                            <div>
+                                <small class="text-muted d-block">Email</small>
+                                <strong><%= user.email %></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-2 bg-light rounded">
+                            <i class="fas fa-phone me-3 text-primary" style="font-size:20px;"></i>
+                            <div>
+                                <small class="text-muted d-block">Phone</small>
+                                <strong><%= user.phone %></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="button" class="btn btn-outline-primary" id="editProfileBtn">
+                        <i class="fas fa-edit me-2"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+
+            <!-- Edit mode -->
+            <div class="profile-edit mt-4" style="display:none;">
+                <form id="profileForm" action="/account/profile/update" method="POST">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editName" name="name" value="<%= user.name %>" placeholder="Name">
+                                <label for="editName"><i class="fas fa-user me-2"></i>Name</label>
+                            </div>
+                        </div>
+                        <!-- <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="email" class="form-control" id="editEmail" name="email" value="<%= user.email %>" placeholder="Email">
+                                <label for="editEmail"><i class="fas fa-envelope me-2"></i>Email</label>
+                            </div>
+                        </div> -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="editPhone" name="phone" value="<%= user.phone || '' %>" placeholder="Phone">
+                                <label for="editPhone"><i class="fas fa-phone me-2"></i>Phone</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="fas fa-save me-2"></i> Save Changes
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="cancelEditProfile">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript (if you want to keep the toggle behaviour with AJAX) -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const editBtn = document.getElementById('editProfileBtn');
+    const cancelBtn = document.getElementById('cancelEditProfile');
+    const displayDiv = document.querySelector('.profile-display');
+    const editDiv = document.querySelector('.profile-edit');
+
+    if (editBtn) {
+        editBtn.addEventListener('click', function () {
+            displayDiv.style.display = 'none';
+            editDiv.style.display = 'block';
+        });
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function () {
+            displayDiv.style.display = 'block';
+            editDiv.style.display = 'none';
+        });
+    }
+
+});
+</script>
