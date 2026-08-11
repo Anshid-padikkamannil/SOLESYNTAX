@@ -1,36 +1,215 @@
+<style>
+    /* Wishlist styles - keep existing and add new */
+    .wishlist-item {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 0;
+        border-bottom: 1px solid #eee;
+    }
+    .wishlist-item img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+    .wishlist-item .product-info {
+        flex: 1;
+        min-width: 120px;
+    }
+    .wishlist-item .product-info h6 {
+        margin: 0;
+        font-weight: 600;
+    }
+    .wishlist-item .product-info .price {
+        color: #88c8bc;
+        font-weight: 600;
+    }
+    .wishlist-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+    }
+    .size-select {
+        min-width: 100px;
+        padding: 4px 12px;
+        border: 1.5px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #333;
+        background-color: #fff;
+        cursor: pointer;
+        transition: border-color 0.3s, box-shadow 0.3s;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2388c8bc' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px; 
+    }
+    .size-select:hover {
+        border-color: #88c8bc;
+    }
+    .size-select:focus {
+        border-color: #88c8bc;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(136, 200, 188, 0.25);
+    }
+    .size-select option:disabled {
+        color: #adb5bd;
+        background-color: #f8f9fa;
+    }
+    /* Quantity control */
+    .quantity-control {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #fff;
+    }
+    .quantity-control button {
+        background: transparent;
+        border: none;
+        width: 30px;
+        height: 32px;
+        font-size: 16px;
+        cursor: pointer;
+        color: #6c757d;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .quantity-control button:hover {
+        background: #f0f9f7;
+        color: #88c8bc;
+    }
+    .quantity-control input {
+        width: 40px;
+        height: 32px;
+        text-align: center;
+        border: none;
+        background: transparent;
+        font-weight: 500;
+        font-size: 14px;
+        -webkit-appearance: textfield;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .quantity-control input::-webkit-outer-spin-button,
+    .quantity-control input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    @media (max-width: 576px) {
+        .wishlist-actions {
+            flex-direction: column;
+            align-items: stretch;
+            width: 100%;
+        }
+        .wishlist-actions .size-select,
+        .wishlist-actions .quantity-control,
+        .wishlist-actions .btn {
+            width: 100%;
+        }
+        .quantity-control {
+            justify-content: center;
+        }
+        .wishlist-item .product-info {
+            min-width: 100%;
+        }
+    }
+</style>
+
 <h4 class="mb-3"><i class="fas fa-heart" style="color:#88c8bc;"></i> Wishlist</h4>
 
-<% if (wishlist && wishlist.length) { %>
-    <% wishlist.forEach(item => { %>
+<% if (wishlist && wishlist.products.length > 0) { %>
+    <% wishlist.products.forEach(item => { %>
         <div class="wishlist-item">
-            <img src="<%= item.image %>" alt="<%= item.name %>">
+            <!-- Product image -->
+            <img src="<%= item.productId.images[0] %>" alt="<%= item.productId.productName %>">
+
+            <!-- Product info -->
             <div class="product-info">
-                <h6><%= item.name %></h6>
-                <span class="price">₹<%= item.price %></span>
+                <h6><%= item.productId.productName %></h6>
+                <span class="price">₹<%= item.productId.price.toLocaleString('en-IN') %></span>
             </div>
-            <div>
-                <button class="btn btn-sm btn-success move-to-cart" data-id="<%= item.id %>"><i class="fas fa-shopping-cart"></i> Move to Cart</button>
-                <button class="btn btn-sm btn-outline-danger remove-wishlist" data-id="<%= item.id %>"><i class="fas fa-trash"></i></button>
-            </div>
+
+            <!-- Actions: form to move to cart -->
+            <form action="/account/wishlist/add-to-cart" method="POST" class="wishlist-actions">
+                <!-- Hidden fields -->
+                <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                <!-- <input type="hidden" name="fromWishlist" value="true"> -->
+                
+                <!-- Size selector -->
+                <select class="form-select form-select-sm size-select" name="size" required>
+                    <option value="">Select Size</option>
+                    <% if (item.productId.sizes && item.productId.sizes.length) { %>
+                        <% item.productId.sizes.forEach(size => { %>
+                            <option value="<%= size %>">
+                                <%= size %>
+                            </option>
+                        <% }); %>
+                    <% } else { %>
+                        <option value="" disabled>No sizes available</option>
+                    <% } %>
+                </select>
+
+                <!-- Quantity selector -->
+                <div class="quantity-control">
+                    <button type="button" class="quantity-minus">−</button>
+                    <input type="number" name="quantity" value="1" min="1" max="<%= Math.min(10, item.productId.stock || 10) %>" class="quantity-input" readonly>
+                    <button type="button" class="quantity-plus">+</button>
+                </div>
+
+                <!-- Move to Cart button -->
+                <button type="submit" class="btn btn-sm btn-success">
+                    <i class="fas fa-shopping-cart"></i> Move to Cart
+                </button>
+            </form>
+
+            <!-- Remove from wishlist (separate form) -->
+            <form action="/account/wishlist/remove/<%= item.productId._id %>" method="POST" style="display:inline-block;">
+                <input type="hidden" name="productId" value="<%= item.productId._id %>">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </form>
         </div>
     <% }); %>
 <% } else { %>
     <p class="text-muted">Your wishlist is empty.</p>
 <% } %>
 
+<!-- JavaScript for quantity controls (no AJAX) -->
 <script>
-    // Demo actions
-    document.querySelectorAll('.move-to-cart').forEach(btn => {
-        btn.addEventListener('click', function() {
-            alert('Item moved to cart! (demo)');
-            this.closest('.wishlist-item').remove();
-        });
-    });
-    document.querySelectorAll('.remove-wishlist').forEach(btn => {
-        btn.addEventListener('click', function() {
-            if (confirm('Remove from wishlist?')) {
-                this.closest('.wishlist-item').remove();
-            }
+    document.addEventListener('DOMContentLoaded', function() {
+        // ---- Quantity controls ----
+        document.querySelectorAll('.quantity-control').forEach(function(control) {
+            const minusBtn = control.querySelector('.quantity-minus');
+            const plusBtn = control.querySelector('.quantity-plus');
+            const input = control.querySelector('.quantity-input');
+            const max = parseInt(input.max);
+
+            minusBtn.addEventListener('click', function() {
+                let val = parseInt(input.value);
+                if (val > 1) {
+                    input.value = val - 1;
+                }
+            });
+
+            plusBtn.addEventListener('click', function() {
+                let val = parseInt(input.value);
+                if (val < max) {
+                    input.value = val + 1;
+                } else {
+                    alert('Maximum quantity is ' + max);
+                }
+            });
         });
     });
 </script>

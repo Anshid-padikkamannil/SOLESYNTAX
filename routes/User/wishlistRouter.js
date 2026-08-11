@@ -10,6 +10,6 @@ router.use(isLoggedIn);
 
 router.get('/', getWishlist)
 router.post('/add-to-wishlist', addToWishlist)
-.delete('/remove/:productId', validateId(), removeFromWishlist )
+router.delete('/remove/:productId', validateId(), removeFromWishlist )
 
 module.exports = router

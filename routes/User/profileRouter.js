@@ -17,6 +17,8 @@ const {
 
 const { allOrders, getOrderById } = require('../../controllers/user/orederController');
 
+const { getAccountWishlist, accountAddToCartFromWishlist, accountRemoveFromWishlist } = require('../../controllers/user/wishlistController');
+
 const { isLoggedIn } = require('../../middlewares/auth');
 router.use(isLoggedIn);
 
@@ -35,7 +37,11 @@ router.get('/address/:id', getAddressById);
 router.post('/account/address/:id/update', updateAddress);
 router.post('/account/address/:id/default', setDefaultAddress);
 router.get('/account/address/default', getDefaultAddress);
-router.post('/account/address/:id/delete', deleteAddress)
+router.post('/account/address/:id/delete', deleteAddress);
+
+router.get('/account/wishlist', getAccountWishlist);
+router.post('/account/wishlist/add-to-cart', accountAddToCartFromWishlist);
+router.post('/account/wishlist/remove/:productId', accountRemoveFromWishlist);
 
 
 module.exports = router;
