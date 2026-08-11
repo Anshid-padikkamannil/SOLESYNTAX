@@ -2,6 +2,7 @@ const Coupon = require('../../models/couponSchema');
 const UserCoupon = require('../../models/userCouponSchema');
 const Order = require('../../models/orderSchema');
 const { applyCouponValidation } = require('../../utils/couponHelper');
+const { getCouponsForUser } = require('../../services/couponService');
 
 const validateCoupon = async (req, res) => {
   try {
@@ -189,6 +190,33 @@ const applyCouponToOrder = async (orderData, userId, couponCode, productIds, car
   };
 };*/
 
+const getAccountCoupon = async (req, res) => {
+
+  try {
+    
+    const userId = req.user.userId || req.user._id;
+    const coupons = await getCouponsForUser(userId);
+
+    res.render("account/index", {
+      activeMenu: "coupons",
+      title: "Coupons",
+      coupons
+    });
+
+
+  } catch (err) {
+    console.error("Account Coupons Error:", err);
+
+    res.status(500).render("error", {
+      layout: false,
+      status: 500,
+      title: "Server Error",
+      message: "Something went wrong while loading your coupons."
+    });    
+  }
+}
+
 module.exports = {
-  validateCoupon
+  validateCoupon,
+  getAccountCoupon
 }

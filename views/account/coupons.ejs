@@ -1,14 +1,269 @@
-<h4 class="mb-3"><i class="fas fa-ticket-alt" style="color:#88c8bc;"></i> Coupons</h4>
+<style>
+    /* ===== Coupon Section – scoped ===== */
+    .coupon-section .coupon-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 20px 20px 16px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        transition: transform 0.2s, box-shadow 0.2s;
+        border: 1px solid #f0f0f0;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .coupon-section .coupon-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
+    /* Left accent border */
+    .coupon-section .coupon-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+        border-radius: 16px 0 0 16px;
+    }
+    .coupon-section .coupon-card.available::before {
+        background: #28a745;
+    }
+    .coupon-section .coupon-card.used::before {
+        background: #6c757d;
+    }
+    .coupon-section .coupon-card.expired::before {
+        background: #dc3545;
+    }
+    .coupon-section .coupon-card.upcoming::before {
+        background: #17a2b8;
+    }
 
-<div class="row">
-    <% coupons.forEach(coupon => { %>
-        <div class="col-md-4 mb-3">
-            <div class="coupon-card">
-                <div class="coupon-code"><%= coupon.code %></div>
-                <div class="coupon-discount"><%= coupon.discount %></div>
-                <div class="coupon-expiry"><%= coupon.validity %></div>
-                <span class="badge <%= coupon.statusBadge %> mt-2"><%= coupon.status %></span>
+    .coupon-section .coupon-code {
+        font-family: 'Courier New', monospace;
+        font-size: 32px;
+        font-weight: 700;
+        letter-spacing: 4px;
+        color: #333;
+        background: #f8f9fa;
+        padding: 12px 16px;
+        border-radius: 12px;
+        display: inline-block;
+        margin: 8px auto 12px;
+        border: 2px dashed #dee2e6;
+        line-height: 1.2;
+    }
+    .coupon-section .coupon-discount {
+        font-size: 30px;
+        font-weight: 700;
+        color: #88c8bc;
+        margin-bottom: 4px;
+    }
+    .coupon-section .coupon-discount .discount-type {
+        font-size: 13px;
+        font-weight: 500;
+        color: #6c757d;
+        display: block;
+    }
+    .coupon-section .coupon-description {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 10px;
+        min-height: 36px;
+    }
+    .coupon-section .coupon-details {
+        font-size: 13px;
+        color: #6c757d;
+        margin-bottom: 12px;
+        text-align: left;
+        padding: 0 4px;
+    }
+    .coupon-section .coupon-details span {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 3px;
+    }
+    .coupon-section .coupon-details i {
+        width: 20px;
+        text-align: center;
+        color: #88c8bc;
+        font-size: 14px;
+    }
+    .coupon-section .coupon-expiry {
+        font-size: 13px;
+        color: #6c757d;
+        margin-bottom: 14px;
+    }
+    .coupon-section .coupon-expiry strong {
+        color: #333;
+    }
+
+    /* Status badge – top‑right, more compact */
+    .coupon-section .coupon-status {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 3px 12px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .coupon-section .coupon-status.available {
+        background: #d4edda;
+        color: #155724;
+    }
+    .coupon-section .coupon-status.used {
+        background: #e9ecef;
+        color: #495057;
+    }
+    .coupon-section .coupon-status.expired {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    .coupon-section .coupon-status.upcoming {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    /* Copy button – full width, rounded */
+    .coupon-section .coupon-copy-btn {
+        background: #88c8bc;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: background 0.3s;
+        width: 100%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+    .coupon-section .coupon-copy-btn:hover {
+        background: #66a59b;
+        color: #fff;
+    }
+    .coupon-section .coupon-copy-btn.copied {
+        background: #28a745;
+    }
+    .coupon-section .coupon-copy-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #adb5bd;
+    }
+
+    @media (max-width: 576px) {
+        .coupon-section .coupon-card {
+            padding: 16px;
+        }
+        .coupon-section .coupon-code {
+            font-size: 24px;
+            padding: 8px 12px;
+        }
+        .coupon-section .coupon-discount {
+            font-size: 24px;
+        }
+    }
+</style>
+
+<!-- ===== COUPON SECTION ===== -->
+<div class="coupon-section">
+    <h4 class="mb-3"><i class="fas fa-ticket-alt" style="color:#88c8bc;"></i> Coupons</h4>
+
+    <div class="row g-4" style="row-gap: 3px;">
+        <% coupons.forEach(coupon => { %>
+            <div class="col-md-6 col-lg-4">
+                <div class="coupon-card <%= coupon.status.toLowerCase() %>">
+                    <!-- Status badge -->
+                    <span class="coupon-status <%= coupon.status.toLowerCase() %>">
+                        <%= coupon.statusBadge.toUpperCase() %>
+                    </span>
+
+                    <!-- Coupon code -->
+                    <div class="coupon-code"><%= coupon.code %></div>
+
+                    <!-- Discount -->
+                    <div class="coupon-discount">
+                        <%= coupon.discount %>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="coupon-description"><%= coupon.description || 'No description available' %></div>
+
+                    <!-- Details -->
+                    <div class="coupon-details">
+                        <% if (coupon.minimumOrderAmount && coupon.minimumOrderAmount > 0) { %>
+                            <span><i class="fas fa-shopping-bag"></i> Minimum order: ₹<%= coupon.minimumOrderAmount.toLocaleString('en-IN') %></span>
+                        <% } %>
+                        <% if (coupon.maximumDiscountAmount && coupon.maximumDiscountAmount > 0) { %>
+                            <span><i class="fas fa-tag"></i> Maximum discount: ₹<%= coupon.maximumDiscountAmount.toLocaleString('en-IN') %></span>
+                        <% } %>
+                        <% if (coupon.usageLimit && coupon.usageLimit > 0) { %>
+                            <span><i class="fas fa-users"></i> Used: <%= coupon.usedCount || 0 %> / <%= coupon.usageLimit %></span>
+                        <% } %>
+                    </div>
+
+                    <!-- Validity -->
+                    <div class="coupon-expiry">
+                        <strong>Valid until:</strong> <%= new Date(coupon.expiryDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+                    </div>
+
+                    <!-- Copy Code button -->
+                    <button class="coupon-copy-btn" data-code="<%= coupon.code %>" <%= coupon.status.toLowerCase() !== 'available' ? 'disabled' : '' %>>
+                        <i class="fas fa-copy"></i> <%= coupon.status.toLowerCase() === 'available' ? 'Copy Code' : 'Not Available' %>
+                    </button>
+                </div>
             </div>
-        </div>
-    <% }); %>
+        <% }); %>
+    </div>
+
+    <!-- No coupons message -->
+    <% if (!coupons || coupons.length === 0) { %>
+        <p class="text-muted text-center mt-4">You have no coupons available.</p>
+    <% } %>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // ---- Copy Code functionality ----
+        document.querySelectorAll('.coupon-section .coupon-copy-btn:not(:disabled)').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const code = this.dataset.code;
+                navigator.clipboard.writeText(code).then(() => {
+                    this.classList.add('copied');
+                    this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        this.classList.remove('copied');
+                        this.innerHTML = '<i class="fas fa-copy"></i> Copy Code';
+                    }, 2500);
+                }).catch(() => {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = code;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    try {
+                        document.execCommand('copy');
+                        this.classList.add('copied');
+                        this.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                        setTimeout(() => {
+                            this.classList.remove('copied');
+                            this.innerHTML = '<i class="fas fa-copy"></i> Copy Code';
+                        }, 2500);
+                    } catch (err) {
+                        alert('Unable to copy coupon code.');
+                    }
+                    textArea.remove();
+                });
+            });
+        });
+    });
+</script>
