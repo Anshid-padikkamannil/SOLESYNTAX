@@ -1,19 +1,12 @@
 const Product = require('../../models/productSchema');
-const Review = require('../../models/reviewSchema')
+const Review = require('../../models/reviewSchema');
+const productService = require('../../services/productService');
 
 const productDetails = async (req, res) => {
   
   try {
    
-    const product = await Product.findById(req.params.id);
-
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    // Get reviews separately
-    const reviews = await Review.find({ productId: product._id })
-      .populate('userId', 'name');
+    const { product, reviews } = await productService.getProductDetails(req.params.id);
     
     res.render("store/product-detail",{
       product,
@@ -44,46 +37,31 @@ const postReviews = async (req, res) => {
       });
     }
 
-    const product = await Product.findById(id);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
-    const existingReview = await Review.findOne({ productId: id, userId });
-
-    if (existingReview) {
-      return res.status(400).json({
-        message: 'You have already reviewed this product'
-      });
-    }
-
-    const review = new Review({
-      productId: id,
-      userId,
-      rating: Number(rating),
-      comment
-    });
-
-    await review.save();
-
-    const allReviews = await Review.find({ productId: id });
-    const totalRating =  allReviews.reduce((sum, r) => sum + r.rating, 0);
-
-    product.averageRating = totalRating / allReviews.length;
-    product.totalReviews = allReviews.length;
-    await product.save();
+    const result = await productService.addProductReview(userId, id, rating, comment);
 
     res.status(201).json({
       success: true,
       message: 'Review added successfully',
-      review,
-      averageRating: product.averageRating,
-      totalReviews: product.totalReviews
+      review: result.review,
+      averageRating: result.averageRating,
+      totalReviews: result.totalReviews
     });
 
   } catch (err) {
     
-    res.status(500).json({ message: err.message });
+    console.error("Post Review Error:", err);
+
+    if (err.message === 'Product not found' || err.message === 'You have already reviewed this product') {
+      return res.status(400).json({
+        success: false,
+        message: err.message
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
 }
 

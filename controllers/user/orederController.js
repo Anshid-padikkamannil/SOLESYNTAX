@@ -4,6 +4,7 @@ const Order = require('../../models/orderSchema');
 const paginate = require('../../utils/pagination');
 const Address = require('../../models/addressSchema');
 const { applyCouponToOrder } = require('../../utils/couponHelper');
+const orderService = require('../../services/orderService');
 
 const createOrder  = async (req, res) => {
 
@@ -11,135 +12,45 @@ const createOrder  = async (req, res) => {
     const userId = req.user.userId || req.user._id;
     const { addressId, paymentMethod = "COD", couponCode } = req.body || {};
 
-    let address;
+    // 1. Get address and cart
+    const { address , cart } = await orderService.getOrderData( userId, addressId );
 
-    // If addressId not provided, get default address
-    if (!addressId) {
-      address = await Address.findOne({ userId, isDefault: true });
-      if (!address) {
-        return res.status(400).json({
-          message: 'No default address found. Please provide an address ID.'
-        });
-      }
-    } else {
-      address = await Address.findOne({ _id: addressId, userId });
-      if (!address) {
-        return res.status(404).json({
-          message: 'Address not found or does not belong to you'
-        });
-      }
-    }
+    // 2. Validate product stock
+    await orderService.validateCartStock(cart);
 
-    const cart = await Cart.findOne({ userId }).populate('items.productId');
+    // 3. Build order items and calculate total
+    const { orderitems, totalPrice } = orderService.buildOrderItems(cart);
 
-    if (!cart || cart.items.length === 0 ) {
-
-      return res.status(400).json({ message: 'Cart is empty'});
-
-    }
-
-    for (const item of cart.items) {
-      const product = await Product.findById(item.productId._id);
-
-      if(!product) {
-        return res.status(404).json({
-          message: 'Product not found'
-        });
-      }
-
-      if (product.stock < item.quantity) {
-        return res.status(400).json({
-          message: `${product.productName} has only ${product.stock} units available. You requested ${item.quantity}.`
-        });
-      }
-    }
-
-    // 2. Build order items
-    const orderItems = cart.items.map(item => ({
-      product: item.productId._id,
-      size: item.size || 7,
-      quantity: item.quantity,
-      price: item.productId.price,
-      name: item.productId.productName,
-      productImage: item.productId.images || []
-    }));
-
-    let totalPrice = 0;
-    for (const item of orderItems) {
-      totalPrice += item.price * item.quantity;
-    }
-
-    // Aplly coupon if porvided
-    let finalAmount = totalPrice;
-    let couponApplied = false;
-    let couponDiscount = 0;
-    let appliedCouponCode = null;
-
-    if (couponCode) {
-      const productIds = cart.items.map(item => item.productId._id);
-      const couponResult = await applyCouponToOrder(
-        null, // orderData not needed yet 
-        userId,
-        couponCode,
-        productIds,
-        totalPrice
-      );
-
-      finalAmount = couponResult.finalAmount;
-      couponApplied = couponResult.couponApplied;
-      couponDiscount = couponResult.couponDiscount;
-      appliedCouponCode = couponResult.couponCode;
-    } else {
-      finalAmount = totalPrice;
-    }
-
-    const allowedPaymentMethods = ["COD", "Razorpay", "wallet"];
-
-    if (!allowedPaymentMethods.includes(paymentMethod)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid payment method"
-      });
-    }
-
-    // 4. Create order
-    const order = new Order({
+    // 4. Apply coupon
+    const couponResult = await orderService.applyOrderCoupon(
       userId,
-      orderId: `ORD-${Date.now()}`,
-      orderItems,
+      couponCode,
+      cart,
+      totalPrice
+    );
+
+    const {
+      finalAmount,
+      couponApplied,
+      couponDiscount,
+      appliedCouponCode
+    } = couponResult;
+    
+    // 5. Validate payment method
+    orderService.validatePaymentMethod(paymentMethod);
+
+    // 6. Create order
+    const order = await orderService.createOrder({
+      userId,
+      orderitems,
       totalPrice,
       finalAmount,
-      address: {
-        addressType: address.addressType,
-        name: address.name,
-        city: address.city,
-        state: address.state,
-        pincode: address.pincode,
-        phone: address.phone,
-        altPhone: address.altPhone || '',
-        landmark: address.landmark || '',
-        addressLine1: address.addressLine1,
-        addressLine2: address.addressLine2 || ''
-      },
+      address,
       paymentMethod,
-      status: 'Pending',
       couponApplied,
       couponCode: appliedCouponCode,
-      couponDiscount,
-      invoiceDate: new Date(),
-      createdOn: new Date()
+      couponDiscount
     });
-
-    await order.save();
-       //  ADD: Update product stock
-      for (const item of cart.items) {
-          await Product.findByIdAndUpdate(
-            item.productId._id,
-            { $inc: { stock: -item.quantity } },
-        );
-      }
-
-      await Cart.findOneAndDelete({ userId })
 
 
       res.status(201).json({
@@ -160,15 +71,10 @@ const allOrders =  async (req, res) => {
 
     const userId = req.user.userId || req.user._id;
 
-    const result = await paginate(
-      Order,
-      { userId },
-      {
-        page: req.query.page,
-        limit: req.query.limit || 10,
-        sort: { createdAt: -1 },
-        populate: 'orderItems.product'
-      }
+    const result = await orderService.getUserOrders(
+      userId,
+      req.query.page,
+      req.query.limit
     )
 
     const formattedOrders = result.data.map(order => ({
@@ -209,8 +115,7 @@ const getOrderById = async (req, res) => {
     const userId = req.user.userId || req.user._id;
     const { id } = req.params;
 
-    const order = await Order.findOne({ _id: id, userId})
-      .populate('orderItems.product', 'images')
+    const order = await orderService.getUserOrderById(userId, id);
 
     if (!order) {
       return res.status(404).json({
@@ -239,60 +144,31 @@ const cancelOrder = async (req, res) => {
     
     const userId = req.user.userId || req.user._id;
     const { id } = req.params;
+    const { reason } = req.body;
 
-    const order = await Order.findOne({ _id: id, userId });
+    const order = await orderService.cancelOrder( userId, id, reason);
 
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Order not found'
-      });
-    }
-
-    const cancelabelStatuses = ['Pending', 'Processing'];
-    if (!cancelabelStatuses.includes(order.status)) {
-      return res.status(400).json({
-        success: false,
-        message: `Order cannot be cancelled. Current status: ${order.status}`
-      });
-    }
-
-    try {
-      
-      for(const item of order.orderItems) {
-        await Product.findByIdAndUpdate(
-          item.product,
-          { $inc: { stock: item.quantity } },
-          //{ session }
-        );
-      }
-
-      order.status = 'Cancelled';
-      order.cancellationReason = req.body.reason || 'Cancelled by user';
-      order.cancellationRequestedAt = new Date();
-      order.cancellationApprovedAt = new Date();
-
-      // await order.save({ session });
-
-      // await session.commitTransaction();
-
-      res.status(200).json({
-        success: true,
-        message: 'Order cancelled successfully',
-        order
-      });
-
-
-    } catch (err) {
-      // await session.aboutTransaction();
-      throw error;
-    } finally {
-      // session.endSession();
-    }
+    res.status(200).json({
+      success: true,
+      message: 'Order cancelled successfully',
+      order
+    });
 
   } catch (err) {
     
-    res.status(500).json({ message: err.message });
+    console.error('Cancel Order Error:', err);
+
+    if (err.message === 'Order not found') {
+      return res.status(404).json({
+        success: false,
+        message: err.message
+      });
+    }
+
+    res.status(400).json({
+      success: false,
+      message: err.message
+    });
     
   }
 }
