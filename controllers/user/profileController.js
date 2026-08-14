@@ -19,7 +19,7 @@ const dashboard = async (req, res) => {
 
       if (data.recentOrder) {
       formattedRecentOrder = {
-        id: data.recentOrder.orderId,
+        id: data.recentOrder._id,
         date: new Date(data.recentOrder.createdAt).toLocaleDateString("en-IN", {
           day: "numeric",
           month: "short",

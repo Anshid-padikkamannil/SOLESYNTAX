@@ -21,6 +21,8 @@ const { getAccountWishlist, accountAddToCartFromWishlist, accountRemoveFromWishl
 
 const { getAccountCoupon } = require('../../controllers/user/couponController');
 
+const { changePassword, getPasswordPage } = require('../../controllers/authController');
+
 const { isLoggedIn } = require('../../middlewares/auth');
 router.use(isLoggedIn);
 
@@ -46,6 +48,9 @@ router.post('/account/wishlist/add-to-cart', accountAddToCartFromWishlist);
 router.post('/account/wishlist/remove/:productId', accountRemoveFromWishlist);
 
 router.get('/account/coupons', getAccountCoupon);
+
+router.get('/account/change-password', getPasswordPage);
+router.post('/account/change-password', changePassword);
 
 
 module.exports = router;

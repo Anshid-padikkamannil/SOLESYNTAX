@@ -2,6 +2,7 @@ const User = require('../models/userSchema');
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const generateTokenAndSetCookie = require('../utils/jwt');
+const authService = require('../services/authService');
 
 // Register a new user
 const registerUser = async (req, res) => {
@@ -99,10 +100,81 @@ const logout = (req, res) => {
   }
 }
 
+const changePassword = async (req, res) => {
+  try {
+    
+    const userId = req.user.userId || req.user._id;
+
+    const {currentPassword, newPassword, confirmPassword} = req.body;
+
+    // required fields
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res.redirect(
+        '/account/change-password?error=' +
+        encodeURIComponent('All password fields are required.')
+      );
+    }
+
+    // minmun length
+    if (newPassword.length < 8) {
+      return res.redirect(
+        '/account/change-password?error=' +
+        encodeURIComponent('New password must be at least 8 characters.')
+      );
+    }
+
+    //confirm password
+    if (newPassword !== confirmPassword) {
+      return res.redirect(
+        '/account/change-password?error=' +
+        encodeURIComponent('New password and confirm password do not match.')
+      );
+    }
+
+    //prevent same password
+    if (currentPassword === newPassword) {
+      return res.redirect(
+        '/account/change-password?error=' +
+        encodeURIComponent('New password must be different from your current password.')
+      );
+    }
+
+    await authService.changePassword(userId, currentPassword, newPassword);
+
+    return res.redirect(
+      '/account/change-password?success=' +
+      encodeURIComponent('Password changed successfully.')
+    );
+
+  } catch (err) {
+    console.error('CHANGE PASSWORD ERROR:', err);
+
+    return res.redirect(
+      '/account/change-password?error=' +
+      encodeURIComponent(err.message)
+    );
+  }
+}
+
+const getPasswordPage = async (req, res) => {
+
+  const error = req.query.error || null;
+  const success = req.query.success || null;
+
+  res.render('account/index', {
+    activeMenu: 'change-password',
+    title: 'Change Password',
+    error,
+    success
+  });
+};
+
 module.exports = {
   registerUser,
   loginUser,
   loadRegisterPage,
   getLoginPage,
-  logout
+  logout,
+  changePassword,
+  getPasswordPage
 };

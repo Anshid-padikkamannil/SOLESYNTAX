@@ -36,7 +36,11 @@
 
                 <% if (activeMenu === "coupons") { %>
                     <%- include("./coupons") %>
-                <% } %>    
+                <% } %>
+
+                <% if (activeMenu === "change-password") { %>
+                    <%- include("./change-password") %>
+                <% } %>
             </div>
         </div>
 
