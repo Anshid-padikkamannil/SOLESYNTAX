@@ -1,6 +1,3 @@
-const User = require('../models/userSchema');
-const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken');
 const generateTokenAndSetCookie = require('../utils/jwt');
 const authService = require('../services/authService');
 
@@ -9,28 +6,10 @@ const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Check if the user already exists
-    const existingUser = await User.findOne({ email });
 
-    if (existingUser) {
-      return res.status(400).json({
-        message: 'User already exists, please login instead'
-      });
-    }
+    const user = await authService.registerUser(name, email, password);
 
-    // changed for better user experience / after registering no need for login
-    // Password hashing
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // create user
-    const user = await User.create({
-      name,
-      email,
-      password: hashedPassword
-    });
-
-    // from util
+    // Automatically login after registration - from util
     generateTokenAndSetCookie(user, res);
     
     return res.status(201).json({ message: 'User registered successfully' });
@@ -46,21 +25,9 @@ const loginUser = async (req, res) => {
     
     const { email, password } = req.body;
   
-    const user = await User.findOne({email: email});
+    const user = await authService.loginUser(email, password);
 
-    if (!user) {
-      return res.status(401).json({
-        message: 'Email is INVALID'
-      });
-    }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(401).json({
-        message: "Password is INVALID"
-      });
-    }  
     generateTokenAndSetCookie(user, res);
 
     res.status(200).json({ 
@@ -69,7 +36,9 @@ const loginUser = async (req, res) => {
     
 
   } catch (err) {
-    
+    return res.status(401).json({
+      message: err.message
+    });
   }
   
 }

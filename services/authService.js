@@ -36,6 +36,48 @@ const changePassword = async (userId, currentPassword, newPassword) => {
   return true;
 };
 
+const registerUser = async (name, email, password) => {
+
+  // Check if user already exists
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser) {
+    throw new Error('User already exists, please login instead');
+  }
+
+  // Hash password
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  // Create user
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword
+  });
+
+  return user;
+};
+
+const loginUser = async (email, password) => {
+
+  const user = await User.findOne({ email: email });
+
+  if (!user) {
+    throw new Error('Email is INVALID');
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    throw new Error('Password is INVALID');
+  }
+
+  return user;
+};
+
 module.exports = {
+  registerUser,
+  loginUser,
   changePassword
 };
