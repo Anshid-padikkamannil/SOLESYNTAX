@@ -599,9 +599,12 @@
         <% if (products && products.length > 0) { %>
           <% products.forEach(product => { %>
             <div class="product-card">
-              <button class="wishlist-btn" data-product="<%= product._id %>" aria-label="Add to wishlist">
-                ♡
-              </button>
+              <button
+                class="wishlist-btn <%= wishlistProductIds.includes(product._id.toString()) ? 'added' : '' %>"
+                data-product="<%= product._id %>"
+                aria-label="Add to wishlist">
+                <%= wishlistProductIds.includes(product._id.toString()) ? '♥' : '♡' %>
+             </button>
               <a href="/products/<%= product._id %>">
                 <div class="product-image-container">
                   <img src="<%= product.images[0] %>" class="img-fluid" alt="<%= product.productName %>">
@@ -651,7 +654,7 @@
 
 <!-- ===== Heart Burst Script (Conditional on Add) ===== -->
 <script>
-  (function() {
+  (function () {
     'use strict';
 
     // ---- Heart Burst Function ----
@@ -680,35 +683,61 @@
         el.style.animationDuration = (0.8 + Math.random() * 0.8) + 's';
 
         document.body.appendChild(el);
-
-        setTimeout(() => {
-          el.remove();
-        }, 2000);
+        setTimeout(() => el.remove(), 2000);
       }
     }
 
-    // ---- Attach to all wishlist buttons ----
+    // ---- Wishlist Toggle ----
     const wishlistBtns = document.querySelectorAll('.wishlist-btn');
 
     wishlistBtns.forEach(btn => {
-      btn.addEventListener('click', function(e) {
+      btn.addEventListener('click', async function (e) {
         e.stopPropagation();
         e.preventDefault();
 
-        const wasAdded = this.classList.contains('added');
-        this.classList.toggle('added');
+        const productId = this.dataset.product;
+        const isAdded = this.classList.contains('added');
 
-        if (this.classList.contains('added')) {
-          this.textContent = '♥';
-        } else {
-          this.textContent = '♡';
-        }
+        // Determine endpoint and method
+        const url = isAdded
+          ? `/wishlist/remove-from-wishlist/${productId}`
+          : `/wishlist/add-to-wishlist/${productId}`;
 
-        if (!wasAdded && this.classList.contains('added')) {
-          const rect = this.getBoundingClientRect();
-          const cx = rect.left + rect.width / 2;
-          const cy = rect.top + rect.height / 2;
-          burstHearts(cx, cy);
+        try {
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            alert(data.message || 'Unable to update wishlist');
+            return;
+          }
+
+          // Toggle UI
+          if (isAdded) {
+            // Remove from wishlist
+            this.classList.remove('added');
+            this.textContent = '♡';
+          } else {
+            // Add to wishlist
+            this.classList.add('added');
+            this.textContent = '♥';
+            // Burst hearts only on add
+            const rect = this.getBoundingClientRect();
+            const cx = rect.left + rect.width / 2;
+            const cy = rect.top + rect.height / 2;
+            burstHearts(cx, cy);
+          }
+
+          // Optional: show a toast message (you can replace alert with a better UI)
+          // if you have a toast library, e.g. `toast.success(data.message)`
+
+        } catch (err) {
+          console.error('Wishlist error:', err);
+          alert('Something went wrong. Please try again.');
         }
       });
     });

@@ -22,10 +22,13 @@ const getWishlist = async (req, res) => {
       req.query.limit
       
     )
+    const wishlist = result.data[0] || null;
 
-    res.json({ 
-      success: true,
-      ...result
+    res.render("store/wishlist", {
+      layout: false,
+      title: "Wishlist",
+      wishlist,
+      pagination: result.pagination
     });
 
   } catch (err) {
@@ -40,7 +43,7 @@ const addToWishlist = async (req, res) => {
   try {
     
     const userId = req.user.userId || req.user._id;
-    const { productId } = req.body;
+    const productId = req.params.productId;
 
     const wishlist = await addWishlistItem(userId, productId);
 
@@ -61,12 +64,92 @@ const removeFromWishlist = async (req, res) => {
 
     await removeWishlistItem(userId, productId);
 
-    res.json({ success: true, message: 'Removed form wishlist'});
+    return res.redirect('/wishlist');
 
   } catch (err) {
 
-    res.status(500).json({ message: err.message });
+    console.error(' Remove Wishlist Error:', err);
+
+    res.status(500).render('error', {
+      layout: false,
+      status: 500,
+      title: 'Server Error',
+      message: 'Something went wrong while removing the product.'
+    });
     
+  }
+}
+
+const removeFromWishlistAjax = async (req, res) => {
+  try {
+    const userId = req.user.userId || req.user._id;
+    const { productId } = req.params;
+
+    await removeWishlistItem(userId, productId);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Product removed from wishlist'
+    });
+
+  } catch (err) {
+    console.error('Remove Wishlist AJAX Error:', err);
+
+    return res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
+
+const clearWishlist = async (req, res) => {
+
+  try {
+
+    const userId = req.user.userId || req.user._id;
+
+    await Wishlist.findOneAndDelete({ userId });
+
+    res.redirect('/wishlist');
+
+  } catch (err) {
+
+    console.error(' Clear Wishlist Error:', err);
+
+    res.status(500).render('error', {
+      layout: false,
+      status: 500,
+      title: 'Server Error',
+      message: 'Something went wrong while removing the product.'
+    });
+  }
+}
+
+const addToCartFromWishlist = async (req, res) => {
+  try {
+
+    const { productId } = req.body;
+    const quantity = Number(req.body.quantity);
+    const size = Number(req.body.size)
+    const userId = req.user.userId || req.user._id;
+
+   
+    await addItemToCart(userId, productId, quantity, size);
+
+    await removeWishlistItem(userId, productId);
+
+    res.redirect('/wishlist');
+
+
+  } catch (err) {
+    console.error(' Wishlist Add To Cart Error:', err);
+
+    res.status(500).render('error', {
+      layout: false,
+      status: 500,
+      title: 'Server Error',
+      message: 'Something went wrong while adding the product to your cart.'
+    });  
   }
 }
 
@@ -157,7 +240,10 @@ module.exports = {
   getWishlist,
   addToWishlist,
   removeFromWishlist,
+  addToCartFromWishlist,
+  clearWishlist,
   getAccountWishlist,
   accountAddToCartFromWishlist,
-  accountRemoveFromWishlist
+  accountRemoveFromWishlist,
+  removeFromWishlistAjax
 }

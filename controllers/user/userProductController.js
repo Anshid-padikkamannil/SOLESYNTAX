@@ -1,5 +1,6 @@
 const Product = require('../../models/productSchema');
 const Review = require('../../models/reviewSchema');
+const Wishlist = require('../../models/wishlistSchema');
 const productService = require('../../services/productService');
 
 const getShop = async (req, res) => {
@@ -22,6 +23,14 @@ const getShop = async (req, res) => {
       }
     );
 
+    const userId = req.user.userId || req.user._id;
+
+    const wishlist = await Wishlist.findOne({ userId })
+      .select('products.productId')
+      .lean();
+
+    const wishlistProductIds = wishlist ? wishlist.products.map(item => item.productId.toString()) : [];  
+
     return res.render('store/shop', {
       layout: false,
       title: 'shop',
@@ -30,7 +39,8 @@ const getShop = async (req, res) => {
       search: req.query.search || '',
       category: req.query.category || '',
       shoeType: req.query.shoeType || '',
-      priceRange: req.query.priceRange || ''
+      priceRange: req.query.priceRange || '',
+      wishlistProductIds
     });
 
   } catch (err) {

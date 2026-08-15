@@ -59,11 +59,19 @@ const removeWishlistItem = async (userId, productId) => {
   const wishlist = await Wishlist.findOne({ userId });
 
   if (!wishlist) {
-      throw new Error('Wishlist not found');
+    throw new Error('Wishlist not found');
+  }
+
+  const productExists = wishlist.products.some(
+    item => item.productId.toString() === productId
+  );
+
+  if (!productExists) {
+    throw new Error('Product is not in wishlist');
   }
 
   wishlist.products = wishlist.products.filter(
-      item => item.productId.toString() !== productId
+    item => item.productId.toString() !== productId
   );
 
   await wishlist.save();

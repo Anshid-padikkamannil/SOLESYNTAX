@@ -13,6 +13,6 @@ router.get('/products', getAllProducts);
 router.get('/products/:id',validateId(), productDetails);
 router.post('/products/:id/reviews',isLoggedIn,validateId(), postReviews);
 
-router.get('/shop', getShop);
+router.get('/shop', isLoggedIn, getShop);
 
 module.exports = router;
