@@ -1,6 +1,7 @@
-<%-include("../partials/user/header")%>
+<%- include("../partials/user/header") %>
 
 <div id="page">
+    <!-- ===== HERO SLIDER ===== -->
     <aside id="colorlib-hero">
         <div class="flexslider">
             <ul class="slides">
@@ -61,31 +62,35 @@
             </ul>
         </div>
     </aside>
+
+    <!-- ===== INTRO ===== -->
     <div class="colorlib-intro">
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 text-center">
-                    <h2 class="intro">It started with a simple idea: Create quality, well-designed products that I wanted myself.</h2>
+                    <h2 class="intro">It started with a simple idea: Create quality, well‑designed products that I wanted myself.</h2>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- ===== FEATURED CATEGORIES ===== -->
     <div class="colorlib-product">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6 text-center">
                     <div class="featured">
-                        <a href="#" class="featured-img" style="background-image: url(images/men.jpg);"></a>
+                        <a href="/shop?category=Men" class="featured-img" style="background-image: url(images/men.jpg);"></a>
                         <div class="desc">
-                            <h2><a href="#">Shop Men's Collection</a></h2>
+                            <h2><a href="/shop?category=Men">Shop Men's Collection</a></h2>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6 text-center">
                     <div class="featured">
-                        <a href="#" class="featured-img" style="background-image: url(images/women.jpg);"></a>
+                        <a href="/shop?category=Women" class="featured-img" style="background-image: url(images/women.jpg);"></a>
                         <div class="desc">
-                            <h2><a href="#">Shop Women's Collection</a></h2>
+                            <h2><a href="/shop?category=Women">Shop Women's Collection</a></h2>
                         </div>
                     </div>
                 </div>
@@ -93,6 +98,7 @@
         </div>
     </div>
 
+    <!-- ===== BEST SELLERS (NEW CARD STYLE) ===== -->
     <div class="colorlib-product">
         <div class="container">
             <div class="row">
@@ -100,25 +106,37 @@
                     <h2>Best Sellers</h2>
                 </div>
             </div>
+
             <div class="row row-pb-md">
-                <% products.forEach(product => { %>
-                    <div class="col-lg-3 mb-4 text-center">
-                        <div class="product-entry border">
-                            <a href="/products/<%= product._id %>" class="prod-img">
-                                <img src="<%= product.images[0] %>" class="img-fluid" alt="<%= product.productName %>">
+                <% products.forEach(product => { 
+                    // Use either product.inWishlist or wishlistProductIds
+                    const isInWishlist = product.inWishlist || (typeof wishlistProductIds !== 'undefined' && wishlistProductIds.includes(product._id.toString()));
+                %>
+                    <div class="col-lg-3 col-md-6 mb-4">
+                        <div class="product-card">
+                            <!-- Wishlist Heart Button -->
+                            <button class="wishlist-btn <%= isInWishlist ? 'added' : '' %>" 
+                                    data-product="<%= product._id %>" 
+                                    aria-label="Add to wishlist">
+                                <span class="heart-icon"><%= isInWishlist ? '♥' : '♡' %></span>
+                            </button>
+
+                            <a href="/products/<%= product._id %>">
+                                <div class="product-image-container">
+                                    <img src="<%= product.images[0] %>" class="img-fluid" alt="<%= product.productName %>">
+                                </div>
+                                <div class="product-info">
+                                    <h4><%= product.productName %></h4>
+                                    <div class="product-price">
+                                        <span class="sale-price">₹<%= product.price.toLocaleString('en-IN') %></span>
+                                    </div>
+                                </div>
                             </a>
-                            <div class="desc">
-                                <h2>
-                                    <a href="/products/<%= product._id %>">
-                                        <%= product.productName %>
-                                    </a>
-                                </h2>
-                                <span class="price">₹<%= product.price %></span>
-                            </div>
                         </div>
                     </div>
                 <% }) %>
             </div>
+
             <div class="row">
                 <div class="col-md-12 text-center">
                     <p><a href="/shop" class="btn btn-primary btn-lg">Shop All Products</a></p>
@@ -127,6 +145,7 @@
         </div>
     </div>
 
+    <!-- ===== TRUSTED PARTNERS ===== -->
     <div class="colorlib-partner">
         <div class="container">
             <div class="row">
@@ -153,5 +172,223 @@
             </div>
         </div>
     </div>
+</div>
 
-<%-include("../partials/user/footer")%>
+<!-- ===== PRODUCT CARD + WISHLIST STYLES ===== -->
+<style>
+    /* Product Card */
+    .product-card {
+        background: #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    }
+    .product-card .product-image-container {
+        position: relative;
+        padding-top: 100%;
+        overflow: hidden;
+        background: #f5f5f5;
+    }
+    .product-card .product-image-container img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-image-container img {
+        transform: scale(1.05);
+    }
+    .product-card .product-info {
+        padding: 16px 18px 18px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    .product-card h4 {
+        font-size: 18px;
+        font-weight: 500;
+        margin-bottom: 6px;
+        color: #333;
+        font-family: 'Rokkitt', Georgia, serif;
+        line-height: 1.3;
+    }
+    .product-card .product-price {
+        display: flex;
+        align-items: center;
+        margin-top: auto;
+    }
+    .product-card .sale-price {
+        font-size: 17px;
+        font-weight: 600;
+        color: #66a59b;
+    }
+    .product-card .regular-price {
+        font-size: 13px;
+        color: #adb5bd;
+        text-decoration: line-through;
+        margin-left: 8px;
+    }
+
+    /* Wishlist Button */
+    .wishlist-btn {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background: rgba(255,255,255,0.92);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        z-index: 10;
+        font-size: 20px;
+        color: #6c757d;
+        transition: all 0.3s ease;
+        padding: 0;
+        line-height: 1;
+    }
+    .wishlist-btn:hover {
+        background: #fff;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .wishlist-btn.added {
+        color: #ff6b6b;
+        background: rgba(255,107,107,0.12);
+    }
+    .wishlist-btn.added:hover {
+        background: rgba(255,107,107,0.2);
+    }
+    .wishlist-btn .heart-icon {
+        display: inline-block;
+        line-height: 1;
+        pointer-events: none;
+        border: none !important;
+        outline: none !important;
+    }
+    .wishlist-btn:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Heart Particle */
+    .heart-particle {
+        position: fixed;
+        pointer-events: none;
+        font-size: 24px;
+        user-select: none;
+        z-index: 9999;
+        animation: floatHeart 1.2s ease-out forwards;
+    }
+    @keyframes floatHeart {
+        0% {
+            opacity: 1;
+            transform: translate(0, 0) scale(1) rotate(0deg);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(var(--tx), var(--ty)) scale(0.2) rotate(var(--rot));
+        }
+    }
+</style>
+
+<!-- ===== HEART BURST + WISHLIST TOGGLE SCRIPT ===== -->
+<!-- <script>
+    (function() {
+        'use strict';
+
+        // ---- Heart Burst ----
+        function burstHearts(x, y) {
+            const heartSymbols = ['♥', '❤', '💖', '💗', '💕', '💓', '❤️', '🧡', '💛', '💚', '💙', '💜'];
+            const colors = ['#ff6b6b', '#ff4757', '#ff6348', '#ff7f50', '#e74c3c', '#ff5e62', '#ff3b3b'];
+
+            for (let i = 0; i < 22; i++) {
+                const el = document.createElement('span');
+                el.className = 'heart-particle';
+                el.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                el.style.color = colors[Math.floor(Math.random() * colors.length)];
+                el.style.fontSize = (16 + Math.random() * 30) + 'px';
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+
+                const angle = Math.random() * 2 * Math.PI;
+                const distance = 80 + Math.random() * 200;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance - 60;
+                const rot = (Math.random() - 0.5) * 720;
+
+                el.style.setProperty('--tx', tx + 'px');
+                el.style.setProperty('--ty', ty + 'px');
+                el.style.setProperty('--rot', rot + 'deg');
+                el.style.animationDuration = (0.8 + Math.random() * 0.8) + 's';
+
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 2000);
+            }
+        }
+
+        // ---- Wishlist Toggle ----
+        document.querySelectorAll('.wishlist-btn').forEach(btn => {
+            btn.addEventListener('click', async function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+
+                const productId = this.dataset.product;
+                const isAdded = this.classList.contains('added');
+
+                const url = isAdded ?
+                    `/wishlist/remove-from-wishlist/${productId}` :
+                    `/wishlist/add-to-wishlist/${productId}`;
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        alert(data.message || 'Unable to update wishlist');
+                        return;
+                    }
+
+                    const icon = this.querySelector('.heart-icon');
+                    if (isAdded) {
+                        this.classList.remove('added');
+                        icon.textContent = '♡';
+                    } else {
+                        this.classList.add('added');
+                        icon.textContent = '♥';
+
+                        const rect = this.getBoundingClientRect();
+                        const cx = rect.left + rect.width / 2;
+                        const cy = rect.top + rect.height / 2;
+                        burstHearts(cx, cy);
+                    }
+                } catch (err) {
+                    console.error('Wishlist error:', err);
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        });
+
+    })();
+</script> -->
+<script src="/js/wishlist-heart.js"></script>
+<%- include("../partials/user/footer") %>
