@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Shop | SOLESYNTAX</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Rokkitt:wght@100;300;400;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  
+  <%- include("../partials/user/header") %>
+
+  <style>
+    /* ===== Brand Colors ===== */
+    :root {
+      --primary: #88c8bc;
+      --primary-dark: #66a59b;
+      --secondary: #46698f;
+      --accent: #ff6b6b;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --gray-light: #e9ecef;
+      --gray: #ced4da;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --border-radius: 10px;
+      --font-main: 'Poppins', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: #f8f9fa;
+      padding-top: 20px;
+    }
+
+    .main-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    /* Page Header */
+    .shop-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .shop-header h2 {
+      font-family: 'Rokkitt', Georgia, serif;
+      font-size: 32px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+    .shop-header p {
+      color: #6c757d;
+      font-size: 16px;
+    }
+
+    /* Top Bar */
+    .shop-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      background: white;
+      padding: 15px 20px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Search Bar */
+    .search-form {
+      display: flex;
+      align-items: center;
+      background-color: var(--light);
+      border-radius: 50px;
+      overflow: hidden;
+      width: 317px;
+      transition: all 0.3s ease;
+      border: 1px solid var(--gray);
+    }
+    .search-form:focus-within {
+      box-shadow: 0 0 0 2px rgba(136,200,188,0.3);
+      border-color: var(--primary);
+    }
+    .search-input {
+      flex: 1;
+      padding: 12px 20px;
+      font-size: 15px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--dark);
+    }
+    .search-button {
+      padding: 10px 20px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 50px;
+      margin-right: 5px;
+      transition: all 0.3s ease;
+    }
+    .search-button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Active Filters Bar */
+    .active-filters {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      margin-bottom: 20px;
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 12px 20px;
+      box-shadow: var(--shadow);
+    }
+    .active-filters .filter-tag {
+      background: var(--primary);
+      color: white;
+      padding: 4px 14px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .active-filters .filter-tag a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      line-height: 1;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .active-filters .filter-tag a:hover {
+      opacity: 1;
+    }
+    .clear-all-btn {
+      background: transparent;
+      border: 1.5px solid var(--gray);
+      color: var(--dark);
+      padding: 4px 16px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .clear-all-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    .active-filters .no-filters {
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    /* Product Container */
+    .product-list-container {
+      display: flex;
+      gap: 30px;
+      align-items: flex-start; /* Prevents stretching */
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+    }
+    .filter-section {
+      background: white;
+      border-radius: var(--border-radius);
+      padding: 25px;
+      margin-bottom: 25px;
+      box-shadow: var(--shadow);
+    }
+    .filter-title {
+      font-weight: 600;
+      font-size: 18px;
+      color: var(--dark);
+      margin-bottom: 20px;
+      text-align: left;
+      position: relative;
+      padding-bottom: 10px;
+    }
+    .filter-title:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 50px;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px;
+    }
+    .category-brand-container ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .filter-item {
+      margin: 10px 0;
+      text-align: left;
+    }
+    .filter-item a {
+      text-decoration: none;
+      color: #6c757d;
+      display: block;
+      padding: 8px 10px;
+      transition: all 0.2s ease;
+      border-radius: 5px;
+      font-size: 15px;
+    }
+    .filter-item a:hover {
+      color: var(--primary);
+      background-color: rgba(136,200,188,0.1);
+      transform: translateX(5px);
+    }
+    .filter-item a.active-filter {
+      color: var(--primary);
+      background-color: rgba(136,200,188,0.15);
+      font-weight: 600;
+    }
+
+    /* Price Filter */
+    .price-filter .price-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .price-button {
+      padding: 12px 20px;
+      background-color: var(--light);
+      color: #6c757d;
+      border: 1px solid var(--gray);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      font-size: 15px;
+      font-weight: 500;
+      width: 100%;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .price-button:hover {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 8px rgba(136,200,188,0.2);
+    }
+    .price-button.active-price {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* ===== Product Grid ===== */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+      width: 100%;
+      align-content: start; /* Prevents grid from stretching vertically */
+    }
+
+    /* ===== Product Card ===== */
+    .product-card {
+      background: white;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      box-shadow: var(--shadow);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      /* height: 100%; ← REMOVED – this was causing the stretching issue */
+      max-height: 420px; /* Optional: limit max height to keep consistency */
+    }
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    }
+    .product-card a {
+      text-decoration: none;
+      color: inherit;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-image-container {
+      position: relative;
+      padding-top: 100%;
+      overflow: hidden;
+      background: #f5f5f5;
+      flex-shrink: 0;
+    }
+    .product-card img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .product-card:hover img {
+      transform: scale(1.05);
+    }
+    .product-info {
+      padding: 16px 18px 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .product-card h4 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 6px !important;
+      color: var(--dark);
+      font-family: 'Rokkitt', var(--font-main);
+      line-height: 1.3;
+    }
+    .product-price {
+      display: flex;
+      align-items: center;
+      margin-top: auto;
+    }
+    .sale-price {
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    .regular-price {
+      font-size: 13px;
+      color: #adb5bd;
+      text-decoration: line-through;
+      margin-left: 8px;
+    }
+    .discount-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--accent);
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 1;
+    }
+
+    /* ===== Wishlist Heart Button ===== */
+    .wishlist-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background-color: rgba(255,255,255,0.9);
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 2;
+      font-size: 24px;
+      color: #6c757d;
+    }
+    .wishlist-btn:hover {
+      background: white;
+      transform: scale(1.12);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .wishlist-btn.added {
+      color: #ff6b6b;
+      background-color: rgba(255,107,107,0.12);
+    }
+    .wishlist-btn.added:hover {
+      background-color: rgba(255,107,107,0.2);
+    }
+
+    /* ===== Heart Particle Animation ===== */
+    .heart-particle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 24px;
+      user-select: none;
+      z-index: 9999;
+      animation: floatHeart 1.2s ease-out forwards;
+    }
+
+    @keyframes floatHeart {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0.2) rotate(var(--rot));
+      }
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 40px 0 20px;
+    }
+    .pagination a {
+      padding: 10px 15px;
+      background: white;
+      border: 1px solid var(--gray);
+      color: #6c757d;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .pagination a:hover {
+      background: var(--light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .pagination .active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    /* Empty State */
+    .no-products {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px 20px;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+    }
+    .no-products p {
+      font-size: 18px;
+      color: #6c757d;
+      margin-bottom: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .product-list-container { flex-direction: column; }
+      .sidebar { width: 100%; }
+      .product-grid { grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); }
+    }
+    @media (max-width: 768px) {
+      .shop-topbar { flex-direction: column; gap: 15px; }
+      .search-form { width: 100%; }
+      .product-grid { grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); }
+    }
+    @media (max-width: 576px) {
+      .product-grid { grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 15px; }
+      .product-card h4 { font-size: 15px; }
+      .sale-price { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="main-container">
+  <section class="shop-page container">
+    <!-- Shop Header -->
+    <div class="shop-header">
+      <h2>Our Collection</h2>
+      <p>Discover the perfect pair for every occasion</p>
+    </div>
+
+    <!-- Top Bar with Search -->
+    <div class="shop-topbar">
+      <div class="search-bar">
+        <form action="/shop" method="GET" class="search-form">
+          <input type="text" name="search" value="<%= search || '' %>" placeholder="Search for shoes..." class="search-input" />
+          <button type="submit" class="search-button">Search</button>
+        </form>
+      </div>
+      <div>
+        <a href="/shop" class="clear-all-btn"><i class="fas fa-times"></i> Clear All</a>
+      </div>
+    </div>
+
+    <!-- ===== Active Filters Bar ===== -->
+    <div class="active-filters">
+      <% 
+        const hasFilters = search || category || shoeType || priceRange;
+      %>
+      <% if (hasFilters) { %>
+        <% if (search) { %>
+          <span class="filter-tag">
+            Search: <strong><%= search %></strong>
+            <a href="/shop?<%= new URLSearchParams({ category, shoeType, priceRange }).toString() %>">&times;</a>
+          </span>
+        <% } %>
+        <% if (category) { %>
+          <span class="filter-tag">
+            Gender: <strong><%= category %></strong>
+            <a href="/shop?<%= new URLSearchParams({ search, shoeType, priceRange }).toString() %>">&times;</a>
+          </span>
+        <% } %>
+        <% if (shoeType) { %>
+          <span class="filter-tag">
+            Type: <strong><%= shoeType %></strong>
+            <a href="/shop?<%= new URLSearchParams({ search, category, priceRange }).toString() %>">&times;</a>
+          </span>
+        <% } %>
+        <% if (priceRange) { %>
+          <span class="filter-tag">
+            Price: <strong><%= priceRange %></strong>
+            <a href="/shop?<%= new URLSearchParams({ search, category, shoeType }).toString() %>">&times;</a>
+          </span>
+        <% } %>
+        <a href="/shop" class="clear-all-btn"><i class="fas fa-times-circle"></i> Clear All</a>
+      <% } else { %>
+        <span class="no-filters"><i class="fas fa-sliders-h"></i> No filters applied</span>
+      <% } %>
+    </div>
+
+    <!-- Product Container -->
+    <div class="product-list-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="filter-section">
+          <div class="filter-title">Gender</div>
+          <div class="category-brand-container">
+            <ul>
+              <li class="filter-item">
+                <a href="/shop?category=Men<%= shoeType ? '&shoeType=' + shoeType : '' %><%= search ? '&search=' + search : '' %><%= priceRange ? '&priceRange=' + priceRange : '' %>" class="<%= category === 'Men' ? 'active-filter' : '' %>">Men</a>
+              </li>
+              <li class="filter-item">
+                <a href="/shop?category=Women<%= shoeType ? '&shoeType=' + shoeType : '' %><%= search ? '&search=' + search : '' %><%= priceRange ? '&priceRange=' + priceRange : '' %>" class="<%= category === 'Women' ? 'active-filter' : '' %>">Women</a>
+              </li>
+              <li class="filter-item">
+                <a href="/shop?category=Unisex<%= shoeType ? '&shoeType=' + shoeType : '' %><%= search ? '&search=' + search : '' %><%= priceRange ? '&priceRange=' + priceRange : '' %>" class="<%= category === 'Unisex' ? 'active-filter' : '' %>">Unisex</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="filter-section">
+          <div class="filter-title">Categories | Type</div>
+          <div class="category-brand-container">
+            <ul>
+              <% const types = ['Sneakers', 'Boots', 'Sandals', 'Loafers', 'Running', 'Basketball', 'Training', 'Formal']; %>
+              <% types.forEach(type => { %>
+                <li class="filter-item">
+                  <a href="/shop?shoeType=<%= type %><%= category ? '&category=' + category : '' %><%= search ? '&search=' + search : '' %><%= priceRange ? '&priceRange=' + priceRange : '' %>" class="<%= shoeType === type ? 'active-filter' : '' %>"><%= type %></a>
+                </li>
+              <% }); %>
+            </ul>
+          </div>
+        </div>
+
+        <div class="filter-section price-filter">
+          <div class="filter-title">Filter by Price</div>
+          <div class="price-options">
+            <% const priceRanges = [
+              { label: 'Under ₹5000', value: 'under-5000' },
+              { label: '₹5000 - ₹6000', value: '5000-6000' },
+              { label: '₹6000 - ₹7500', value: '6000-7500' },
+              { label: 'Above ₹7500', value: 'above-7500' }
+            ]; %>
+            <% priceRanges.forEach(range => { %>
+              <a href="/shop?priceRange=<%= range.value %><%= category ? '&category=' + category : '' %><%= shoeType ? '&shoeType=' + shoeType : '' %><%= search ? '&search=' + search : '' %>" class="price-button <%= priceRange === range.value ? 'active-price' : '' %>">
+                <%= range.label %>
+              </a>
+            <% }); %>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Products Grid -->
+      <main class="product-grid">
+        <% if (products && products.length > 0) { %>
+          <% products.forEach(product => { %>
+            <div class="product-card">
+              <button class="wishlist-btn" data-product="<%= product._id %>" aria-label="Add to wishlist">
+                ♡
+              </button>
+              <a href="/products/<%= product._id %>">
+                <div class="product-image-container">
+                  <img src="<%= product.images[0] %>" class="img-fluid" alt="<%= product.productName %>">
+                </div>
+                <div class="product-info">
+                  <h4><%= product.productName %></h4>
+                  <div class="product-price">
+                    <span class="sale-price">₹<%= product.price.toLocaleString('en-IN') %></span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="no-products">
+            <p>No products found.</p>
+          </div>
+        <% } %>
+      </main>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+
+      <% if (pagination.hasPrev) { %>
+        <a href="/shop?page=<%= pagination.page - 1 %><%= search ? '&search=' + search : '' %><%= category ? '&category=' + category : '' %><%= shoeType ? '&shoeType=' + shoeType : '' %><%= priceRange ? '&priceRange=' + priceRange : '' %>">
+          Prev
+        </a>
+      <% } %>
+
+      <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+        <a href="/shop?page=<%= i %><%= search ? '&search=' + search : '' %><%= category ? '&category=' + category : '' %><%= shoeType ? '&shoeType=' + shoeType : '' %><%= priceRange ? '&priceRange=' + priceRange : '' %>"
+          class="<%= pagination.page === i ? 'active' : '' %>">
+          <%= i %>
+        </a>
+      <% } %>
+
+      <% if (pagination.hasNext) { %>
+        <a href="/shop?page=<%= pagination.page + 1 %><%= search ? '&search=' + search : '' %><%= category ? '&category=' + category : '' %><%= shoeType ? '&shoeType=' + shoeType : '' %><%= priceRange ? '&priceRange=' + priceRange : '' %>">
+          Next
+        </a>
+      <% } %>
+
+    </div>
+  </section>
+</div>
+
+<!-- ===== Heart Burst Script (Conditional on Add) ===== -->
+<script>
+  (function() {
+    'use strict';
+
+    // ---- Heart Burst Function ----
+    function burstHearts(x, y) {
+      const heartSymbols = ['♥', '❤', '💖', '💗', '💕', '💓', '❤️', '🧡', '💛', '💚', '💙', '💜'];
+      const colors = ['#ff6b6b', '#ff4757', '#ff6348', '#ff7f50', '#e74c3c', '#ff5e62', '#ff3b3b'];
+
+      for (let i = 0; i < 22; i++) {
+        const el = document.createElement('span');
+        el.className = 'heart-particle';
+        el.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+        el.style.color = colors[Math.floor(Math.random() * colors.length)];
+        el.style.fontSize = (16 + Math.random() * 30) + 'px';
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+
+        const angle = Math.random() * 2 * Math.PI;
+        const distance = 80 + Math.random() * 200;
+        const tx = Math.cos(angle) * distance;
+        const ty = Math.sin(angle) * distance - 60;
+        const rot = (Math.random() - 0.5) * 720;
+
+        el.style.setProperty('--tx', tx + 'px');
+        el.style.setProperty('--ty', ty + 'px');
+        el.style.setProperty('--rot', rot + 'deg');
+        el.style.animationDuration = (0.8 + Math.random() * 0.8) + 's';
+
+        document.body.appendChild(el);
+
+        setTimeout(() => {
+          el.remove();
+        }, 2000);
+      }
+    }
+
+    // ---- Attach to all wishlist buttons ----
+    const wishlistBtns = document.querySelectorAll('.wishlist-btn');
+
+    wishlistBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        const wasAdded = this.classList.contains('added');
+        this.classList.toggle('added');
+
+        if (this.classList.contains('added')) {
+          this.textContent = '♥';
+        } else {
+          this.textContent = '♡';
+        }
+
+        if (!wasAdded && this.classList.contains('added')) {
+          const rect = this.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          burstHearts(cx, cy);
+        }
+      });
+    });
+
+  })();
+</script>
+
+<%- include("../partials/account/footer") %>
+</body>
+</html>

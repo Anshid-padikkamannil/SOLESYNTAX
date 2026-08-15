@@ -15,7 +15,8 @@ const productSchema = new Schema({
     required: true,
     enum: [
       "Men",
-      "Women"
+      "Women",
+      "unisex"
     ]
   },
   brand: {

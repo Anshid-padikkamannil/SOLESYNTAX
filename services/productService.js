@@ -1,5 +1,68 @@
 const Product = require('../models/productSchema');
 const Review = require('../models/reviewSchema');
+const paginate = require('../utils/pagination');
+
+
+const getAllProducts = async (filtersOptions = {}, pagination = {}) => {
+
+  const filter = {};
+
+  const { brand, shoeType, category, search, priceRange } = filtersOptions;
+
+  if (brand) {
+    filter.brand = brand;
+  }
+
+  if (shoeType) {
+    filter.shoeType = shoeType;
+  }
+
+  if (category) {
+    filter.category = category;
+  }
+
+  if (search) {
+    filter.productName = {
+      $regex: search,
+      $options: 'i'
+    };
+  }
+
+  if (priceRange === 'under-5000') {
+    filter.price = { $lt: 5000};
+  }
+
+  if (priceRange === '5000-6000') {
+    filter.price = {
+      $gte: 5000,
+      $lt: 6000
+    }
+  }
+
+  if (priceRange === '6000-7500') {
+    filter.price = {
+      $gte: 6000,
+      $lte: 7500
+    }
+  }
+
+  if (priceRange === 'above-7500') {
+    filter.price = { $gt: 7500};
+  }
+
+  const result = await paginate(
+    Product,
+    filter,
+    {
+      page: pagination.page,
+      limit: pagination.limit,
+      sort: { price: 1 },
+      select: 'productName price images brand shoeType category stock averageRating totalReviews'
+    }
+  );
+
+  return result;
+};
 
 const getProductDetails = async (productId) => {
 
@@ -76,6 +139,7 @@ const addProductReview = async (userId, productId, rating, comment) => {
 };
 
 module.exports = {
+  getAllProducts,
   getProductDetails,
   addProductReview
 };

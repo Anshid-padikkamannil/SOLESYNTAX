@@ -2,6 +2,52 @@ const Product = require('../../models/productSchema');
 const Review = require('../../models/reviewSchema');
 const productService = require('../../services/productService');
 
+const getShop = async (req, res) => {
+
+  try {
+
+    const { brand, shoeType, category, search, priceRange, page, limit} = req.query;
+
+    const result = await productService.getAllProducts(
+      {
+        brand,
+        shoeType,
+        category,
+        search,
+        priceRange
+      },
+      {
+        page,
+        limit
+      }
+    );
+
+    return res.render('store/shop', {
+      layout: false,
+      title: 'shop',
+      products: result.data,
+      pagination: result.pagination,
+      search: req.query.search || '',
+      category: req.query.category || '',
+      shoeType: req.query.shoeType || '',
+      priceRange: req.query.priceRange || ''
+    });
+
+  } catch (err) {
+    console.error('GET SHOP ERROR:', err);
+
+    return res.status(500).render('error', {
+      layout: false,
+      status: 500,
+      title: 'Server Error',
+      message: 'Something went wrong while loading the shop.'
+    });
+
+  }
+
+  
+}
+
 const productDetails = async (req, res) => {
   
   try {
@@ -65,7 +111,26 @@ const postReviews = async (req, res) => {
   }
 }
 
+const getHomePage = async (req, res) => {
+  try {
+    
+    const products = await Product.find()
+      .sort({ createdAt: -1 })
+      .limit(16);
+    
+      res.render("store/index", {
+        products,
+        layout: false
+      })
+
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
 module.exports = {
+  getShop,
   productDetails,
-  postReviews
+  postReviews,
+  getHomePage
 };
