@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Product Details | SOLESYNTAX</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Rokkitt:wght@100;300;400;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    /* ===== Brand Colors ===== */
+    :root {
+      --primary: #88c8bc;
+      --primary-dark: #66a59b;
+      --secondary: #46698f;
+      --accent: #ff6b6b;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --gray: #ced4da;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      --border-radius: 10px;
+      --font-main: 'Poppins', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background: #f8f9fa;
+      padding-top: 20px;
+    }
+
+    /* ===== Header ===== */
+    .navbar-brand {
+      font-family: 'Rokkitt', Georgia, serif;
+      font-weight: 600;
+      font-size: 32px;
+      color: var(--primary) !important;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .navbar-brand:hover {
+      color: var(--primary-dark) !important;
+    }
+    .nav-link {
+      font-weight: 500;
+      color: #555 !important;
+      transition: color 0.3s;
+    }
+    .nav-link:hover {
+      color: var(--primary) !important;
+    }
+    .nav-link i {
+      margin-right: 4px;
+    }
+
+    /* ===== Breadcrumb ===== */
+    .breadcrumb {
+      background: transparent;
+      padding: 10px 0;
+      font-size: 14px;
+    }
+    .breadcrumb-item a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .breadcrumb-item.active {
+      color: #6c757d;
+    }
+
+    /* ===== Product Detail ===== */
+    .product-wrapper {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .product-gallery {
+      position: relative;
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .product-gallery .main-image {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .product-gallery .thumbnails {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+    .product-gallery .thumbnails img {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border 0.3s;
+      flex-shrink: 0;
+    }
+    .product-gallery .thumbnails img:hover,
+    .product-gallery .thumbnails img.active {
+      border-color: var(--primary);
+    }
+    .product-gallery .wishlist-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #6c757d;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: all 0.3s;
+      cursor: pointer;
+      z-index: 5;
+    }
+    .product-gallery .wishlist-btn:hover {
+      background: #fff;
+      transform: scale(1.1);
+    }
+    .product-gallery .wishlist-btn.added {
+      color: var(--accent);
+      background: rgba(255,107,107,0.12);
+    }
+
+    .product-info {
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 30px;
+    }
+    .product-info .product-title {
+      font-family: 'Rokkitt', Georgia, serif;
+      font-size: 30px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .product-info .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .product-info .product-rating .stars {
+      color: #f5a623;
+      font-size: 16px;
+    }
+    .product-info .product-rating .review-count {
+      color: #6c757d;
+      font-size: 14px;
+    }
+    .product-info .product-price {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+    .product-info .product-price .original {
+      font-size: 20px;
+      color: #adb5bd;
+      text-decoration: line-through;
+      margin-left: 10px;
+      font-weight: 400;
+    }
+    .product-info .product-description {
+      color: #555;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .product-info .product-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #6c757d;
+    }
+    .product-info .product-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .product-info .product-meta i {
+      color: var(--primary);
+    }
+
+    /* Size & Quantity */
+    .size-select {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .size-select .size-option {
+      padding: 6px 16px;
+      border: 1.5px solid #dee2e6;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 14px;
+      color: #495057;
+      transition: all 0.2s;
+    }
+    .size-select .size-option:hover {
+      border-color: var(--primary);
+    }
+    .size-select .size-option.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
+    .size-select .size-option.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .qty-cart {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .qty-cart .quantity-control {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .qty-cart .quantity-control button {
+      background: transparent;
+      border: none;
+      width: 36px;
+      height: 38px;
+      font-size: 18px;
+      cursor: pointer;
+      color: #6c757d;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .qty-cart .quantity-control button:hover {
+      background: #f0f9f7;
+      color: var(--primary);
+    }
+    .qty-cart .quantity-control input {
+      width: 48px;
+      height: 38px;
+      text-align: center;
+      border: none;
+      background: transparent;
+      font-weight: 500;
+      font-size: 16px;
+      padding: 0;
+      appearance: textfield;
+      -moz-appearance: textfield;
+    }
+    .qty-cart .quantity-control input::-webkit-outer-spin-button,
+    .qty-cart .quantity-control input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .btn-add-cart {
+      background: var(--secondary);
+      color: #fff;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 16px;
+      transition: background 0.3s, transform 0.2s;
+      cursor: pointer;
+    }
+    .btn-add-cart:hover {
+      background: #395884;
+      transform: translateY(-2px);
+    }
+    .btn-add-cart i {
+      margin-right: 8px;
+    }
+
+    /* ===== Tabs ===== */
+    .product-tabs {
+      margin-top: 40px;
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 30px;
+    }
+    .product-tabs .nav-tabs {
+      border-bottom: 2px solid #e9ecef;
+    }
+    .product-tabs .nav-tabs .nav-link {
+      border: none;
+      font-weight: 600;
+      color: #6c757d;
+      padding: 12px 24px;
+      transition: color 0.3s;
+    }
+    .product-tabs .nav-tabs .nav-link:hover {
+      color: var(--primary);
+    }
+    .product-tabs .nav-tabs .nav-link.active {
+      color: var(--primary);
+      border-bottom: 3px solid var(--primary);
+      background: transparent;
+    }
+    .product-tabs .tab-content {
+      padding-top: 20px;
+    }
+    .product-tabs .tab-content p {
+      color: #555;
+      line-height: 1.8;
+    }
+
+    /* Reviews */
+    .review-item {
+      border-bottom: 1px solid #f0f0f0;
+      padding: 16px 0;
+    }
+    .review-item:last-child {
+      border-bottom: none;
+    }
+    .review-item .review-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .review-item .review-header .reviewer {
+      font-weight: 600;
+      color: var(--dark);
+    }
+    .review-item .review-header .review-date {
+      font-size: 13px;
+      color: #adb5bd;
+    }
+    .review-item .review-stars {
+      color: #f5a623;
+      font-size: 14px;
+    }
+    .review-item .review-text {
+      color: #555;
+      font-size: 14px;
+    }
+    .review-form textarea {
+      resize: vertical;
+      border-radius: 8px;
+      border: 1px solid #ced4da;
+    }
+    .review-form textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(136,200,188,0.25);
+    }
+
+    /* ===== Related Products ===== */
+    .related-products {
+      margin-top: 50px;
+    }
+    .related-products h4 {
+      font-family: 'Rokkitt', Georgia, serif;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+    .product-card {
+      background: #fff;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: var(--shadow);
+      position: relative;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.10);
+    }
+    .product-card .product-image {
+      position: relative;
+      padding-top: 100%;
+      overflow: hidden;
+      background: #f5f5f5;
+    }
+    .product-card .product-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+    .product-card:hover .product-image img {
+      transform: scale(1.05);
+    }
+    .product-card .product-info {
+      padding: 16px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+    .product-card .product-info h6 {
+      font-weight: 500;
+      font-size: 16px;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+    .product-card .product-info .price {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      .product-info .product-title {
+        font-size: 24px;
+      }
+      .product-info .product-price {
+        font-size: 22px;
+      }
+      .product-gallery .thumbnails img {
+        width: 60px;
+        height: 60px;
+      }
+      .qty-cart {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn-add-cart {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+    @media (max-width: 576px) {
+      .product-tabs .nav-tabs .nav-link {
+        padding: 10px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" href="#">SOLESYNTAX</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-store"></i> Shop</a></li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-heart"></i> Wishlist</a></li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-user"></i> Account</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== BREADCRUMB ===== -->
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">Home</a></li>
+      <li class="breadcrumb-item"><a href="#">Shop</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Nike Air Max</li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ===== PRODUCT DETAIL ===== -->
+<div class="product-wrapper">
+  <div class="row g-4">
+    <!-- Gallery -->
+    <div class="col-lg-6">
+      <div class="product-gallery">
+        <img src="/images/item-13.jpg" alt="Product" class="main-image" id="mainImage">
+        <button class="wishlist-btn" id="wishlistBtn"><i class="far fa-heart"></i></button>
+        <div class="thumbnails">
+          <img src="/images/item-14.jpg" alt="Thumb 1" data-large="https://via.placeholder.com/600x600/88c8bc/fff?text=Image+1" class="active">
+          <img src="/images/item-15.jpg" alt="Thumb 2" data-large="https://via.placeholder.com/600x600/88c8bc/fff?text=Image+2">
+          <img src="/images/item-16.jpg" alt="Thumb 3" data-large="https://via.placeholder.com/600x600/88c8bc/fff?text=Image+3">
+          <img src="/images/item-1.jpg" alt="Thumb 4" data-large="https://via.placeholder.com/600x600/88c8bc/fff?text=Image+4">
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="col-lg-6">
+      <div class="product-info">
+        <h1 class="product-title">Nike Air Max</h1>
+        <div class="product-rating">
+          <span class="stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+          </span>
+          <span class="review-count">(24 reviews)</span>
+        </div>
+        <div class="product-price">
+          ₹4,499
+          <span class="original">₹6,499</span>
+        </div>
+        <p class="product-description">
+          Experience iconic style and all‑day comfort with the Nike Air Max. Featuring a visible Air‑sole unit and a breathable mesh upper, these sneakers are perfect for everyday wear.
+        </p>
+        <div class="product-meta">
+          <span><i class="fas fa-tag"></i> Category: Sneakers</span>
+          <span><i class="fas fa-box"></i> In Stock</span>
+        </div>
+
+        <!-- Size -->
+        <label class="fw-bold">Size</label>
+        <div class="size-select">
+          <span class="size-option">UK 6</span>
+          <span class="size-option active">UK 7</span>
+          <span class="size-option">UK 8</span>
+          <span class="size-option">UK 9</span>
+          <span class="size-option disabled">UK 10</span>
+        </div>
+
+        <!-- Quantity & Add to Cart -->
+        <div class="qty-cart">
+          <div class="quantity-control">
+            <button class="qty-minus">−</button>
+            <input type="number" value="1" min="1" max="5" class="qty-input">
+            <button class="qty-plus">+</button>
+          </div>
+          <button class="btn-add-cart"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TABS ===== -->
+  <div class="product-tabs">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc" type="button" role="tab">Description</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Reviews</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">Shipping & Info</button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="desc" role="tabpanel">
+        <p>This is the Nike Air Max, a classic sneaker that blends retro style with modern comfort. The mesh upper provides breathability, while the full‑length Air‑sole unit delivers responsive cushioning. The rubber outsole offers durable traction.</p>
+        <p><strong>Key Features:</strong></p>
+        <ul>
+          <li>Breathable mesh upper</li>
+          <li>Visible Air‑sole unit for lightweight cushioning</li>
+          <li>Rubber outsole with traction pattern</li>
+          <li>Padded collar for comfort</li>
+        </ul>
+      </div>
+      <div class="tab-pane fade" id="reviews" role="tabpanel">
+        <div class="review-item">
+          <div class="review-header">
+            <span class="reviewer">John Doe</span>
+            <span class="review-date">15 Aug 2026</span>
+          </div>
+          <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+          <p class="review-text">Amazing sneakers! Super comfortable and stylish. Love them.</p>
+        </div>
+        <div class="review-item">
+          <div class="review-header">
+            <span class="reviewer">Jane Smith</span>
+            <span class="review-date">10 Aug 2026</span>
+          </div>
+          <div class="review-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+          <p class="review-text">Great quality, but runs slightly small. I recommend ordering half size up.</p>
+        </div>
+        <!-- Review Form -->
+        <div class="review-form mt-4">
+          <h6>Write a Review</h6>
+          <div class="mb-3">
+            <label class="form-label">Rating</label>
+            <div class="star-rating">
+              <i class="fas fa-star" data-value="1"></i>
+              <i class="fas fa-star" data-value="2"></i>
+              <i class="fas fa-star" data-value="3"></i>
+              <i class="fas fa-star" data-value="4"></i>
+              <i class="fas fa-star" data-value="5"></i>
+              <input type="hidden" id="ratingInput" value="0">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="reviewText" class="form-label">Your Review</label>
+            <textarea class="form-control" id="reviewText" rows="3" placeholder="Share your experience..."></textarea>
+          </div>
+          <button class="btn btn-primary" id="submitReview">Submit Review</button>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="info" role="tabpanel">
+        <p><strong>Shipping:</strong> Free shipping on orders over ₹5000. Estimated delivery: 3‑5 business days.</p>
+        <p><strong>Returns:</strong> 30‑day return policy. Items must be unworn and in original packaging.</p>
+        <p><strong>Care Instructions:</strong> Wipe clean with a damp cloth. Avoid machine washing.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RELATED PRODUCTS ===== -->
+  <div class="related-products">
+    <h4>You May Also Like</h4>
+    <div class="row g-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="product-card">
+          <a href="#">
+            <div class="product-image">
+              <img src="https://via.placeholder.com/300x300/88c8bc/fff?text=Adidas+Ultraboost" alt="Adidas Ultraboost">
+            </div>
+          </a>
+          <div class="product-info">
+            <h6>Adidas Ultraboost</h6>
+            <span class="price">₹6,999</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="product-card">
+          <a href="#">
+            <div class="product-image">
+              <img src="https://via.placeholder.com/300x300/88c8bc/fff?text=Reebok+Classic" alt="Reebok Classic">
+            </div>
+          </a>
+          <div class="product-info">
+            <h6>Reebok Classic</h6>
+            <span class="price">₹3,999</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="product-card">
+          <a href="#">
+            <div class="product-image">
+              <img src="https://via.placeholder.com/300x300/88c8bc/fff?text=Puma+Suede" alt="Puma Suede">
+            </div>
+          </a>
+          <div class="product-info">
+            <h6>Puma Suede</h6>
+            <span class="price">₹2,999</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="product-card">
+          <a href="#">
+            <div class="product-image">
+              <img src="https://via.placeholder.com/300x300/88c8bc/fff?text=New+Balance+574" alt="New Balance 574">
+            </div>
+          </a>
+          <div class="product-info">
+            <h6>New Balance 574</h6>
+            <span class="price">₹4,499</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="text-center py-4 bg-light mt-5">
+  <div class="container">
+    <small class="text-muted">© 2026 SOLESYNTAX. All rights reserved.</small>
+  </div>
+</footer>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  (function() {
+    'use strict';
+
+    // ---- Thumbnail gallery ----
+    const mainImage = document.getElementById('mainImage');
+    const thumbs = document.querySelectorAll('.thumbnails img');
+    thumbs.forEach(img => {
+      img.addEventListener('click', function() {
+        thumbs.forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        const large = this.dataset.large;
+        if (large) mainImage.src = large;
+      });
+    });
+
+    // ---- Wishlist toggle (demo) ----
+    const wishlistBtn = document.getElementById('wishlistBtn');
+    wishlistBtn.addEventListener('click', function() {
+      this.classList.toggle('added');
+      const icon = this.querySelector('i');
+      if (this.classList.contains('added')) {
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+        // Burst effect can be added here if needed
+        alert('Added to wishlist!');
+      } else {
+        icon.classList.remove('fas');
+        icon.classList.add('far');
+        alert('Removed from wishlist.');
+      }
+    });
+
+    // ---- Size selection ----
+    const sizes = document.querySelectorAll('.size-option:not(.disabled)');
+    sizes.forEach(size => {
+      size.addEventListener('click', function() {
+        sizes.forEach(s => s.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // ---- Quantity ----
+    const qtyInput = document.querySelector('.qty-input');
+    const minusBtn = document.querySelector('.qty-minus');
+    const plusBtn = document.querySelector('.qty-plus');
+    const maxQty = parseInt(qtyInput.max) || 5;
+
+    minusBtn.addEventListener('click', function() {
+      let val = parseInt(qtyInput.value) || 1;
+      if (val > 1) qtyInput.value = val - 1;
+    });
+    plusBtn.addEventListener('click', function() {
+      let val = parseInt(qtyInput.value) || 1;
+      if (val < maxQty) qtyInput.value = val + 1;
+    });
+    qtyInput.addEventListener('change', function() {
+      let val = parseInt(this.value) || 1;
+      if (val < 1) this.value = 1;
+      if (val > maxQty) this.value = maxQty;
+    });
+
+    // ---- Add to Cart ----
+    document.querySelector('.btn-add-cart').addEventListener('click', function() {
+      const size = document.querySelector('.size-option.active');
+      const sizeText = size ? size.textContent : 'UK 7';
+      const qty = qtyInput.value;
+      alert('Added ' + qty + ' item(s) (Size ' + sizeText + ') to cart! (Demo)');
+    });
+
+    // ---- Star rating ----
+    const stars = document.querySelectorAll('.star-rating i');
+    const ratingInput = document.getElementById('ratingInput');
+    stars.forEach(star => {
+      star.addEventListener('click', function() {
+        const value = parseInt(this.dataset.value);
+        ratingInput.value = value;
+        stars.forEach(s => {
+          if (parseInt(s.dataset.value) <= value) {
+            s.classList.remove('far');
+            s.classList.add('fas');
+          } else {
+            s.classList.remove('fas');
+            s.classList.add('far');
+          }
+        });
+      });
+    });
+
+    // ---- Submit review ----
+    document.getElementById('submitReview').addEventListener('click', function() {
+      const rating = parseInt(ratingInput.value);
+      const text = document.getElementById('reviewText').value.trim();
+      if (!rating) {
+        alert('Please select a rating.');
+        return;
+      }
+      if (!text) {
+        alert('Please write your review.');
+        return;
+      }
+      alert('Thank you for your review! (Demo)');
+      // Clear form
+      document.getElementById('reviewText').value = '';
+      stars.forEach(s => { s.classList.remove('fas'); s.classList.add('far'); });
+      ratingInput.value = 0;
+    });
+
+  })();
+</script>
+
+</body>
+</html>

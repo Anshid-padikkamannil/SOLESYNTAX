@@ -1,214 +1,375 @@
-<h4 class="mb-3"><i class="fas fa-map-marker-alt" style="color:#88c8bc;"></i> Addresses</h4>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Notification Demo | SOLESYNTAX</title>
 
-<div class="row">
-  <% if (addresses && addresses.length) { %>
-    <% addresses.forEach(addr => { %>
-        <div class="col-md-6 mb-4">
-            <div class="address-card <%= addr.isDefault ? 'default' : '' %> p-3 border rounded bg-white shadow-sm">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div>
-                        <strong><%= addr.addressType %></strong>
-                        <% if (addr.isDefault) { %>
-                            <span class="badge bg-success ms-2">Default</span>
-                        <% } %>
-                    </div>
-                    <div>
-                        <!-- Edit button – opens the edit form -->
-                        <button class="btn btn-sm btn-outline-primary edit-address-btn" 
-                                data-address='<%= JSON.stringify(addr).replace(/'/g, "&#39;") %>'>
-                            Edit
-                        </button>
-                        <!-- Delete form -->
-                        <form action="/account/address/<%= addr._id %>/delete" method="POST" style="display:inline-block;">
-                            <button type="submit" class="btn btn-sm btn-outline-danger" 
-                                    onclick="return confirm('Delete this address?')">Delete</button>
-                        </form>
-                        <!-- Set Default form (only if not already default) -->
-                        <% if (!addr.isDefault) { %>
-                            <form action="/account/address/<%= addr._id %>/default" method="POST" style="display:inline-block;">
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">Set Default</button>
-                            </form>
-                        <% } %>
-                    </div>
-                </div>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Rokkitt:wght@100;300;400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-                <!-- Summary view -->
-                <div class="address-summary mt-2">
-                    <p class="mb-1 small">
-                        <strong><%= addr.name %></strong><br>
-                        <%= addr.addressLine1 %><br>
-                        <%= addr.city %>, <%= addr.state %> - <%= addr.pincode %>
-                    </p>
-                    <button class="btn btn-link btn-sm p-0 toggle-details" data-target="details-<%= addr._id %>">
-                        Show more <i class="fas fa-chevron-down"></i>
-                    </button>
-                </div>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-                <!-- Full details (hidden by default) -->
-                <div id="details-<%= addr._id %>" class="address-details mt-2" style="display:none;">
-                    <hr>
-                    <p class="mb-1 small">
-                        <% if (addr.addressLine2) { %>
-                            <strong>Address Line 2:</strong> <%= addr.addressLine2 %><br>
-                        <% } %>
-                        <% if (addr.landmark) { %>
-                            <strong>Landmark:</strong> <%= addr.landmark %><br>
-                        <% } %>
-                        <strong>Phone:</strong> <%= addr.phone %><br>
-                        <% if (addr.altPhone) { %>
-                            <strong>Alternate Phone:</strong> <%= addr.altPhone %><br>
-                        <% } %>
-                    </p>
-                    <button class="btn btn-link btn-sm p-0 toggle-details" data-target="details-<%= addr._id %>">
-                        Show less <i class="fas fa-chevron-up"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    <% }); %>
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    :root {
+      --primary: #88c8bc;
+      --primary-dark: #66a59b;
+      --secondary: #46698f;
+      --accent: #ff6b6b;
+      --dark: #1a1a2e;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f2f5;
+      padding: 30px 0;
+    }
+
+    .demo-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .demo-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .demo-header h1 {
+      font-family: 'Rokkitt', Georgia, serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .demo-header h1 i {
+      color: var(--primary);
+    }
+    .demo-header p {
+      color: #6c757d;
+      font-size: 16px;
+    }
+
+    .demo-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      margin-bottom: 24px;
+    }
+    .demo-card h5 {
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .demo-card h5 i {
+      color: var(--primary);
+    }
+
+    .btn-demo {
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 4px;
+      min-width: 120px;
+    }
+    .btn-demo:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+
+    .btn-demo.btn-primary-custom {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+    }
+    .btn-demo.btn-primary-custom:hover {
+      background: var(--primary-dark);
+    }
+    .btn-demo.btn-secondary-custom {
+      background: var(--secondary);
+      color: #fff;
+      border: none;
+    }
+    .btn-demo.btn-secondary-custom:hover {
+      background: #395884;
+    }
+    .btn-demo.btn-outline-custom {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+    .btn-demo.btn-outline-custom:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-demo.btn-danger-custom {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+    .btn-demo.btn-danger-custom:hover {
+      background: #e55a5a;
+    }
+
+    .toast-container {
+      z-index: 1050;
+    }
+
+    .badge-demo {
+      background: var(--primary);
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    code {
+      background: #f0f2f5;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--secondary);
+    }
+
+    @media (max-width: 576px) {
+      .btn-demo {
+        min-width: 100%;
+        margin: 4px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="demo-wrapper">
+  <!-- Header -->
+  <div class="demo-header">
+    <h1><i class="fas fa-bell"></i> Notification Demo</h1>
+    <p>Test SweetAlert2 modals and Bootstrap 5 toasts</p>
+  </div>
+
+  <!-- ===== TOASTS ===== -->
+  <div class="demo-card">
+    <h5><i class="fas fa-bell" style="color:var(--primary);"></i> Toast Notifications <span class="badge-demo">Non-blocking</span></h5>
+    <p class="text-muted small">Lightweight feedback – auto‑dismiss after 3.5s. Ideal for: add to cart, wishlist toggle, coupon applied.</p>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <button class="btn-demo btn-primary-custom" onclick="showToast('Item added to cart!', 'success', '✅')">
+        <i class="fas fa-check-circle"></i> Success
+      </button>
+      <button class="btn-demo btn-secondary-custom" onclick="showToast('Please select a size.', 'warning', '⚠️')">
+        <i class="fas fa-exclamation-triangle"></i> Warning
+      </button>
+      <button class="btn-demo btn-danger-custom" onclick="showToast('Something went wrong.', 'danger', '❌')">
+        <i class="fas fa-times-circle"></i> Error
+      </button>
+      <button class="btn-demo btn-outline-custom" onclick="showToast('Coupon applied!', 'info', '🎉')">
+        <i class="fas fa-info-circle"></i> Info
+      </button>
+    </div>
+    <div class="mt-3">
+      <small class="text-muted">Usage: <code>showToast('Message', 'type', 'Emoji')</code></small>
+    </div>
+  </div>
+
+  <!-- ===== SWEETALERT2 MODALS ===== -->
+  <div class="demo-card">
+    <h5><i class="fas fa-window-maximize" style="color:var(--secondary);"></i> SweetAlert2 Modals <span class="badge-demo">Blocking</span></h5>
+    <p class="text-muted small">Beautiful, animated modals – ideal for: place order, delete, logout, confirmations, form errors.</p>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <button class="btn-demo btn-primary-custom" onclick="demoSwal('success', 'Added to Cart!', 'Your item has been added successfully.')">
+        <i class="fas fa-check-circle"></i> Success
+      </button>
+      <button class="btn-demo btn-secondary-custom" onclick="demoSwal('info', 'Info', 'This is an informational message.')">
+        <i class="fas fa-info-circle"></i> Info
+      </button>
+      <button class="btn-demo btn-danger-custom" onclick="demoSwal('error', 'Oops...', 'Something went wrong. Please try again.')">
+        <i class="fas fa-times-circle"></i> Error
+      </button>
+      <button class="btn-demo btn-outline-custom" onclick="demoSwal('warning', 'Are you sure?', 'This action cannot be undone.')">
+        <i class="fas fa-exclamation-triangle"></i> Warning
+      </button>
+    </div>
+    <div class="d-flex flex-wrap gap-2 mt-2">
+      <button class="btn-demo btn-secondary-custom" onclick="demoConfirm()">
+        <i class="fas fa-question-circle"></i> Confirm (yes/no)
+      </button>
+      <button class="btn-demo btn-primary-custom" onclick="demoToastSwal()">
+        <i class="fas fa-clock"></i> Auto‑close (2s)
+      </button>
+      <button class="btn-demo btn-danger-custom" onclick="demoCustomSwal()">
+        <i class="fas fa-palette"></i> Brand Colours
+      </button>
+    </div>
+    <div class="mt-3">
+      <small class="text-muted">
+        Usage: <code>Swal.fire({ icon, title, text, confirmButtonColor: '#88c8bc' })</code>
+      </small>
+    </div>
+  </div>
+
+  <!-- ===== TOAST CONTAINER (hidden – created by JS) ===== -->
+  <!-- Toast container will be injected by JavaScript -->
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="text-center py-4 text-muted small">
+    <p>Notifications powered by <strong>SweetAlert2</strong> + <strong>Bootstrap 5 Toasts</strong></p>
+    <p class="mb-0">SOLESYNTAX · Brand colours: <span style="color:#88c8bc;">#88c8bc</span> · <span style="color:#46698f;">#46698f</span></p>
+  </footer>
 </div>
 
-<button class="btn btn-primary btn-sm mt-3" id="addAddressBtn"><i class="fas fa-plus"></i> Add Address</button>
-<% } %>
-<!-- ===== Add / Edit Address Form ===== -->
-<div id="addressFormContainer" style="display:none;" class="mt-4 p-4 border rounded bg-light">
-    <h5 id="addressFormTitle">Add New Address</h5>
-    <form id="addressForm" method="POST">
-        <!-- <input type="hidden" name="_method" id="formMethod" value="POST"> -->
-        <div class="row g-3">
-            <div class="col-md-6">
-                <label class="form-label">Address Type</label>
-                <select class="form-select" name="addressType" id="addressType" required>
-                    <option value="Home">Home</option>
-                    <option value="Work">Work</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Full Name</label>
-                <input type="text" class="form-control" name="name" id="addressName" placeholder="Recipient name" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Phone</label>
-                <input type="text" class="form-control" name="phone" id="addressPhone" placeholder="Primary phone" required>
-            </div>
-            <div class="col-md-6">
-                <label class="form-label">Alternate Phone (optional)</label>
-                <input type="text" class="form-control" name="altPhone" id="addressAltPhone" placeholder="Alternate phone">
-            </div>
-            <div class="col-12">
-                <label class="form-label">Address Line 1</label>
-                <input type="text" class="form-control" name="addressLine1" id="addressLine1" placeholder="Street address" required>
-            </div>
-            <div class="col-12">
-                <label class="form-label">Address Line 2 (optional)</label>
-                <input type="text" class="form-control" name="addressLine2" id="addressLine2" placeholder="Apartment, suite, etc.">
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">City</label>
-                <input type="text" class="form-control" name="city" id="addressCity" placeholder="City" required>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">State</label>
-                <input type="text" class="form-control" name="state" id="addressState" placeholder="State" required>
-            </div>
-            <div class="col-md-4">
-                <label class="form-label">Pincode</label>
-                <input type="number" class="form-control" name="pincode" id="addressPincode" placeholder="Pincode" required>
-            </div>
-            <div class="col-12">
-                <label class="form-label">Landmark (optional)</label>
-                <input type="text" class="form-control" name="landmark" id="addressLandmark" placeholder="Nearby landmark">
-            </div>
-            <div class="col-12">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="isDefault" id="addressDefault" value="true">
-                    <label class="form-check-label" for="addressDefault">
-                        Set as default address
-                    </label>
-                </div>
-            </div>
-        </div>
-        <div class="mt-4">
-            <button type="submit" class="btn btn-primary" id="addressSubmitBtn">Save Address</button>
-            <button type="button" class="btn btn-outline-secondary" id="cancelAddressForm">Cancel</button>
-        </div>
-    </form>
-</div>
+<!-- ===== SCRIPTS ===== -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // ---- Toggle form visibility ----
-        const addBtn = document.getElementById('addAddressBtn');
-        const formContainer = document.getElementById('addressFormContainer');
-        const cancelBtn = document.getElementById('cancelAddressForm');
-        const form = document.getElementById('addressForm');
-        const formTitle = document.getElementById('addressFormTitle');
-        const submitBtn = document.getElementById('addressSubmitBtn');
-        const methodInput = document.getElementById('formMethod');
+  (function() {
+    'use strict';
 
-        function resetForm() {
-            form.reset();
-            document.getElementById('addressType').value = 'Home';
-            document.getElementById('addressDefault').checked = false;
-            form.action = '/account/address';
-            methodInput.value = 'POST';
-            formTitle.textContent = 'Add New Address';
-            submitBtn.textContent = 'Save Address';
+    // ================================================================
+    // 1. TOAST SYSTEM (Bootstrap 5)
+    // ================================================================
+    function showToast(message, type = 'success', title = '') {
+      // Create container if not exists
+      let container = document.querySelector('.toast-container.position-fixed');
+      if (!container) {
+        container = document.createElement('div');
+        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        container.style.zIndex = '1050';
+        document.body.appendChild(container);
+      }
+
+      const toastEl = document.createElement('div');
+      const bgClass = type === 'success' ? 'bg-success' :
+                      type === 'danger' ? 'bg-danger' :
+                      type === 'warning' ? 'bg-warning text-dark' :
+                      type === 'info' ? 'bg-info text-dark' :
+                      'bg-secondary';
+      toastEl.className = `toast align-items-center ${bgClass} border-0`;
+      toastEl.role = 'alert';
+      toastEl.ariaLive = 'assertive';
+      toastEl.ariaAtomic = 'true';
+      toastEl.style.borderRadius = '12px';
+      toastEl.style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)';
+
+      toastEl.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body fw-semibold" style="font-size:15px;">
+            ${title ? `<span class="me-1">${title}</span>` : ''} ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      `;
+      container.appendChild(toastEl);
+
+      const bsToast = new bootstrap.Toast(toastEl, { delay: 3500 });
+      bsToast.show();
+
+      toastEl.addEventListener('hidden.bs.toast', function() {
+        toastEl.remove();
+      });
+    }
+
+    // ================================================================
+    // 2. SWEETALERT2 HELPERS
+    // ================================================================
+
+    // ---- Basic modal ----
+    window.demoSwal = function(icon, title, text) {
+      Swal.fire({
+        icon: icon,
+        title: title,
+        text: text,
+        confirmButtonColor: '#88c8bc',
+        confirmButtonText: 'OK',
+        timer: icon === 'success' ? 2000 : undefined,
+        showConfirmButton: icon !== 'success'
+      });
+    };
+
+    // ---- Confirm (yes/no) ----
+    window.demoConfirm = function() {
+      Swal.fire({
+        icon: 'question',
+        title: 'Confirm Action',
+        text: 'Are you sure you want to proceed?',
+        showCancelButton: true,
+        confirmButtonColor: '#88c8bc',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Yes, proceed!',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Confirmed!',
+            text: 'Action completed successfully.',
+            confirmButtonColor: '#88c8bc',
+            timer: 1500,
+            showConfirmButton: false
+          });
+        } else {
+          showToast('Action cancelled.', 'info', '↩️');
         }
+      });
+    };
 
-        addBtn.addEventListener('click', function() {
-            resetForm();
-            formContainer.style.display = 'block';
-            formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        });
+    // ---- Auto‑close toast‑like modal ----
+    window.demoToastSwal = function() {
+      Swal.fire({
+        icon: 'success',
+        title: 'Auto‑close!',
+        text: 'This modal will close in 2 seconds.',
+        timer: 2000,
+        showConfirmButton: false,
+        timerProgressBar: true,
+        confirmButtonColor: '#88c8bc'
+      });
+    };
 
-        cancelBtn.addEventListener('click', function() {
-            formContainer.style.display = 'none';
-        });
+    // ---- Custom brand colours ----
+    window.demoCustomSwal = function() {
+      Swal.fire({
+        icon: 'info',
+        title: 'Brand Colours',
+        text: 'This modal uses your SOLESYNTAX theme.',
+        confirmButtonColor: '#88c8bc',
+        background: '#f8fffe',
+        color: '#1a1a2e',
+        iconColor: '#88c8bc',
+        confirmButtonText: 'Looks great!',
+        customClass: {
+          confirmButton: 'btn btn-primary',
+        },
+        buttonsStyling: false,
+      });
+    };
 
-        // ---- Edit button: populate form with address data ----
-        document.querySelectorAll('.edit-address-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const addr = JSON.parse(this.dataset.address);
-                // Fill form
-                document.getElementById('addressType').value = addr.addressType || 'Home';
-                document.getElementById('addressName').value = addr.name || '';
-                document.getElementById('addressPhone').value = addr.phone || '';
-                document.getElementById('addressAltPhone').value = addr.altPhone || '';
-                document.getElementById('addressLine1').value = addr.addressLine1 || '';
-                document.getElementById('addressLine2').value = addr.addressLine2 || '';
-                document.getElementById('addressCity').value = addr.city || '';
-                document.getElementById('addressState').value = addr.state || '';
-                document.getElementById('addressPincode').value = addr.pincode || '';
-                document.getElementById('addressLandmark').value = addr.landmark || '';
-                document.getElementById('addressDefault').checked = addr.isDefault || false;
+    // ================================================================
+    // 3. Expose `showToast` globally
+    // ================================================================
+    window.showToast = showToast;
 
-                // Set form action to update endpoint
-                form.action = '/account/address/' + addr._id + '/update';
-                methodInput.value = 'POST'; // we'll use POST with a hidden _method=PUT if needed, but we can keep POST
-                // If your framework supports PUT, you can set methodInput to 'PUT' and use method override
-                // For simplicity, we'll use POST to the update route.
-                formTitle.textContent = 'Edit Address';
-                submitBtn.textContent = 'Update Address';
-                formContainer.style.display = 'block';
-                formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            });
-        });
+    // ================================================================
+    // 4. Demo: show a welcome toast on page load
+    // ================================================================
+    setTimeout(() => {
+      showToast('Notifications are ready! Try the buttons below.', 'info', '👋');
+    }, 500);
 
-        // ---- Toggle details (show more / less) ----
-        document.querySelectorAll('.toggle-details').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const targetId = this.dataset.target;
-                const details = document.getElementById(targetId);
-                if (details.style.display === 'none') {
-                    details.style.display = 'block';
-                    this.innerHTML = 'Show less <i class="fas fa-chevron-up"></i>';
-                } else {
-                    details.style.display = 'none';
-                    this.innerHTML = 'Show more <i class="fas fa-chevron-down"></i>';
-                }
-            });
-        });
-    });
+  })();
 </script>
+
+</body>
+</html>

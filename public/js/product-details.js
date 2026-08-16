@@ -11,7 +11,7 @@ addToCartBtn.addEventListener('click', async () => {
   const quantity = document.getElementById('quantity').value;
 
   if (!selectedSize) {
-    alert("Please select a size.");
+      showToast('Please select a size', 'warning', '⚠️');
     return;
   }
 
@@ -32,7 +32,11 @@ addToCartBtn.addEventListener('click', async () => {
 
     const data = await response.json();
 
-    console.log(data);
+    if (response.ok) {
+    showSwal('success', 'Added to Cart!', data.message || 'Your item has been added.');
+    } else {
+      showSwal('error', 'Oops...', data.message || 'Unable to add to cart.');
+    }
     
   } catch (error) {
 
