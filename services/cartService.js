@@ -105,7 +105,7 @@ const getUserCart = async (userId) => {
 
   return {
     cart,
-    subtotal
+    subtotal,
   }  
 };
 

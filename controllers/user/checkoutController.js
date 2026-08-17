@@ -1,4 +1,7 @@
-const paymentService = require('../services/paymentService');
+const paymentService = require('../../services/paymentService');
+const { getAddresses } = require('../../services/accountService');
+const { getCouponsForUser } = require('../../services/couponService');
+const  orderService = require('../../services/orderService');
 
 // create order endpoint
 const createRazorpayOrder = async (req, res) => {
@@ -71,7 +74,49 @@ const verifyPayment = async (req, res) => {
   }
 };
 
+const getCheckout = async (req, res) => {
+  try {
+    const userId = req.user.userId || req.user._id;
+
+    const { cart } = await orderService.getOrderData(userId);
+
+    const { orderitems, totalPrice } = orderService.buildOrderItems(cart);
+
+    const addresses = await getAddresses(userId);
+    const coupons = await getCouponsForUser(userId);
+    
+    const shipping = totalPrice >= 5000 ? 0 : 100;
+
+    const discount = 0;
+
+    // 3. Calculate totals
+    const finalAmount = totalPrice + shipping - discount;
+
+    res.render("store/checkout", {
+      cart,
+      subtotal: totalPrice,
+      shipping,
+      discount,
+      finalAmount,
+      coupons,
+      addresses,
+      layout: false
+    });
+
+  } catch (err) {
+    console.error('GET CHECKOUT ERROR:', err);
+
+    return res.status(500).render('error', {
+      layout: false,
+      status: 500,
+      title: 'Server Error',
+      message: 'Something went wrong while loading checkout.'
+    });
+  }
+};
+
 module.exports = {
   createRazorpayOrder,
-  verifyPayment
+  verifyPayment,
+  getCheckout
 }

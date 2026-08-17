@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Checkout | SOLESYNTAX</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Rokkitt:wght@100;300;400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+  <style>
+    /* ===== Brand Colors ===== */
+    /* ===== FORCE BRAND PRIMARY ===== */
+    :root {
+      --bs-primary: #88c8bc !important;
+      --bs-primary-rgb: 136, 200, 188 !important;
+      --primary: #88c8bc !important;
+    }
+
+    .btn-primary,
+    .btn-outline-primary, 
+    .bg-primary,
+    .text-primary,
+    .badge.bg-primary,
+    .btn-apply,
+    .available-coupons-toggle,
+    .view-all-link,
+    .manage-address-link {
+      color: #88c8bc !important;
+      border-color: #88c8bc !important;
+    }
+
+    .bg-primary,
+    .badge.bg-primary,
+    .btn-primary {
+      background-color: #88c8bc !important;
+      color: #fff !important;
+    }
+
+    .btn-outline-primary:hover,
+    .btn-primary:hover {
+      background-color: #66a59b !important;
+      border-color: #66a59b !important;
+      color: #fff !important;
+    }
+
+    .btn-outline-primary {
+      color: #88c8bc !important;
+    }
+
+    /* Fix for "Change" button text */
+    .address-card .btn-outline-primary {
+      color: #88c8bc !important;
+    }
+    .address-card .btn-outline-primary:hover {
+      color: #fff !important;
+    }
+
+    .manage-address-link {
+      color: #88c8bc !important;
+    }
+    .manage-address-link:hover {
+      color: #66a59b !important;
+    }
+    :root {
+      --primary: #88c8bc;
+      --primary-dark: #66a59b;
+      --secondary: #46698f;
+      --accent: #ff6b6b;
+      --gold: #f5a623;
+      --light: #f8f9fa;
+      --dark: #1a1a2e;
+      --shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+      --border-radius: 16px;
+    }
+
+    /* ===== Override Bootstrap Primary Color ===== */
+    :root {
+      --bs-primary: #88c8bc;
+      --bs-primary-rgb: 136, 200, 188;
+    }
+
+    .btn-primary {
+      background-color: var(--bs-primary) !important;
+      border-color: var(--bs-primary) !important;
+    }
+    .btn-primary:hover {
+      background-color: #66a59b !important;
+      border-color: #66a59b !important;
+    }
+    .btn-outline-primary {
+      color: var(--bs-primary) !important;
+      border-color: var(--bs-primary) !important;
+    }
+    .btn-outline-primary:hover {
+      background-color: var(--bs-primary) !important;
+      border-color: var(--bs-primary) !important;
+      color: #fff !important;
+    }
+    .text-primary {
+      color: var(--bs-primary) !important;
+    }
+    .bg-primary {
+      background-color: var(--bs-primary) !important;
+    }
+
+    /* ===== Global ===== */
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* .usp-banner {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      padding: 12px 0;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+    .usp-banner span {
+      display: inline-block;
+      margin: 0 20px;
+    }
+    .usp-banner i {
+      margin-right: 6px;
+      font-size: 16px;
+    }
+    @media (max-width: 576px) {
+      .usp-banner span { display: block; margin: 4px 0; }
+    } */
+
+    .breadcrumb {
+      background: transparent;
+      padding: 14px 0 6px;
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+    .breadcrumb-item a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    .breadcrumb-item.active { color: #6c757d; }
+
+    .checkout-wrapper {
+      max-width: 1200px;
+      margin: 10px auto 50px;
+      padding: 0 20px;
+    }
+
+    .checkout-header {
+      text-align: center;
+      margin-bottom: 30px;
+      animation: fadeDown 0.6s ease;
+    }
+    .checkout-header h2 {
+      font-family: 'Rokkitt', Georgia, serif;
+      font-size: 38px;
+      font-weight: 700;
+      color: var(--dark);
+      letter-spacing: -0.5px;
+    }
+    .checkout-header h2 i { color: var(--primary); }
+    .checkout-header p { color: #6c757d; font-size: 16px; margin-top: 2px; }
+
+    .checkout-steps {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      color: #adb5bd;
+      font-size: 14px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .step .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #e9ecef;
+      color: #6c757d;
+      font-weight: 700;
+      transition: all 0.4s ease;
+      font-size: 14px;
+    }
+    .step.active .step-number {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(136,200,188,0.4);
+      transform: scale(1.08);
+    }
+    .step.completed .step-number {
+      background: var(--primary-dark);
+      color: #fff;
+    }
+    .step.active { color: var(--dark); }
+    .step.completed { color: var(--primary-dark); }
+
+    .checkout-section {
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      padding: 28px 30px;
+      margin-bottom: 24px;
+      transition: transform 0.25s ease, box-shadow 0.3s ease;
+      animation: fadeUp 0.6s ease;
+    }
+    .checkout-section:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 48px rgba(0,0,0,0.10);
+    }
+    .checkout-section h5 {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--dark);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .checkout-section h5 i { color: var(--primary); font-size: 20px; }
+
+    /* ===== ADDRESS CARD ===== */
+    .address-card {
+      background: #f8fffe;
+      border: 1.5px solid var(--primary);
+      border-radius: 12px;
+      padding: 20px 24px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .address-card .default-badge {
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 16px;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .address-card .address-icon {
+      font-size: 24px;
+      color: var(--primary);
+      margin-right: 12px;
+    }
+    .address-card .address-details {
+      flex: 1;
+    }
+    .address-card .address-details .name {
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 16px;
+    }
+    .address-card .address-details .addr {
+      color: #555;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .address-card .address-details .phone {
+      color: #6c757d;
+      font-size: 13px;
+    }
+    .address-card .address-details .phone i {
+      color: var(--primary);
+      width: 18px;
+    }
+
+    .manage-address-link {
+      color: var(--primary) !important;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .manage-address-link:hover {
+      color: var(--primary-dark) !important;
+      text-decoration: underline;
+    }
+
+    /* ===== DELIVERY ESTIMATE ===== */
+    .delivery-estimate {
+      background: #f0f9f7;
+      border-radius: 10px;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+      border-left: 4px solid var(--primary);
+    }
+    .delivery-estimate i {
+      font-size: 22px;
+      color: var(--primary);
+    }
+    .delivery-estimate .delivery-text {
+      font-size: 14px;
+      color: #555;
+    }
+    .delivery-estimate .delivery-text strong {
+      color: var(--dark);
+    }
+
+    /* ===== PAYMENT ===== */
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border: 2px solid #e9ecef;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fafafa;
+    }
+    .payment-option:hover {
+      border-color: var(--primary);
+      background: #f8fffe;
+      transform: translateX(4px);
+    }
+    .payment-option.active {
+      border-color: var(--primary);
+      background: rgba(136,200,188,0.08);
+      box-shadow: 0 0 0 3px rgba(136,200,188,0.12);
+    }
+    .payment-option input[type="radio"] {
+      accent-color: var(--primary);
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+    .payment-option label {
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 15px;
+      margin: 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .payment-option label i {
+      font-size: 22px;
+      color: #6c757d;
+      width: 30px;
+    }
+
+    /* ===== WHY SHOP WITH US ===== */
+    .usp-grid .usp-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #fafafa;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+    .usp-grid .usp-item:hover {
+      background: #f0f9f7;
+    }
+    .usp-grid .usp-item i {
+      font-size: 22px;
+      color: var(--primary);
+      width: 30px;
+      text-align: center;
+    }
+    .usp-grid .usp-item .usp-text {
+      font-size: 14px;
+    }
+    .usp-grid .usp-item .usp-text strong {
+      display: block;
+      font-weight: 600;
+      color: var(--dark);
+    }
+    .usp-grid .usp-item .usp-text small {
+      color: #6c757d;
+      font-size: 12px;
+    }
+
+    /* ===== ORDER SUMMARY ===== */
+    .order-summary { position: sticky; top: 20px; }
+    .order-summary .checkout-section { padding: 24px; }
+
+    .order-item {
+      display: flex;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      align-items: center;
+      transition: background 0.2s;
+    }
+    .order-item:last-child { border-bottom: none; }
+    .order-item img {
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #f0f0f0;
+      transition: transform 0.3s;
+    }
+    .order-item:hover img { transform: scale(1.05); }
+    .order-item .details { flex: 1; }
+    .order-item .details .name { font-weight: 600; color: var(--dark); font-size: 15px; }
+    .order-item .details .meta { font-size: 13px; color: #6c757d; }
+    .order-item .price { font-weight: 700; color: var(--primary-dark); }
+
+    .totals { margin-top: 18px; }
+    .totals .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 15px;
+      color: #495057;
+    }
+    .totals .row .label { font-weight: 500; }
+    .totals .row .value { font-weight: 600; }
+    .totals .grand-total {
+      border-top: 2px solid #e9ecef;
+      margin-top: 12px;
+      padding-top: 16px;
+    }
+    .totals .grand-total .label {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+    .totals .grand-total .value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--primary-dark);
+    }
+
+    /* ===== COUPON ===== */
+    .coupon-section {
+      margin: 16px 0 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e9ecef;
+    }
+    .coupon-form {
+      display: flex;
+      gap: 8px;
+    }
+    .coupon-form .btn-apply {
+      background: var(--primary) !important;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      padding: 0 20px;
+      border-radius: 50px;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+    .coupon-form .btn-apply:hover {
+      background: var(--primary-dark) !important;
+      transform: scale(1.03);
+    }
+
+    .available-coupons-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary);
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.2s;
+      margin-top: 8px;
+    }
+    .available-coupons-toggle:hover { color: var(--primary-dark); }
+    .available-coupons-toggle i { font-size: 14px; }
+
+    /* Smooth coupon list toggle */
+    .coupon-list-wrapper {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+      opacity: 0;
+    }
+    .coupon-list-wrapper.open {
+      max-height: 600px; /* large enough to contain all coupons */
+      opacity: 1;
+    }
+
+    .coupon-list {
+      background: #f8f9fa;
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 10px;
+      border: 1px solid #e9ecef;
+    }
+    .coupon-list .coupon-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px dashed #e9ecef;
+      font-size: 14px;
+    }
+    .coupon-list .coupon-item:last-child { border-bottom: none; }
+    .coupon-list .coupon-item .code {
+      font-weight: 700;
+      font-family: 'Courier New', monospace;
+      color: var(--secondary);
+      letter-spacing: 0.5px;
+    }
+    .coupon-list .coupon-item .discount {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    .view-all-link {
+      display: block;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: 500;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .view-all-link:hover { color: var(--primary-dark); text-decoration: underline; }
+
+    .btn-place-order {
+      width: 100%;
+      background: linear-gradient(135deg, var(--secondary), #395884);
+      border: none;
+      color: #fff;
+      padding: 18px;
+      font-size: 18px;
+      font-weight: 700;
+      border-radius: 50px;
+      transition: all 0.4s ease;
+      margin-top: 18px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 20px rgba(70, 105, 143, 0.35);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-place-order:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(70, 105, 143, 0.5);
+    }
+    .btn-place-order::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.6s;
+      pointer-events: none;
+    }
+    .btn-place-order:hover::after { opacity: 1; }
+    .btn-place-order i { margin-right: 10px; }
+    .btn-place-order:active { transform: scale(0.97); }
+
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #6c757d;
+      font-size: 13px;
+      margin-top: 16px;
+    }
+    .secure-badge i { color: var(--primary); font-size: 18px; }
+
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      animation: confettiFall 2.5s ease-in forwards;
+    }
+    @keyframes confettiFall {
+      0% { opacity: 1; transform: translateY(-10px) rotate(0deg) scale(1); }
+      100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(0.3); }
+    }
+
+    @keyframes fadeDown {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 992px) {
+      .order-summary { position: static; margin-top: 24px; }
+    }
+    @media (max-width: 768px) {
+      .checkout-steps { gap: 1rem; }
+      .checkout-section { padding: 20px; }
+      .payment-option { padding: 12px 14px; }
+    }
+    @media (max-width: 576px) {
+      .checkout-header h2 { font-size: 28px; }
+      .order-item img { width: 48px; height: 48px; }
+      .totals .grand-total .value { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<%- include("../partials/user/header") %>
+
+<!-- ===== USP BANNER ===== -->
+<!-- <div class="usp-banner">
+  <span><i class="fas fa-truck"></i> Free Shipping on orders over ₹5000</span>
+  <span><i class="fas fa-undo-alt"></i> 30‑Day Easy Returns</span>
+  <span><i class="fas fa-lock"></i> 100% Secure Checkout</span>
+  <span><i class="fas fa-clock"></i> Express Delivery Available</span>
+</div> -->
+
+<!-- ===== BREADCRUMB ===== -->
+<div class="breadcrumbs">
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<p class="bread"><span><a href="/">Home</a></span> / <span>Checkout</span></p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<!-- ===== CHECKOUT ===== -->
+<div class="checkout-wrapper">
+  <div class="checkout-header">
+    <h2><i class="fas fa-lock"></i> Secure Checkout</h2>
+    <p>Complete your purchase in just a few steps</p>
+  </div>
+
+  <!-- Progress Steps -->
+  <div class="checkout-steps">
+    <span class="step completed"><span class="step-number"><i class="fas fa-check"></i></span> Cart</span>
+    <span class="step active"><span class="step-number">2</span> Details</span>
+    <span class="step"><span class="step-number">3</span> Payment</span>
+    <span class="step"><span class="step-number">4</span> Confirm</span>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column -->
+    <div class="col-lg-8">
+      <!-- ===== Shipping Address ===== -->
+      <div class="checkout-section">
+        <h5><i class="fas fa-map-pin"></i> Shipping Address</h5>
+
+        <div class="address-card">
+          <% if (addresses && addresses.length > 0) { %>
+            <% addresses.forEach(addr => { %>
+              <% if (addr.isDefault) { %>
+                <div class="d-flex align-items-start mb-3">
+                  <span class="default-badge">Default</span>
+                  <i class="fas fa-<%= addr.addressType === 'Work' ? 'briefcase' : addr.addressType === 'Other' ? 'map-marker-alt' : 'home' %> address-icon"></i>
+                  <div class="address-details">
+                    <div class="name"><%= addr.name %></div>
+                    <div class="addr">
+                      <%= addr.addressLine1 %><br>
+                      <% if (addr.addressLine2) { %>
+                        <%= addr.addressLine2 %><br>
+                      <% } %>
+                      <%= addr.city %>, <%= addr.state %> - <%= addr.pincode %>
+                    </div>
+                    <div class="phone"><i class="fas fa-phone"></i> <%= addr.phone %></div>
+                  </div>
+                  <a href="/account/addresses" class="btn btn-sm btn-outline-primary ms-3 flex-shrink-0">
+                    <i class="fas fa-edit"></i> Change
+                  </a>
+                </div>
+              <% } %>
+            <% }); %>
+          <% } else { %>
+            <p>No addresses found. Please add one.</p>
+          <% } %>
+        </div>
+
+        <!-- Delivery Estimate -->
+        <div class="delivery-estimate">
+          <i class="fas fa-truck"></i>
+          <div class="delivery-text">
+            <strong>Estimated Delivery:</strong> 3-5 business days · 
+            <span class="text-success">Free Shipping</span>
+          </div>
+        </div>
+
+        <p class="text-muted small mb-0 mt-2">
+          <i class="fas fa-info-circle"></i> Need to add or edit an address? 
+          <a href="/account/addresses" class="manage-address-link">Manage addresses</a>
+        </p>
+      </div>
+
+      <!-- ===== Payment ===== -->
+      <div class="checkout-section">
+        <h5><i class="fas fa-credit-card"></i> Payment Method</h5>
+
+        <!-- Razorpay -->
+        <div class="payment-option active">
+          <input type="radio" name="payment" id="pay-razorpay" checked>
+          <label for="pay-razorpay">
+            <i class="fas fa-credit-card" style="font-size:22px; width:30px; color:var(--primary);"></i>
+            <span>Razorpay</span>
+            <span class="text-muted" style="font-size:13px;">(Credit/Debit Card, UPI, Net Banking)</span>
+          </label>
+        </div>
+
+        <!-- Cash on Delivery -->
+        <div class="payment-option">
+          <input type="radio" name="payment" id="pay-cod">
+          <label for="pay-cod">
+            <i class="fas fa-truck" style="font-size:22px; width:30px; color:var(--primary);"></i>
+            <span>Cash on Delivery</span>
+            <span class="text-muted" style="font-size:13px;">Pay when you receive</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ===== WHY SHOP WITH US ===== -->
+      <div class="checkout-section">
+        <h5><i class="fas fa-shield-alt"></i> Why Shop With Us</h5>
+        <div class="row g-2 usp-grid">
+          <div class="col-6">
+            <div class="usp-item">
+              <i class="fas fa-truck"></i>
+              <div class="usp-text">
+                <strong>Free Shipping</strong>
+                <small>On orders over ₹5000</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="usp-item">
+              <i class="fas fa-undo-alt"></i>
+              <div class="usp-text">
+                <strong>Easy Returns</strong>
+                <small>30‑day return policy</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="usp-item">
+              <i class="fas fa-lock"></i>
+              <div class="usp-text">
+                <strong>Secure Payment</strong>
+                <small>256‑bit encryption</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="usp-item">
+              <i class="fas fa-headset"></i>
+              <div class="usp-text">
+                <strong>24/7 Support</strong>
+                <small>We’re here to help</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column – Order Summary -->
+    <div class="col-lg-4">
+      <div class="order-summary">
+        <div class="checkout-section">
+          <h5><i class="fas fa-receipt"></i> Order Summary</h5>
+
+          <!-- Dynamic Cart Items -->
+          <% if (cart && cart.items.length > 0) { %>
+           <% cart.items.forEach(item => { %>
+            <a href="/cart">
+              <div class="order-item">
+                <img src="<%= item.productId.images[0] %>" alt="<%= item.productId.productName %>">
+                <div class="details">
+                  <div class="name"><%= item.productId.productName %></div>
+                  <div class="meta">Size: <%= item.size %>, Qty: <%= item.quantity %></div>
+                </div>
+                <div class="price">₹<%= (item.productId.price * item.quantity).toLocaleString('en-IN') %></div>
+              </div>
+            </a>  
+            <% }) %>
+          <% } else { %>
+            <p class="text-muted">Your cart is empty.</p>
+          <% } %>
+
+          <!-- Totals -->
+          <div class="totals">
+            <div class="row">
+              <span class="label">Subtotal</span>
+              <span class="value" id="subtotal">₹<%= subtotal ? subtotal.toLocaleString('en-IN') : 0 %></span>
+            </div>
+            <div class="row">
+              <span class="label">Shipping</span>
+              <span class="value" id="shipping">₹<%= shipping || 0 %></span>
+            </div>
+            <div class="row">
+              <span class="label">Discount</span>
+              <span class="value" id="discount">−₹<%= discount || 0 %></span>
+            </div>
+          </div>
+
+          <!-- ===== COUPON (smooth toggle) ===== -->
+          <div class="coupon-section">
+            <div class="coupon-form d-flex gap-2">
+              <input type="text" class="form-control form-control-sm" placeholder="Coupon code" id="couponInput">
+              <button class="btn btn-apply" id="applyCoupon">Apply</button>
+            </div>
+
+            <div class="available-coupons-toggle" id="couponToggle">
+              <i class="fas fa-ticket-alt"></i>
+              Available coupons <span class="badge bg-primary" style="font-size:12px;"><%= coupons ? coupons.filter(c => c.status && c.status.toLowerCase() === 'available').length : 0 %></span>
+              <i class="fas fa-chevron-down" style="font-size:12px; margin-left:4px;" id="couponChevron"></i>
+            </div>
+
+            <div class="coupon-list-wrapper" id="couponListWrapper">
+              <div class="coupon-list">
+                <% if (coupons && coupons.length) { %>
+                  <% coupons.forEach(coupon => { %>
+                    <% if (coupon.status && coupon.status.toLowerCase() === 'available') { %>
+                      <div class="coupon-item">
+                        <span class="code"><%= coupon.code %></span>
+                        <span class="discount"><%= coupon.discount %></span>
+                        <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('couponInput').value='<%= coupon.code %>';">Apply</button>
+                      </div>
+                    <% } %>
+                  <% }) %>
+                <% } else { %>
+                  <p class="text-muted small mb-0">No coupons available.</p>
+                <% } %>
+                <a href="/account/coupons" class="view-all-link">
+                  <i class="fas fa-arrow-right"></i> View all coupons
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grand Total -->
+          <div class="totals">
+            <div class="row grand-total">
+              <span class="label">Total</span>
+              <span class="value" id="grandTotal">₹<%= finalAmount ? finalAmount.toLocaleString('en-IN') : 0 %></span>
+            </div>
+          </div>
+
+          <!-- Place Order -->
+          <button class="btn-place-order" id="placeOrderBtn"><i class="fas fa-lock"></i> Place Order</button>
+          <div class="secure-badge">
+            <i class="fas fa-shield-alt"></i> 256‑bit encrypted · Secure payment
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include("../partials/account/footer") %>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  (function() {
+    'use strict';
+
+    // ---- Payment toggle ----
+    const radios = document.querySelectorAll('input[name="payment"]');
+    radios.forEach(r => {
+      r.addEventListener('change', function() {
+        document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('active'));
+        this.closest('.payment-option').classList.add('active');
+      });
+    });
+
+    // ---- Coupon apply ----
+    document.getElementById('applyCoupon').addEventListener('click', function() {
+      const input = document.getElementById('couponInput');
+      const code = input.value.trim();
+      if (!code) { alert('Please enter a coupon code.'); return; }
+      alert('🎉 Coupon "' + code + '" applied! (Demo)');
+    });
+
+    // ---- Smooth coupon toggle ----
+    const toggleBtn = document.getElementById('couponToggle');
+    const wrapper = document.getElementById('couponListWrapper');
+    const chevron = document.getElementById('couponChevron');
+
+    if (toggleBtn && wrapper) {
+      toggleBtn.addEventListener('click', function() {
+        const isOpen = wrapper.classList.contains('open');
+        if (isOpen) {
+          wrapper.classList.remove('open');
+          chevron.classList.remove('fa-chevron-up');
+          chevron.classList.add('fa-chevron-down');
+        } else {
+          wrapper.classList.add('open');
+          chevron.classList.remove('fa-chevron-down');
+          chevron.classList.add('fa-chevron-up');
+        }
+      });
+    }
+
+    // ---- Place Order ----
+    document.getElementById('placeOrderBtn').addEventListener('click', function() {
+      const selected = document.querySelector('input[name="payment"]:checked');
+      if (!selected) {
+        alert('Please select a payment method.');
+        return;
+      }
+
+      const method = selected.id;
+      if (method === 'pay-razorpay') {
+        alert('Redirecting to Razorpay payment gateway... (demo)');
+      } else if (method === 'pay-cod') {
+        alert('Order placed with Cash on Delivery! (demo)');
+      }
+
+      launchConfetti();
+    });
+
+    // ---- Confetti ----
+    function launchConfetti() {
+      const container = document.createElement('div');
+      container.className = 'confetti-container';
+      document.body.appendChild(container);
+
+      const colors = ['#ff6b6b', '#f5a623', '#88c8bc', '#46698f', '#ff6b6b', '#f5a623', '#88c8bc', '#ff6b6b'];
+      const shapes = ['■', '●', '▲', '★', '♦'];
+
+      for (let i = 0; i < 80; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece';
+        piece.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+        piece.style.color = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.fontSize = (12 + Math.random() * 20) + 'px';
+        piece.style.left = (Math.random() * 100) + '%';
+        piece.style.top = '-10px';
+        piece.style.animationDelay = (Math.random() * 0.8) + 's';
+        piece.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+        container.appendChild(piece);
+      }
+
+      setTimeout(() => { container.remove(); }, 3500);
+    }
+
+  })();
+</script>
+
+</body>
+</html>

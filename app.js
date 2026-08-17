@@ -37,7 +37,7 @@ const wishlist = require('./routes/User/wishlistRouter');
 const customerRouter = require('./routes/admin/customerRouter');
 const adminCouponRouter = require('./routes/admin/couponRouter');
 const userCouponRouter = require('./routes/User/couponRouter');
-const paymentRouter = require('./routes/paymentRouter');
+const checkoutRouter = require('./routes/checkoutRouter');
 const attachUser = require('./middlewares/attachUser');
 const { title } = require('process');
 
@@ -54,7 +54,7 @@ app.use('/cart', cartRouter);
 app.use('/order',orderRouter);
 app.use('/wishlist', wishlist);
 app.use('/coupons', userCouponRouter);
-app.use('/payment', paymentRouter);
+app.use('/checkout', checkoutRouter);
 
 // Admin
 app.use('/admin', require('./routes/admin/admin-test'));

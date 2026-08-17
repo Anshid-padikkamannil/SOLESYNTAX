@@ -3,371 +3,536 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Notification Demo | SOLESYNTAX</title>
+  <title>Checkout | SOLESYNTAX</title>
 
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Rokkitt:wght@100;300;400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Bootstrap 5 CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Font Awesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-  <!-- SweetAlert2 -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
   <style>
+    /* ===== Brand Colors ===== */
     :root {
       --primary: #88c8bc;
       --primary-dark: #66a59b;
       --secondary: #46698f;
       --accent: #ff6b6b;
+      --gold: #f5a623;
+      --light: #f8f9fa;
       --dark: #1a1a2e;
+      --shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+      --border-radius: 16px;
     }
-
+    * { box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
       background: #f0f2f5;
-      padding: 30px 0;
+      color: #333;
+      padding: 0;
+      margin: 0;
     }
 
-    .demo-wrapper {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    .demo-header {
+    .usp-banner {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      padding: 12px 0;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
       text-align: center;
-      margin-bottom: 40px;
+      letter-spacing: 0.3px;
     }
-    .demo-header h1 {
-      font-family: 'Rokkitt', Georgia, serif;
-      font-size: 36px;
-      font-weight: 700;
-      color: var(--dark);
-    }
-    .demo-header h1 i {
-      color: var(--primary);
-    }
-    .demo-header p {
-      color: #6c757d;
-      font-size: 16px;
-    }
+    .usp-banner span { display: inline-block; margin: 0 20px; }
+    .usp-banner i { margin-right: 6px; font-size: 16px; }
+    @media (max-width: 576px) { .usp-banner span { display: block; margin: 4px 0; } }
 
-    .demo-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 30px;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-      margin-bottom: 24px;
+    .breadcrumb { background: transparent; padding: 14px 0 6px; font-size: 14px; margin-bottom: 0; }
+    .breadcrumb-item a { color: var(--primary); text-decoration: none; font-weight: 500; }
+    .breadcrumb-item.active { color: #6c757d; }
+
+    .checkout-wrapper { max-width: 1200px; margin: 10px auto 50px; padding: 0 20px; }
+
+    .checkout-header { text-align: center; margin-bottom: 30px; animation: fadeDown 0.6s ease; }
+    .checkout-header h2 { font-family: 'Rokkitt', Georgia, serif; font-size: 38px; font-weight: 700; color: var(--dark); letter-spacing: -0.5px; }
+    .checkout-header h2 i { color: var(--primary); }
+    .checkout-header p { color: #6c757d; font-size: 16px; margin-top: 2px; }
+
+    .checkout-steps {
+      display: flex; justify-content: center; gap: 2.5rem; margin-bottom: 2.5rem; flex-wrap: wrap;
     }
-    .demo-card h5 {
-      font-weight: 600;
-      color: var(--dark);
-      margin-bottom: 16px;
+    .step { display: flex; align-items: center; gap: 8px; font-weight: 500; color: #adb5bd; font-size: 14px; transition: all 0.3s; }
+    .step .step-number {
+      display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%;
+      background: #e9ecef; color: #6c757d; font-weight: 700; transition: all 0.4s ease; font-size: 14px;
+    }
+    .step.active .step-number { background: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(136,200,188,0.4); transform: scale(1.08); }
+    .step.completed .step-number { background: var(--primary-dark); color: #fff; }
+    .step.active { color: var(--dark); }
+    .step.completed { color: var(--primary-dark); }
+
+    .checkout-section {
+      background: #fff; border-radius: var(--border-radius); box-shadow: var(--shadow);
+      padding: 28px 30px; margin-bottom: 24px; transition: transform 0.25s ease, box-shadow 0.3s ease;
+      animation: fadeUp 0.6s ease;
+    }
+    .checkout-section:hover { transform: translateY(-3px); box-shadow: 0 12px 48px rgba(0,0,0,0.10); }
+    .checkout-section h5 { font-weight: 700; font-size: 18px; color: var(--dark); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .checkout-section h5 i { color: var(--primary); font-size: 20px; }
+
+    /* ===== ADDRESS CARD ===== */
+    .address-card {
+      background: #f8fffe;
+      border: 1.5px solid var(--primary);
+      border-radius: 12px;
+      padding: 20px 24px;
+      transition: all 0.3s;
+      position: relative;
+    }
+    .address-card .default-badge {
+      position: absolute;
+      top: -10px;
+      right: 20px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 16px;
+      border-radius: 50px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .address-card .address-icon {
+      font-size: 24px;
+      color: var(--primary);
+      margin-right: 12px;
+    }
+    .address-card .address-details { flex: 1; }
+    .address-card .address-details .name { font-weight: 600; color: var(--dark); font-size: 16px; }
+    .address-card .address-details .addr { color: #555; font-size: 14px; line-height: 1.6; }
+    .address-card .address-details .phone { color: #6c757d; font-size: 13px; }
+    .address-card .address-details .phone i { color: var(--primary); width: 18px; }
+
+    .manage-address-link { color: var(--primary) !important; font-weight: 500; text-decoration: none; }
+    .manage-address-link:hover { color: var(--primary-dark) !important; text-decoration: underline; }
+
+    /* ===== DELIVERY ESTIMATE ===== */
+    .delivery-estimate {
+      background: #f0f9f7;
+      border-radius: 10px;
+      padding: 12px 18px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      margin-top: 14px;
+      border-left: 4px solid var(--primary);
     }
-    .demo-card h5 i {
-      color: var(--primary);
-    }
+    .delivery-estimate i { font-size: 22px; color: var(--primary); }
+    .delivery-estimate .delivery-text { font-size: 14px; color: #555; }
+    .delivery-estimate .delivery-text strong { color: var(--dark); }
 
-    .btn-demo {
-      border-radius: 50px;
-      padding: 10px 24px;
-      font-weight: 500;
-      transition: all 0.3s ease;
-      margin: 4px;
-      min-width: 120px;
+    /* ===== PAYMENT ===== */
+    .payment-option {
+      display: flex; align-items: center; gap: 14px; padding: 14px 18px;
+      border: 2px solid #e9ecef; border-radius: 12px; margin-bottom: 12px;
+      cursor: pointer; transition: all 0.3s ease; background: #fafafa;
     }
-    .btn-demo:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    }
+    .payment-option:hover { border-color: var(--primary); background: #f8fffe; transform: translateX(4px); }
+    .payment-option.active { border-color: var(--primary); background: rgba(136,200,188,0.08); box-shadow: 0 0 0 3px rgba(136,200,188,0.12); }
+    .payment-option input[type="radio"] { accent-color: var(--primary); width: 18px; height: 18px; flex-shrink: 0; }
+    .payment-option label { cursor: pointer; font-weight: 500; font-size: 15px; margin: 0; flex: 1; display: flex; align-items: center; gap: 10px; }
+    .payment-option label i { font-size: 22px; color: #6c757d; width: 30px; }
 
-    .btn-demo.btn-primary-custom {
-      background: var(--primary);
-      color: #fff;
-      border: none;
+    /* ===== WHY SHOP WITH US ===== */
+    .usp-grid .usp-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #fafafa;
+      border-radius: 10px;
+      transition: background 0.2s;
     }
-    .btn-demo.btn-primary-custom:hover {
-      background: var(--primary-dark);
-    }
-    .btn-demo.btn-secondary-custom {
-      background: var(--secondary);
-      color: #fff;
-      border: none;
-    }
-    .btn-demo.btn-secondary-custom:hover {
-      background: #395884;
-    }
-    .btn-demo.btn-outline-custom {
-      background: transparent;
-      color: var(--primary);
-      border: 2px solid var(--primary);
-    }
-    .btn-demo.btn-outline-custom:hover {
-      background: var(--primary);
-      color: #fff;
-    }
-    .btn-demo.btn-danger-custom {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-    }
-    .btn-demo.btn-danger-custom:hover {
-      background: #e55a5a;
-    }
+    .usp-grid .usp-item:hover { background: #f0f9f7; }
+    .usp-grid .usp-item i { font-size: 22px; color: var(--primary); width: 30px; text-align: center; }
+    .usp-grid .usp-item .usp-text { font-size: 14px; }
+    .usp-grid .usp-item .usp-text strong { display: block; font-weight: 600; color: var(--dark); }
+    .usp-grid .usp-item .usp-text small { color: #6c757d; font-size: 12px; }
 
-    .toast-container {
-      z-index: 1050;
-    }
+    /* ===== ORDER SUMMARY ===== */
+    .order-summary { position: sticky; top: 20px; }
+    .order-summary .checkout-section { padding: 24px; }
 
-    .badge-demo {
-      background: var(--primary);
-      color: #fff;
-      padding: 4px 12px;
-      border-radius: 50px;
-      font-size: 12px;
-      font-weight: 600;
+    .order-item {
+      display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f0f0f0;
+      align-items: center; transition: background 0.2s;
     }
+    .order-item:last-child { border-bottom: none; }
+    .order-item img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; background: #f0f0f0; transition: transform 0.3s; }
+    .order-item:hover img { transform: scale(1.05); }
+    .order-item .details { flex: 1; }
+    .order-item .details .name { font-weight: 600; color: var(--dark); font-size: 15px; }
+    .order-item .details .meta { font-size: 13px; color: #6c757d; }
+    .order-item .price { font-weight: 700; color: var(--primary-dark); }
 
-    code {
-      background: #f0f2f5;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 13px;
-      color: var(--secondary);
-    }
+    .totals { margin-top: 18px; }
+    .totals .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 15px; color: #495057; }
+    .totals .row .label { font-weight: 500; }
+    .totals .row .value { font-weight: 600; }
+    .totals .grand-total { border-top: 2px solid #e9ecef; margin-top: 12px; padding-top: 16px; }
+    .totals .grand-total .label { font-size: 18px; font-weight: 700; color: var(--dark); }
+    .totals .grand-total .value { font-size: 26px; font-weight: 800; color: var(--primary-dark); }
 
-    @media (max-width: 576px) {
-      .btn-demo {
-        min-width: 100%;
-        margin: 4px 0;
-      }
+    .edit-cart-link { font-size: 14px; color: var(--primary); text-decoration: none; font-weight: 500; }
+    .edit-cart-link:hover { color: var(--primary-dark); text-decoration: underline; }
+
+    .coupon-section { margin: 16px 0 12px; padding-top: 10px; border-top: 1px dashed #e9ecef; }
+    .coupon-form { display: flex; gap: 8px; }
+    .coupon-form .btn-apply { background: var(--primary); border: none; color: #fff; font-weight: 600; padding: 0 20px; border-radius: 50px; transition: all 0.3s; white-space: nowrap; }
+    .coupon-form .btn-apply:hover { background: var(--primary-dark); transform: scale(1.03); }
+
+    .available-coupons-toggle { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); font-weight: 500; font-size: 14px; cursor: pointer; transition: color 0.2s; margin-top: 8px; }
+    .available-coupons-toggle:hover { color: var(--primary-dark); }
+    .coupon-list { background: #f8f9fa; border-radius: 10px; padding: 12px 16px; margin-top: 10px; border: 1px solid #e9ecef; }
+    .coupon-list .coupon-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed #e9ecef; font-size: 14px; }
+    .coupon-list .coupon-item:last-child { border-bottom: none; }
+    .coupon-list .coupon-item .code { font-weight: 700; font-family: 'Courier New', monospace; color: var(--secondary); letter-spacing: 0.5px; }
+    .coupon-list .coupon-item .discount { font-weight: 600; color: var(--primary-dark); }
+    .view-all-link { display: block; text-align: center; margin-top: 10px; font-weight: 500; color: var(--primary); text-decoration: none; font-size: 14px; }
+    .view-all-link:hover { color: var(--primary-dark); text-decoration: underline; }
+
+    .btn-place-order {
+      width: 100%; background: linear-gradient(135deg, var(--secondary), #395884); border: none; color: #fff;
+      padding: 18px; font-size: 18px; font-weight: 700; border-radius: 50px; transition: all 0.4s ease;
+      margin-top: 18px; letter-spacing: 0.5px; box-shadow: 0 4px 20px rgba(70, 105, 143, 0.35);
+      position: relative; overflow: hidden;
     }
+    .btn-place-order:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(70, 105, 143, 0.5); }
+    .btn-place-order::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%); opacity: 0; transition: opacity 0.6s; pointer-events: none; }
+    .btn-place-order:hover::after { opacity: 1; }
+    .btn-place-order i { margin-right: 10px; }
+    .btn-place-order:active { transform: scale(0.97); }
+
+    .secure-badge { display: flex; align-items: center; justify-content: center; gap: 10px; color: #6c757d; font-size: 13px; margin-top: 16px; }
+    .secure-badge i { color: var(--primary); font-size: 18px; }
+
+    .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
+    .confetti-piece { position: absolute; width: 10px; height: 10px; opacity: 0; animation: confettiFall 2.5s ease-in forwards; }
+    @keyframes confettiFall { 0% { opacity: 1; transform: translateY(-10px) rotate(0deg) scale(1); } 100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(0.3); } }
+
+    @keyframes fadeDown { 0% { opacity: 0; transform: translateY(-20px); } 100% { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeUp { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 992px) { .order-summary { position: static; margin-top: 24px; } }
+    @media (max-width: 768px) { .checkout-steps { gap: 1rem; } .checkout-section { padding: 20px; } .payment-option { padding: 12px 14px; } }
+    @media (max-width: 576px) { .checkout-header h2 { font-size: 28px; } .order-item img { width: 48px; height: 48px; } .totals .grand-total .value { font-size: 22px; } }
   </style>
 </head>
 <body>
 
-<div class="demo-wrapper">
-  <!-- Header -->
-  <div class="demo-header">
-    <h1><i class="fas fa-bell"></i> Notification Demo</h1>
-    <p>Test SweetAlert2 modals and Bootstrap 5 toasts</p>
-  </div>
-
-  <!-- ===== TOASTS ===== -->
-  <div class="demo-card">
-    <h5><i class="fas fa-bell" style="color:var(--primary);"></i> Toast Notifications <span class="badge-demo">Non-blocking</span></h5>
-    <p class="text-muted small">Lightweight feedback – auto‑dismiss after 3.5s. Ideal for: add to cart, wishlist toggle, coupon applied.</p>
-    <div class="d-flex flex-wrap gap-2 mt-3">
-      <button class="btn-demo btn-primary-custom" onclick="showToast('Item added to cart!', 'success', '✅')">
-        <i class="fas fa-check-circle"></i> Success
-      </button>
-      <button class="btn-demo btn-secondary-custom" onclick="showToast('Please select a size.', 'warning', '⚠️')">
-        <i class="fas fa-exclamation-triangle"></i> Warning
-      </button>
-      <button class="btn-demo btn-danger-custom" onclick="showToast('Something went wrong.', 'danger', '❌')">
-        <i class="fas fa-times-circle"></i> Error
-      </button>
-      <button class="btn-demo btn-outline-custom" onclick="showToast('Coupon applied!', 'info', '🎉')">
-        <i class="fas fa-info-circle"></i> Info
-      </button>
-    </div>
-    <div class="mt-3">
-      <small class="text-muted">Usage: <code>showToast('Message', 'type', 'Emoji')</code></small>
-    </div>
-  </div>
-
-  <!-- ===== SWEETALERT2 MODALS ===== -->
-  <div class="demo-card">
-    <h5><i class="fas fa-window-maximize" style="color:var(--secondary);"></i> SweetAlert2 Modals <span class="badge-demo">Blocking</span></h5>
-    <p class="text-muted small">Beautiful, animated modals – ideal for: place order, delete, logout, confirmations, form errors.</p>
-    <div class="d-flex flex-wrap gap-2 mt-3">
-      <button class="btn-demo btn-primary-custom" onclick="demoSwal('success', 'Added to Cart!', 'Your item has been added successfully.')">
-        <i class="fas fa-check-circle"></i> Success
-      </button>
-      <button class="btn-demo btn-secondary-custom" onclick="demoSwal('info', 'Info', 'This is an informational message.')">
-        <i class="fas fa-info-circle"></i> Info
-      </button>
-      <button class="btn-demo btn-danger-custom" onclick="demoSwal('error', 'Oops...', 'Something went wrong. Please try again.')">
-        <i class="fas fa-times-circle"></i> Error
-      </button>
-      <button class="btn-demo btn-outline-custom" onclick="demoSwal('warning', 'Are you sure?', 'This action cannot be undone.')">
-        <i class="fas fa-exclamation-triangle"></i> Warning
-      </button>
-    </div>
-    <div class="d-flex flex-wrap gap-2 mt-2">
-      <button class="btn-demo btn-secondary-custom" onclick="demoConfirm()">
-        <i class="fas fa-question-circle"></i> Confirm (yes/no)
-      </button>
-      <button class="btn-demo btn-primary-custom" onclick="demoToastSwal()">
-        <i class="fas fa-clock"></i> Auto‑close (2s)
-      </button>
-      <button class="btn-demo btn-danger-custom" onclick="demoCustomSwal()">
-        <i class="fas fa-palette"></i> Brand Colours
-      </button>
-    </div>
-    <div class="mt-3">
-      <small class="text-muted">
-        Usage: <code>Swal.fire({ icon, title, text, confirmButtonColor: '#88c8bc' })</code>
-      </small>
-    </div>
-  </div>
-
-  <!-- ===== TOAST CONTAINER (hidden – created by JS) ===== -->
-  <!-- Toast container will be injected by JavaScript -->
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="text-center py-4 text-muted small">
-    <p>Notifications powered by <strong>SweetAlert2</strong> + <strong>Bootstrap 5 Toasts</strong></p>
-    <p class="mb-0">SOLESYNTAX · Brand colours: <span style="color:#88c8bc;">#88c8bc</span> · <span style="color:#46698f;">#46698f</span></p>
-  </footer>
+<!-- ===== USP BANNER ===== -->
+<div class="usp-banner">
+  <span><i class="fas fa-truck"></i> Free Shipping on orders over ₹5000</span>
+  <span><i class="fas fa-undo-alt"></i> 30‑Day Easy Returns</span>
+  <span><i class="fas fa-lock"></i> 100% Secure Checkout</span>
+  <span><i class="fas fa-clock"></i> Express Delivery Available</span>
 </div>
 
-<!-- ===== SCRIPTS ===== -->
+<!-- ===== HEADER ===== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" href="#">SOLESYNTAX</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-home"></i> Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-store"></i> Shop</a></li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-heart"></i> Wishlist</a></li>
+        <li class="nav-item"><a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i> Cart</a></li>
+        <li class="nav-item active"><a class="nav-link" href="#"><i class="fas fa-user"></i> Account</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- ===== BREADCRUMB ===== -->
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="#">Home</a></li>
+      <li class="breadcrumb-item"><a href="#">Shop</a></li>
+      <li class="breadcrumb-item"><a href="#">Cart</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+    </ol>
+  </nav>
+</div>
+
+<!-- ===== CHECKOUT ===== -->
+<div class="checkout-wrapper">
+  <div class="checkout-header">
+    <h2><i class="fas fa-lock"></i> Secure Checkout</h2>
+    <p>Complete your purchase in just a few steps</p>
+  </div>
+
+  <!-- Progress Steps -->
+  <div class="checkout-steps">
+    <span class="step completed"><span class="step-number"><i class="fas fa-check"></i></span> Cart</span>
+    <span class="step active"><span class="step-number">2</span> Details</span>
+    <span class="step"><span class="step-number">3</span> Payment</span>
+    <span class="step"><span class="step-number">4</span> Confirm</span>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column -->
+    <div class="col-lg-8">
+      <!-- Shipping Address -->
+      <div class="checkout-section">
+        <h5><i class="fas fa-map-pin"></i> Shipping Address</h5>
+        <div class="address-card">
+          <span class="default-badge">Default</span>
+          <div class="d-flex align-items-start">
+            <i class="fas fa-home address-icon"></i>
+            <div class="address-details">
+              <div class="name">John Doe</div>
+              <div class="addr">123, MG Road, Apt 4B, Mumbai, Maharashtra - 400001</div>
+              <div class="phone"><i class="fas fa-phone"></i> +91 98765 43210</div>
+            </div>
+            <a href="/account/address" class="btn btn-sm btn-outline-primary ms-3 flex-shrink-0">
+              <i class="fas fa-edit"></i> Change
+            </a>
+          </div>
+        </div>
+        <div class="delivery-estimate">
+          <i class="fas fa-truck"></i>
+          <div class="delivery-text">
+            <strong>Estimated Delivery:</strong> 3-5 business days · 
+            <span class="text-success">Free Shipping</span>
+          </div>
+        </div>
+        <p class="text-muted small mb-0 mt-2">
+          <i class="fas fa-info-circle"></i> Need to add or edit an address? 
+          <a href="/account/address" class="manage-address-link">Manage addresses</a>
+        </p>
+      </div>
+
+      <!-- Payment -->
+      <div class="checkout-section">
+        <h5><i class="fas fa-credit-card"></i> Payment Method</h5>
+        <div class="payment-option active">
+          <input type="radio" name="payment" id="pay-razorpay" checked>
+          <label for="pay-razorpay">
+            <i class="fas fa-credit-card" style="font-size:22px; width:30px; color:var(--primary);"></i>
+            <span>Razorpay</span>
+            <span class="text-muted" style="font-size:13px;">(Credit/Debit Card, UPI, Net Banking)</span>
+          </label>
+        </div>
+        <div class="payment-option">
+          <input type="radio" name="payment" id="pay-cod">
+          <label for="pay-cod">
+            <i class="fas fa-truck" style="font-size:22px; width:30px; color:var(--primary);"></i>
+            <span>Cash on Delivery</span>
+            <span class="text-muted" style="font-size:13px;">Pay when you receive</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- ===== NEW: WHY SHOP WITH US ===== -->
+      <div class="checkout-section">
+        <h5><i class="fas fa-shield-alt"></i> Why Shop With Us</h5>
+        <div class="row g-2 usp-grid">
+          <div class="col-6">
+            <div class="usp-item">
+              <i class="fas fa-truck"></i>
+              <div class="usp-text">
+                <strong>Free Shipping</strong>
+                <small>On orders over ₹5000</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="usp-item">
+              <i class="fas fa-undo-alt"></i>
+              <div class="usp-text">
+                <strong>Easy Returns</strong>
+                <small>30‑day return policy</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="usp-item">
+              <i class="fas fa-lock"></i>
+              <div class="usp-text">
+                <strong>Secure Payment</strong>
+                <small>256‑bit encryption</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="usp-item">
+              <i class="fas fa-headset"></i>
+              <div class="usp-text">
+                <strong>24/7 Support</strong>
+                <small>We’re here to help</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column – Order Summary -->
+    <div class="col-lg-4">
+      <div class="order-summary">
+        <div class="checkout-section">
+          <h5><i class="fas fa-receipt"></i> Order Summary</h5>
+
+          <div class="text-end mb-2">
+            <a href="/cart" class="edit-cart-link"><i class="fas fa-pen"></i> Edit Cart</a>
+          </div>
+
+          <div class="order-item">
+            <img src="https://via.placeholder.com/56/88c8bc/fff?text=Shoe" alt="Product">
+            <div class="details">
+              <div class="name">Nike Air Max</div>
+              <div class="meta">Size: UK 8, Qty: 1</div>
+            </div>
+            <div class="price">₹4,499</div>
+          </div>
+          <div class="order-item">
+            <img src="https://via.placeholder.com/56/88c8bc/fff?text=Boot" alt="Product">
+            <div class="details">
+              <div class="name">Leather Boots</div>
+              <div class="meta">Size: UK 9, Qty: 2</div>
+            </div>
+            <div class="price">₹11,998</div>
+          </div>
+
+          <div class="totals">
+            <div class="row">
+              <span class="label">Subtotal</span>
+              <span class="value" id="subtotal">₹16,497</span>
+            </div>
+            <div class="row">
+              <span class="label">Shipping</span>
+              <span class="value" id="shipping">₹0</span>
+            </div>
+            <div class="row">
+              <span class="label">Discount</span>
+              <span class="value" id="discount">−₹500</span>
+            </div>
+          </div>
+
+          <div class="coupon-section">
+            <div class="coupon-form d-flex gap-2">
+              <input type="text" class="form-control form-control-sm" placeholder="Coupon code" id="couponInput">
+              <button class="btn btn-apply" id="applyCoupon">Apply</button>
+            </div>
+            <div class="available-coupons-toggle" data-bs-toggle="collapse" data-bs-target="#couponList" role="button" aria-expanded="false" aria-controls="couponList">
+              <i class="fas fa-ticket-alt"></i>
+              Available coupons <span class="badge bg-primary" style="font-size:12px;">3</span>
+              <i class="fas fa-chevron-down" style="font-size:12px; margin-left:4px;"></i>
+            </div>
+            <div class="collapse" id="couponList">
+              <div class="coupon-list">
+                <div class="coupon-item">
+                  <span class="code">SAVE10</span>
+                  <span class="discount">10% OFF</span>
+                  <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('couponInput').value='SAVE10';">Apply</button>
+                </div>
+                <div class="coupon-item">
+                  <span class="code">FLAT50</span>
+                  <span class="discount">₹50 OFF</span>
+                  <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('couponInput').value='FLAT50';">Apply</button>
+                </div>
+                <div class="coupon-item">
+                  <span class="code">SUMMER25</span>
+                  <span class="discount">25% OFF</span>
+                  <button class="btn btn-sm btn-outline-primary" onclick="document.getElementById('couponInput').value='SUMMER25';">Apply</button>
+                </div>
+                <a href="/account/coupons" class="view-all-link">
+                  <i class="fas fa-arrow-right"></i> View all coupons
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="totals">
+            <div class="row grand-total">
+              <span class="label">Total</span>
+              <span class="value" id="grandTotal">₹15,997</span>
+            </div>
+          </div>
+
+          <button class="btn-place-order" id="placeOrderBtn"><i class="fas fa-lock"></i> Place Order</button>
+          <div class="secure-badge">
+            <i class="fas fa-shield-alt"></i> 256‑bit encrypted · Secure payment
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="text-center py-4 bg-white mt-4 shadow-sm">
+  <div class="container">
+    <small class="text-muted">© 2026 SOLESYNTAX. All rights reserved.</small>
+  </div>
+</footer>
+
+<!-- ===== SCRIPTS (unchanged) ===== -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <script>
   (function() {
     'use strict';
 
-    // ================================================================
-    // 1. TOAST SYSTEM (Bootstrap 5)
-    // ================================================================
-    function showToast(message, type = 'success', title = '') {
-      // Create container if not exists
-      let container = document.querySelector('.toast-container.position-fixed');
-      if (!container) {
-        container = document.createElement('div');
-        container.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-        container.style.zIndex = '1050';
-        document.body.appendChild(container);
+    const radios = document.querySelectorAll('input[name="payment"]');
+    radios.forEach(r => {
+      r.addEventListener('change', function() {
+        document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('active'));
+        this.closest('.payment-option').classList.add('active');
+      });
+    });
+
+    document.getElementById('applyCoupon').addEventListener('click', function() {
+      const input = document.getElementById('couponInput');
+      const code = input.value.trim();
+      if (!code) { alert('Please enter a coupon code.'); return; }
+      alert('🎉 Coupon "' + code + '" applied! (Demo)');
+    });
+
+    document.getElementById('placeOrderBtn').addEventListener('click', function() {
+      const selected = document.querySelector('input[name="payment"]:checked');
+      if (!selected) { alert('Please select a payment method.'); return; }
+      const method = selected.id;
+      if (method === 'pay-razorpay') {
+        alert('Redirecting to Razorpay payment gateway... (demo)');
+      } else if (method === 'pay-cod') {
+        alert('Order placed with Cash on Delivery! (demo)');
       }
+      launchConfetti();
+    });
 
-      const toastEl = document.createElement('div');
-      const bgClass = type === 'success' ? 'bg-success' :
-                      type === 'danger' ? 'bg-danger' :
-                      type === 'warning' ? 'bg-warning text-dark' :
-                      type === 'info' ? 'bg-info text-dark' :
-                      'bg-secondary';
-      toastEl.className = `toast align-items-center ${bgClass} border-0`;
-      toastEl.role = 'alert';
-      toastEl.ariaLive = 'assertive';
-      toastEl.ariaAtomic = 'true';
-      toastEl.style.borderRadius = '12px';
-      toastEl.style.boxShadow = '0 8px 30px rgba(0,0,0,0.12)';
-
-      toastEl.innerHTML = `
-        <div class="d-flex">
-          <div class="toast-body fw-semibold" style="font-size:15px;">
-            ${title ? `<span class="me-1">${title}</span>` : ''} ${message}
-          </div>
-          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-      `;
-      container.appendChild(toastEl);
-
-      const bsToast = new bootstrap.Toast(toastEl, { delay: 3500 });
-      bsToast.show();
-
-      toastEl.addEventListener('hidden.bs.toast', function() {
-        toastEl.remove();
-      });
+    function launchConfetti() {
+      const container = document.createElement('div');
+      container.className = 'confetti-container';
+      document.body.appendChild(container);
+      const colors = ['#ff6b6b', '#f5a623', '#88c8bc', '#46698f', '#ff6b6b', '#f5a623', '#88c8bc', '#ff6b6b'];
+      const shapes = ['■', '●', '▲', '★', '♦'];
+      for (let i = 0; i < 80; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'confetti-piece';
+        piece.textContent = shapes[Math.floor(Math.random() * shapes.length)];
+        piece.style.color = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.fontSize = (12 + Math.random() * 20) + 'px';
+        piece.style.left = (Math.random() * 100) + '%';
+        piece.style.top = '-10px';
+        piece.style.animationDelay = (Math.random() * 0.8) + 's';
+        piece.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+        container.appendChild(piece);
+      }
+      setTimeout(() => { container.remove(); }, 3500);
     }
-
-    // ================================================================
-    // 2. SWEETALERT2 HELPERS
-    // ================================================================
-
-    // ---- Basic modal ----
-    window.demoSwal = function(icon, title, text) {
-      Swal.fire({
-        icon: icon,
-        title: title,
-        text: text,
-        confirmButtonColor: '#88c8bc',
-        confirmButtonText: 'OK',
-        timer: icon === 'success' ? 2000 : undefined,
-        showConfirmButton: icon !== 'success'
-      });
-    };
-
-    // ---- Confirm (yes/no) ----
-    window.demoConfirm = function() {
-      Swal.fire({
-        icon: 'question',
-        title: 'Confirm Action',
-        text: 'Are you sure you want to proceed?',
-        showCancelButton: true,
-        confirmButtonColor: '#88c8bc',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, proceed!',
-        cancelButtonText: 'Cancel'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          Swal.fire({
-            icon: 'success',
-            title: 'Confirmed!',
-            text: 'Action completed successfully.',
-            confirmButtonColor: '#88c8bc',
-            timer: 1500,
-            showConfirmButton: false
-          });
-        } else {
-          showToast('Action cancelled.', 'info', '↩️');
-        }
-      });
-    };
-
-    // ---- Auto‑close toast‑like modal ----
-    window.demoToastSwal = function() {
-      Swal.fire({
-        icon: 'success',
-        title: 'Auto‑close!',
-        text: 'This modal will close in 2 seconds.',
-        timer: 2000,
-        showConfirmButton: false,
-        timerProgressBar: true,
-        confirmButtonColor: '#88c8bc'
-      });
-    };
-
-    // ---- Custom brand colours ----
-    window.demoCustomSwal = function() {
-      Swal.fire({
-        icon: 'info',
-        title: 'Brand Colours',
-        text: 'This modal uses your SOLESYNTAX theme.',
-        confirmButtonColor: '#88c8bc',
-        background: '#f8fffe',
-        color: '#1a1a2e',
-        iconColor: '#88c8bc',
-        confirmButtonText: 'Looks great!',
-        customClass: {
-          confirmButton: 'btn btn-primary',
-        },
-        buttonsStyling: false,
-      });
-    };
-
-    // ================================================================
-    // 3. Expose `showToast` globally
-    // ================================================================
-    window.showToast = showToast;
-
-    // ================================================================
-    // 4. Demo: show a welcome toast on page load
-    // ================================================================
-    setTimeout(() => {
-      showToast('Notifications are ready! Try the buttons below.', 'info', '👋');
-    }, 500);
-
   })();
 </script>
 
