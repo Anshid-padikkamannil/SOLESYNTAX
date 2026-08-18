@@ -80,7 +80,7 @@ const getCheckout = async (req, res) => {
 
     const { cart } = await orderService.getOrderData(userId);
 
-    const { orderitems, totalPrice } = orderService.buildOrderItems(cart);
+    const { totalPrice } = orderService.buildOrderItems(cart);
 
     const addresses = await getAddresses(userId);
     const coupons = await getCouponsForUser(userId);
@@ -115,8 +115,58 @@ const getCheckout = async (req, res) => {
   }
 };
 
+const applyCheckoutCoupon = async (req, res) => {
+
+  try {
+    
+    const userId = req.user.userId || req.user._id;
+    const { couponCode } = req.body;
+
+    if (!couponCode) {
+      return res.status(400).json({
+        success: false,
+        message: "please enter a coupon code"
+      });
+    }
+
+    const { cart } = await orderService.getOrderData(userId);
+
+    const { totalPrice } = orderService.buildOrderItems(cart);
+
+    const shipping = totalPrice >= 5000 ? 0 : 100;
+
+    const couponResult = await orderService.applyOrderCoupon(
+      userId,
+      couponCode,
+      cart,
+      totalPrice
+    );
+
+    const finalAmount = couponResult.finalAmount + shipping;
+
+    return res.json({
+      success: true,
+      couponApplied: couponResult.couponApplied,
+      appliedCouponCode: couponResult.appliedCouponCode,
+      subtotal: totalPrice,
+      shipping,
+      discount: couponResult.couponDiscount,
+      finalAmount
+    })
+
+  } catch (err) {
+    console.error('APPLY CHECKOUT COUPON ERROR:', err);
+
+    return res.status(400).json({
+      success: false,
+      message: err.message || 'Unable to apply coupon.'
+    });
+  }
+}
+
 module.exports = {
   createRazorpayOrder,
   verifyPayment,
-  getCheckout
+  getCheckout,
+  applyCheckoutCoupon
 }

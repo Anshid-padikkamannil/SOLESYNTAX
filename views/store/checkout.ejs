@@ -601,6 +601,45 @@
       opacity: 0;
       animation: confettiFall 2.5s ease-in forwards;
     }
+
+    /* ===== COUPON SUCCESS ANIMATION ===== */
+    @keyframes savePulse {
+      0% { background-color: rgba(40, 167, 69, 0); transform: scale(1); }
+      30% { background-color: rgba(40, 167, 69, 0.15); transform: scale(1.02); }
+      70% { background-color: rgba(40, 167, 69, 0.05); transform: scale(0.98); }
+      100% { background-color: transparent; transform: scale(1); }
+    }
+    .save-flash {
+      animation: savePulse 0.8s ease 2;
+    }
+
+    @keyframes badgePop {
+      0% { transform: scale(0); opacity: 0; }
+      70% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .save-badge {
+      display: inline-block;
+      background: #28a745;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 2px 12px;
+      border-radius: 50px;
+      animation: badgePop 0.5s ease forwards;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    @keyframes numberPop {
+      0% { transform: scale(1); }
+      30% { transform: scale(1.15); color: #28a745; }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1); color: var(--primary-dark); }
+    }
+    .total-pop {
+      animation: numberPop 0.6s ease;
+    }
     @keyframes confettiFall {
       0% { opacity: 1; transform: translateY(-10px) rotate(0deg) scale(1); }
       100% { opacity: 0; transform: translateY(100vh) rotate(720deg) scale(0.3); }
@@ -885,11 +924,19 @@
 <%- include("../partials/account/footer") %>
 
 <!-- ===== SCRIPTS ===== -->
+ <!-- <script src="/js/notifications.js"></script> -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
   (function() {
     'use strict';
+
+    // ---- TEMPORARY TOAST (if notifications.js is not loaded) ----
+    if (typeof showToast === 'undefined') {
+      window.showToast = function(message, type, icon) {
+        alert(message);
+      };
+    }
 
     // ---- Payment toggle ----
     const radios = document.querySelectorAll('input[name="payment"]');
@@ -901,11 +948,107 @@
     });
 
     // ---- Coupon apply ----
-    document.getElementById('applyCoupon').addEventListener('click', function() {
+    document.getElementById('applyCoupon').addEventListener('click', async function() {
       const input = document.getElementById('couponInput');
       const code = input.value.trim();
-      if (!code) { alert('Please enter a coupon code.'); return; }
-      alert('🎉 Coupon "' + code + '" applied! (Demo)');
+
+      if (!code) {
+        showToast('Please enter a coupon code.', 'warning', '⚠️');
+        return;
+      }
+
+      try {
+        const response = await fetch('/checkout/coupon', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ couponCode: code })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          showToast(result.message || 'Unable to apply coupon.', 'warning', '⚠️');
+          return;
+        }
+
+        // ---- Get DOM elements ----
+        const discountEl = document.getElementById('discount');
+        const shippingEl = document.getElementById('shipping');
+        const grandTotalEl = document.getElementById('grandTotal');
+
+        // ---- Update totals ----
+        discountEl.textContent = '−₹' + result.discount.toLocaleString('en-IN');
+        shippingEl.textContent = '₹' + result.shipping.toLocaleString('en-IN');
+        grandTotalEl.textContent = '₹' + result.finalAmount.toLocaleString('en-IN');
+
+        // ========================================================
+        //  EFFECTS
+        // ========================================================
+
+        // 1. Pulse the discount row
+        const discountRow = discountEl.closest('.row');
+        if (discountRow) {
+          discountRow.classList.remove('save-flash');
+          void discountRow.offsetWidth;
+          discountRow.classList.add('save-flash');
+        }
+
+        // 2. Animate the grand total
+        grandTotalEl.classList.remove('total-pop');
+        void grandTotalEl.offsetWidth;
+        grandTotalEl.classList.add('total-pop');
+
+        // 3. Green border flash on coupon input
+        const couponInput = document.getElementById('couponInput');
+        couponInput.style.transition = 'border-color 0.3s, box-shadow 0.3s';
+        couponInput.style.borderColor = '#28a745';
+        couponInput.style.boxShadow = '0 0 0 3px rgba(40,167,69,0.25)';
+        setTimeout(() => {
+          couponInput.style.borderColor = '';
+          couponInput.style.boxShadow = '';
+        }, 2000);
+
+        // 4. Floating ₹ coins from the discount row (single colour)
+        if (discountRow) {
+          const rect = discountRow.getBoundingClientRect();
+          const coinCount = 18;
+          const coinColor = '#88c8bc'; // ← change this to any single colour you like
+          for (let i = 0; i < coinCount; i++) {
+            const coin = document.createElement('div');
+            coin.textContent = '₹';
+            const size = 20 + Math.random() * 18;
+            const startX = rect.left + Math.random() * rect.width;
+            const startY = rect.top + 10;
+            const angle = (Math.random() - 0.5) * 1.2;
+            const distance = 80 + Math.random() * 150;
+            const dx = Math.sin(angle) * distance;
+            const dy = -Math.cos(angle) * distance - 40;
+            const rotation = (Math.random() - 0.5) * 360;
+            coin.style.cssText = `
+              position: fixed;
+              left: ${startX}px;
+              top: ${startY}px;
+              font-size: ${size}px;
+              color: ${coinColor};
+              font-weight: 700;
+              pointer-events: none;
+              z-index: 9999;
+              opacity: 1;
+              transition: all 1.2s cubic-bezier(0.2, 0.8, 0.4, 1);
+            `;
+            document.body.appendChild(coin);
+            requestAnimationFrame(() => {
+              coin.style.transform = `translate(${dx}px, ${dy}px) rotate(${rotation}deg)`;
+              coin.style.opacity = '0';
+            });
+            setTimeout(() => coin.remove(), 1500);
+          }
+        }
+
+      } catch (err) {
+        console.error('COUPON ERROR:', err);
+        showToast('Something went wrong while applying the coupon.', 'warning', '⚠️');
+      }
     });
 
     // ---- Smooth coupon toggle ----

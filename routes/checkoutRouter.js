@@ -1,7 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { isLoggedIn } = require('../middlewares/auth');
-const { createRazorpayOrder, verifyPayment ,getCheckout } = require('../controllers/user/checkoutController');
+const { 
+  createRazorpayOrder,
+  verifyPayment,
+  getCheckout, 
+  applyCheckoutCoupon
+} = require('../controllers/user/checkoutController');
 
 
 router.use(isLoggedIn);
@@ -12,5 +17,6 @@ router.post('/create-order', createRazorpayOrder);
 router.post('/verify', verifyPayment);
 
 router.get('/', getCheckout);
+router.post('/coupon', applyCheckoutCoupon);
 
 module.exports = router;

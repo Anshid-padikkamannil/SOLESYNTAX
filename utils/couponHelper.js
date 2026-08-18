@@ -125,18 +125,6 @@ const applyCouponToOrder = async (orderData, userId, couponCode, productIds, car
     throw new Error(result.message);
   }
 
-  // Record usage
-  const userCoupon = new UserCoupon({
-    userId,
-    couponId: result.coupon._id,
-    discountAmount: result.discount
-  });
-  await userCoupon.save();
-
-  // Update coupon used count
-  await Coupon.findByIdAndUpdate(result.coupon._id, {
-    $inc: { usedCount: 1 }
-  });
 
   return {
     applied: true,

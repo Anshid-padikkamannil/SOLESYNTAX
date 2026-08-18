@@ -65,6 +65,31 @@ const getCouponsForUser = async (userId) => {
   });
 };
 
+const recordCouponUsage = async (
+  userId,
+  couponId,
+  discountAmount
+) => {
+
+  const userCoupon = new UserCoupon({
+    userId,
+    couponId,
+    discountAmount
+  });
+
+  await userCoupon.save();
+
+  await Coupon.findByIdAndUpdate(
+    couponId,
+    {
+      $inc: { usedCount: 1 }
+    }
+  );
+
+  return userCoupon;
+};
+
 module.exports = {
-  getCouponsForUser
+  getCouponsForUser,
+  recordCouponUsage
 };
