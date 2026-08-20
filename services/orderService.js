@@ -4,6 +4,7 @@ const Order = require('../models/orderSchema');
 const Cart = require('../models/cartSchema');
 const paginate = require('../utils/pagination');
 const { applyCouponToOrder, applyCouponValidation } = require('../utils/couponHelper');
+const { recordCouponUsage } = require('./couponService');
 
 const getOrderData = async (userId, addressId) => {
 
@@ -120,7 +121,8 @@ const applyOrderCoupon = async (userId, couponCode, cart, totalPrice) => {
     finalAmount: couponResult.finalAmount,
     couponApplied: couponResult.couponApplied,
     couponDiscount: couponResult.couponDiscount,
-    appliedCouponCode: couponResult.couponCode
+    appliedCouponCode: couponResult.couponCode,
+    couponId: couponResult.couponId
   };
 };
 
@@ -143,19 +145,21 @@ const createOrder = async ({
   userId,
   orderItems,
   totalPrice,
+  shipping,
   finalAmount,
   address,
   paymentMethod,
   couponApplied,
   couponCode,
-  couponDiscount
+  couponDiscount,
+  couponId,
 }) => {
 
   const order = new Order({
     userId,
-    orderId: `ORD-${Date.now()}`,
     orderItems,
     totalPrice,
+    shipping,
     finalAmount,
 
     address: {
@@ -183,6 +187,14 @@ const createOrder = async ({
   });
 
   await order.save();
+
+  if (couponApplied && couponId) {
+    await recordCouponUsage(
+      userId,
+      couponId,
+      couponDiscount
+    );
+  }
 
   // Reduce product stock
   for (const item of orderItems) {

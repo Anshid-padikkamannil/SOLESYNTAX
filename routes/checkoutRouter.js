@@ -5,8 +5,10 @@ const {
   createRazorpayOrder,
   verifyPayment,
   getCheckout, 
-  applyCheckoutCoupon
+  applyCheckoutCoupon,
 } = require('../controllers/user/checkoutController');
+
+const { createOrder } = require('../controllers/user/orederController');
 
 
 router.use(isLoggedIn);
@@ -18,5 +20,6 @@ router.post('/verify', verifyPayment);
 
 router.get('/', getCheckout);
 router.post('/coupon', applyCheckoutCoupon);
+router.post('/order', createOrder);
 
 module.exports = router;

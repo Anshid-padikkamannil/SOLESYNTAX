@@ -9,11 +9,15 @@ const orderSchema = new Schema({
     required: true,
     index: true
   },
-  orderId: {
-    type: String,
-    default: () => uuidv4(),
-    unique: true
-  },
+  // orderId: {
+  //   type: Schema.Types.ObjectId,
+  //   required: true
+  // },
+  // orderuuid: {
+  //   type: String,
+  //   default: () => uuidv4(),
+  //   unique: true
+  // },
   orderItems: [{
     product: {
       type: Schema.Types.ObjectId,
@@ -79,6 +83,20 @@ const orderSchema = new Schema({
     required: true,
     enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Return Request', 'Returned'],
     default: 'Pending'
+  },
+  paymentDetails: {
+  razorpayOrderId: String,
+  razorpayPaymentId: String,
+  status: {
+    type: String,
+    enum: ["Pending", "Success", "Failed"],
+    default: "Pending"
+  }
+  },
+  shipping: {
+  type: Number,
+  default: 0,
+  min: 0
   },
   discount: { type: Number, default: 0 },
   couponDiscount: { type: Number, default: 0 },

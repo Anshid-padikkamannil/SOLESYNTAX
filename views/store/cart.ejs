@@ -82,6 +82,45 @@
 		background-color: #f56372;
 		color: white;
 	}
+
+	.empty-cart {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+  }
+  .empty-cart i {
+    font-size: 60px;
+    color: #ddd;
+    margin-bottom: 20px;
+  }
+  .empty-cart h3 {
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 28px;
+    color: #343a40;
+    margin-bottom: 10px;
+  }
+  .empty-cart p {
+    color: #6c757d;
+    font-size: 16px;
+    max-width: 400px;
+    margin: 0 auto 20px;
+  }
+  .empty-cart .shop-link {
+    display: inline-block;
+    background: #88c8bc;
+    color: white;
+    padding: 10px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s;
+  }
+  .empty-cart .shop-link:hover {
+    background: #66a59b;
+  }
 </style>
 
 <div id="page">
@@ -99,6 +138,7 @@
 
 	<div class="colorlib-product">
 		<div class="container">
+			<% if (cart && cart.items.length > 0) { %>
 			<div class="row row-pb-lg">
 				<div class="col-md-12">
 					<div class="product-name d-flex">
@@ -197,6 +237,14 @@
 					</div>
 				</div>
 			</div>
+			<% } else { %>
+        <div class="empty-cart">
+          <i class="fas fa-heart-broken"></i>
+          <h3>Your cart is empty</h3>
+          <p>Start adding your favourite items – they’ll be saved here for later.</p>
+          <a href="/shop" class="shop-link">Start Shopping</a>
+        </div>
+      <% } %>
 
 			<div class="row">
 				<div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">

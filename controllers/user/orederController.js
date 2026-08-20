@@ -19,45 +19,57 @@ const createOrder  = async (req, res) => {
     await orderService.validateCartStock(cart);
 
     // 3. Build order items and calculate total
-    const { orderitems, totalPrice } = orderService.buildOrderItems(cart);
+    const { orderItems, totalPrice } = orderService.buildOrderItems(cart);
 
-    // 4. Apply coupon
-    const couponResult = await orderService.applyOrderCoupon(
-      userId,
-      couponCode,
-      cart,
-      totalPrice
-    );
+    // 4. Calculate shipping
+    const shipping = totalPrice >= 5000 ? 0 : 100;
 
-    const {
-      finalAmount,
-      couponApplied,
-      couponDiscount,
-      appliedCouponCode
-    } = couponResult;
-    
-    // 5. Validate payment method
+    // 5. Coupon
+    let couponDiscount = 0;
+    let couponApplied = false;
+    let appliedCouponCode = null;
+    let couponId = null;
+
+    if (couponCode) {
+      const couponResult = await orderService.applyOrderCoupon(
+        userId,
+        couponCode,
+        cart,
+        totalPrice
+      );
+
+      couponDiscount = couponResult.couponDiscount;
+      couponApplied = couponResult.couponApplied;
+      appliedCouponCode = couponResult.appliedCouponCode;
+      couponId = couponResult.couponId;
+    }
+
+    // 6. Calculate final amount
+    const finalAmount =
+      totalPrice + shipping - couponDiscount;
+
+    // 7. Validate payment method
     orderService.validatePaymentMethod(paymentMethod);
 
-    // 6. Create order
+    // 8. Create order
     const order = await orderService.createOrder({
       userId,
-      orderitems,
+      orderItems,
       totalPrice,
+      shipping,
       finalAmount,
       address,
       paymentMethod,
       couponApplied,
       couponCode: appliedCouponCode,
-      couponDiscount
+      couponDiscount,
+      couponId,
     });
 
-
-      res.status(201).json({
-        success: true,
-        message: 'Order created successfully',
-        order
-      })
+    return res.status(201).json({
+      success: true,
+      orderId: order._id
+    });
 
   } catch (err) {
 
