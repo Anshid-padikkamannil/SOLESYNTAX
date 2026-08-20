@@ -1,6 +1,10 @@
 const razorpay = require('../config/razorpay');
 const Order = require('../models/orderSchema');
+const Product = require('../models/productSchema');
+const Coupon = require('../models/couponSchema');
+const Cart = require('../models/cartSchema');
 const crypto = require('crypto');
+const { recordCouponUsage } = require('./couponService');
 
 
 /**
@@ -16,9 +20,9 @@ const createRazorpayOrder = async (appOrderId, userId) => {
 
   // 2. Prepare the options for Razorpay
   const options = {
-    amount: order.finalAmount * 100, // Convert ₹ to paise. why {It expects the smallest unit of the currency in our case 1 Rupee = 100 Paise so we multiply by 100}
+    amount: Math.round(order.finalAmount * 100), // Convert ₹ to paise. why {It expects the smallest unit of the currency in our case 1 Rupee = 100 Paise so we multiply by 100}
     currency: 'INR',
-    receipt: order.orderId,
+    receipt: order._id.toString(),
     payment_capture: 1
   };
 
@@ -77,7 +81,42 @@ const verifyPayment = async (payload) => {
     razorpayPaymentId: razorpay_payment_id,
     status: 'Success'
   };
-  order.status = 'Processing'; // move from 'Pending' to 'Processing'
+
+  //5. record coupon useage
+  if (order.couponApplied && order.couponCode) {
+
+    const coupon = await Coupon.findOne({
+      code: order.couponCode
+    });
+
+    if (coupon) {
+      await recordCouponUsage(
+        userId,
+        coupon._id,
+        order.couponDiscount,
+        order._id
+      );
+    }
+  }
+
+  //6 reduce product stock
+  for (const item of order.orderItems) {
+    await Product.findByIdAndUpdate(
+      item.product,
+      {
+        $inc: {
+          stock: -item.quantity
+        }
+      }
+    );
+  }
+
+  // 7 clear cart
+  await Cart.findOneAndDelete({ userId });
+
+  // 8. Payment successful → 'Pending' to 'Processing'
+  order.status = 'Processing';
+
   await order.save();
 
   return {

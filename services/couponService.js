@@ -68,12 +68,14 @@ const getCouponsForUser = async (userId) => {
 const recordCouponUsage = async (
   userId,
   couponId,
-  discountAmount
+  discountAmount,
+  orderId
 ) => {
 
   const userCoupon = new UserCoupon({
     userId,
     couponId,
+    orderId,
     discountAmount
   });
 

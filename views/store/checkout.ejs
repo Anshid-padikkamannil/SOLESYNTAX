@@ -927,6 +927,7 @@
  <!-- <script src="/js/notifications.js"></script> -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
   (function() {
     'use strict';
@@ -1116,13 +1117,103 @@
           throw new Error(result.message || 'Unable to place order.');
         }
 
-        // Order successfully created
-        launchConfetti();
+        // COD
+        // -------------------------------- //
+        if (paymentMethod === 'COD') {
+          // Order successfully created
+          launchConfetti();
 
-        // Wait for confetti to be visible
-        setTimeout(() => {
-          window.location.href = `/account/order-details/${result.orderId}`;
-        }, 3500);
+          // Wait for confetti to be visible
+          setTimeout(() => {
+            window.location.href = `/account/order-details/${result.orderId}`;
+          }, 3500);
+
+          return;
+        }
+
+        // RAZORPAY
+        // -------------------------------- //
+        console.log('Internal order created:', result.orderId);
+
+        const razorpayResponse = await fetch('/checkout/create-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            orderId: result.orderId
+          })
+        });
+
+        const razorpayResult = await razorpayResponse.json();
+
+        if (!razorpayResponse.ok || !razorpayResult.success) {
+          throw new Error( razorpayResult.message || 'Unable to create Razorpay order');
+        }
+
+        console.log('Razorpay order created:', razorpayResult);
+        // Open Razorpay Checkout
+        const options = {
+          key: razorpayResult.key_id,
+          amount: razorpayResult.order.amount,
+          currency: razorpayResult.order.currency,
+          name: 'SOLESYNTAX',
+          description: 'Order Payment',
+          order_id: razorpayResult.order.id,
+
+          handler: async function (response) {
+            console.log('Razorpay payment response:', response);
+
+            try {
+              
+              const verifyResponse = await fetch('/checkout/verify', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  appOrderId: result.orderId
+                })
+              });
+
+              const verifyResult = await verifyResponse.json();
+
+              console.log('Payment verification result:', verifyResult);
+
+              if (!verifyResponse.ok || !verifyResult.success) {
+                throw new Error(verifyResult.message || 'Payment verification failed');
+              }
+
+              launchConfetti();
+
+              setTimeout(() => {
+                window.location.href = `/account/order-details/${result.orderId}`;
+              }, 3000)
+
+            } catch (err) {
+              
+              console.error('PAYMENT VERIFICATION ERROR:', error);
+
+              alert(
+                error.message ||
+                'Payment was completed, but verification failed.'
+              );
+
+              button.disabled = false;
+              button.innerHTML = '<i class="fas fa-lock"></i> Place Order';
+            }
+          },
+
+          theme: {
+            color: '88c8bc'
+          }
+        }
+        const razorpay = new Razorpay(options);
+
+        razorpay.open();
 
       } catch (error) {
         console.error('ORDER ERROR:', error);

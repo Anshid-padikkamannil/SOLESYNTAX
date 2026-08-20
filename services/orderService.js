@@ -188,28 +188,38 @@ const createOrder = async ({
 
   await order.save();
 
-  if (couponApplied && couponId) {
-    await recordCouponUsage(
-      userId,
-      couponId,
-      couponDiscount
-    );
-  }
+  if (paymentMethod === 'COD') {
 
-  // Reduce product stock
-  for (const item of orderItems) {
-    await Product.findByIdAndUpdate(
-      item.product,
-      {
-        $inc: {
-          stock: -item.quantity
+    // Record coupon usage
+    if (couponApplied && couponId) {
+      await recordCouponUsage(
+        userId,
+        couponId,
+        couponDiscount,
+        order._id
+      );
+    }
+
+    // Reduce product stock
+    for (const item of orderItems) {
+      await Product.findByIdAndUpdate(
+        item.product,
+        {
+          $inc: {
+            stock: -item.quantity
+          }
         }
-      }
-    );
-  }
+      );
+    }
 
-  // Clear user's cart
-  await Cart.findOneAndDelete({ userId });
+    // Clear cart
+    await Cart.findOneAndDelete({ userId });
+
+    // COD order is confirmed
+    order.status = 'Processing';
+
+    await order.save();
+  }
 
   return order;
 };
