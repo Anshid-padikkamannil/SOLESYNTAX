@@ -1,37 +1,222 @@
 <h4 class="mb-3"><i class="fas fa-file-invoice" style="color:#88c8bc;"></i> Order Details <span class="text-muted">#<%= order.id %></span></h4>
 
 <div class="row">
-    <div class="col-md-8">
-        <h6>Products</h6>
+  <!-- Left Column -->
+  <div class="col-lg-8">
+
+    <!-- Products -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h6 class="mb-3"><i class="fas fa-box me-2" style="color:#88c8bc;"></i> Products</h6>
         <% order.orderItems.forEach(item => { %>
-            <div class="wishlist-item border-bottom pb-2">
-                <img src="<%= item.product.images[0] %>"
-                alt="<%= item.name %>"
-                style="width:80px;height:80px;object-fit:cover;border-radius:8px;">
-                <div class="product-info">
-                    <h6><%= item.name %></h6>
-                    <span class="text-muted">Qty: <%= item.quantity %></span>
-                    <br>
-                    <span class="text-muted">Size: <%= item.size %></span>
-                    <span class="price ml-3">₹<%= item.price.toLocaleString('en-IN') %></span>
-                </div>
+          <div class="d-flex align-items-start border-bottom pb-3 mb-3">
+            <img src="<%= item.product.images[0] %>" alt="<%= item.name %>" style="width:80px;height:80px;object-fit:cover;border-radius:8px;">
+            <div class="ms-3 flex-grow-1">
+              <h6 class="mb-1"><%= item.name %></h6>
+              <span class="text-muted">Qty: <%= item.quantity %></span>
+              <span class="text-muted ms-2">Size: <%= item.size %></span>
+              <span class="price ms-3" style="color:#88c8bc; font-weight:600;">₹<%= item.price.toLocaleString('en-IN') %></span>
             </div>
+          </div>
         <% }); %>
-        <div class="mt-3"><strong>Total: ₹<%= order.finalAmount.toLocaleString('en-IN')  %></strong></div>
+      </div>
     </div>
-    <div class="col-md-4">
-        <h6>Shipping Address</h6>
-        <p class="small"><%= order.address.name %><br><%= order.address.addressLine1 %><br><%= order.address.city %> - <%= order.address.pincode %></p>
-        <h6>Payment</h6>
-        <p class="small"><%= order.paymentMethod %>  <%= order.payment %></p>
-        <h6>Status</h6>
-        <span class="order-status <%= order.statusClass %>"><%= order.status %></span>
-        <% if (order.status === 'Delivered') { %>
-            <span class="order-status small mt-2">Delivered on <%= order.deliveredDate %></span>
+
+    <!-- Price Summary -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h6 class="mb-3"><i class="fas fa-receipt me-2" style="color:#88c8bc;"></i> Price Summary</h6>
+        <div class="row">
+          <div class="col-6 text-muted">Subtotal</div>
+          <div class="col-6 text-end">₹<%= order.totalPrice.toLocaleString('en-IN') %></div>
+        </div>
+        <div class="row">
+          <div class="col-6 text-muted">Shipping</div>
+          <div class="col-6 text-end">₹<%= order.shipping.toLocaleString('en-IN') %></div>
+        </div>
+        <% if (order.couponDiscount && order.couponDiscount > 0) { %>
+          <div class="row">
+            <div class="col-6 text-muted">Coupon Discount</div>
+            <div class="col-6 text-end text-success">−₹<%= order.couponDiscount.toLocaleString('en-IN') %></div>
+          </div>
         <% } %>
-        <h6 class="mt-3">Tracking</h6>
-        <p class="small">Track ID: <strong><%= order.trackingId %></strong><br> <a href="#">Track package</a></p>
-        <button class="btn btn-outline-secondary btn-sm mt-2"><i class="fas fa-file-pdf"></i> Download Invoice</button>
+        <div class="row fw-bold mt-2 pt-2 border-top">
+          <div class="col-6">Total</div>
+          <div class="col-6 text-end" style="color:var(--primary-dark);">₹<%= order.finalAmount.toLocaleString('en-IN') %></div>
+        </div>
+      </div>
     </div>
+
+    <!-- Shipping Address -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h6 class="mb-3"><i class="fas fa-map-pin me-2" style="color:#88c8bc;"></i> Shipping Address</h6>
+        <p class="small mb-1"><%= order.address.name %></p>
+        <p class="small mb-1"><%= order.address.addressLine1 %></p>
+        <p class="small"><%= order.address.city %> - <%= order.address.pincode %></p>
+        <p class="small"><i class="fas fa-phone me-1" style="color:#88c8bc;"></i> <%= order.address.phone || 'N/A' %></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column -->
+  <div class="col-lg-4">
+    <!-- Payment Method & Status -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h6 class="mb-3"><i class="fas fa-credit-card me-2" style="color:#88c8bc;"></i> Payment</h6>
+        <p class="small mb-1"><strong>Method:</strong> <%= order.paymentMethod %>
+        <% if (order.paymentMethod === 'COD') { %>
+            <br> Pay when you receive
+        <% } %></p>
+        <p class="small mb-1"><strong>Status:</strong> <span class="badge <%= order.paymentMethod %>"><%= order.paymentStatus %></span></p>
+        <p class="small text-muted"><%= order.paymentDetails?.status || 'Pending' %></p>
+
+        <h6 class="mt-3"><i class="fas fa-truck me-2" style="color:#88c8bc;"></i> Tracking</h6>
+        <p class="small">Track ID: <strong><%= order.trackingId || 'Not available yet' %></strong><br>
+        <a href="#" style="color:#88c8bc;">Track package</a></p>
+        <button class="btn btn-outline-secondary btn-sm mt-2"><i class="fas fa-file-pdf"></i> Download Invoice</button>
+      </div>
+    </div>
+
+    <!-- Tracking Progress (if not delivered/cancelled) -->
+    <% if (order.status !== 'Cancelled') { %>
+
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+
+            <h6 class="mb-3">
+                <i class="fas fa-truck me-2" style="color:#88c8bc;"></i>
+                Order Progress
+            </h6>
+
+            <div class="tracking-progress d-flex justify-content-between"
+                style="position:relative;">
+
+                <!-- 1. Ordered -->
+                <div class="text-center">
+                <div class="step-circle <%= 
+                    ['Pending', 'Processing', 'Shipped', 'Delivered'].includes(order.status)
+                    ? 'completed'
+                    : ''
+                %>">
+                    1
+                </div>
+                <span class="small">Ordered</span>
+                </div>
+
+                <!-- 2. Processing -->
+                <div class="text-center">
+                <div class="step-circle <%= 
+                    ['Processing', 'Shipped', 'Delivered'].includes(order.status)
+                    ? 'completed'
+                    : ''
+                %>">
+                    2
+                </div>
+                <span class="small">Processing</span>
+                </div>
+
+                <!-- 3. Shipped -->
+                <div class="text-center">
+                <div class="step-circle <%= 
+                    ['Shipped', 'Delivered'].includes(order.status)
+                    ? 'completed'
+                    : ''
+                %>">
+                    3
+                </div>
+                <span class="small">Shipped</span>
+                </div>
+
+                <!-- 4. Delivered -->
+                <div class="text-center">
+                <div class="step-circle <%= 
+                    order.status === 'Delivered'
+                    ? 'completed'
+                    : ''
+                %>">
+                    4
+                </div>
+                <span class="small">Delivered</span>
+                </div>
+
+            </div>
+
+            <style>
+                .tracking-progress .step-circle {
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                background: #e9ecef;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 4px;
+                font-weight: 700;
+                font-size: 13px;
+                color: #6c757d;
+                transition: all 0.3s;
+                }
+
+                .tracking-progress .step-circle.completed {
+                background: #88c8bc;
+                color: #fff;
+                }
+
+                .tracking-progress .text-center {
+                flex: 1;
+                }
+            </style>
+
+            </div>
+        </div>
+
+    <% } %>
+
+    <!-- Cancel Order (if pending/processing/shipped) -->
+    <% if (order.status === 'Pending' || order.status === 'Processing' || order.status === 'Shipped') { %>
+      <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body text-center">
+          <button class="btn btn-outline-danger" id="cancelOrderBtn" onclick="confirmCancel()" style="border-radius:50px; padding:8px 28px; font-weight:600;">
+            <i class="fas fa-times-circle me-2"></i> Cancel Order
+          </button>
+          <p class="text-muted small mt-2 mb-0">Orders can be cancelled within 24 hours of placement.</p>
+        </div>
+      </div>
+    <% } %>
+
+    <a href="/account/orders" class="btn btn-link mt-2"><i class="fas fa-arrow-left"></i> Back to Orders</a>
+  </div>
 </div>
-<a href="/account/orders" class="btn btn-link mt-3"><i class="fas fa-arrow-left"></i> Back to Orders</a>
+
+<!-- SweetAlert2 & Cancel function -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function confirmCancel() {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Cancel Order?',
+      text: 'Are you sure you want to cancel this order? This cannot be undone.',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: 'Yes, cancel order',
+      cancelButtonText: 'Keep it'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        fetch('/account/order/cancel/<%= order.id %>', { method: 'POST' })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              Swal.fire('Cancelled', 'Your order has been cancelled.', 'success')
+                .then(() => window.location.reload());
+            } else {
+              Swal.fire('Error', data.message || 'Unable to cancel order.', 'error');
+            }
+          })
+          .catch(() => Swal.fire('Error', 'Something went wrong.', 'error'));
+      }
+    });
+  }
+</script>
