@@ -15,7 +15,7 @@ const {
 
 } = require('../../controllers/user/profileController');
 
-const { allOrders, getOrderById } = require('../../controllers/user/orederController');
+const { allOrders, getOrderById, cancelOrder } = require('../../controllers/user/orederController');
 
 const { getAccountWishlist, accountAddToCartFromWishlist, accountRemoveFromWishlist } = require('../../controllers/user/wishlistController');
 
@@ -33,6 +33,7 @@ router.post('/account/profile/update', updateProfile);
 
 router.get('/account/orders', allOrders);
 router.get('/account/order-details/:id', getOrderById);
+router.post('/account/order-details/:id/cancel', cancelOrder);
 
 //address
 router.post('/account/address', addAddress);

@@ -9,15 +9,6 @@ const orderSchema = new Schema({
     required: true,
     index: true
   },
-  // orderId: {
-  //   type: Schema.Types.ObjectId,
-  //   required: true
-  // },
-  // orderuuid: {
-  //   type: String,
-  //   default: () => uuidv4(),
-  //   unique: true
-  // },
   orderItems: [{
     product: {
       type: Schema.Types.ObjectId,
@@ -92,6 +83,18 @@ const orderSchema = new Schema({
     enum: ["Pending", "Success", "Failed"],
     default: "Pending"
   }
+  },
+  refundDetails: {
+    refundId: String,
+    status: {
+      type: String,
+      enum: ['Pending', 'Processed', 'Failed']
+    },
+    amount: {
+      type: Number,
+      min: 0
+    },
+    refundedAt: Date
   },
   shipping: {
   type: Number,

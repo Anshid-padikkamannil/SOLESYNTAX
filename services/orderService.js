@@ -5,6 +5,7 @@ const Cart = require('../models/cartSchema');
 const paginate = require('../utils/pagination');
 const { applyCouponToOrder, applyCouponValidation } = require('../utils/couponHelper');
 const { recordCouponUsage } = require('./couponService');
+const { refundPayment } = require('./paymentService');
 
 const getOrderData = async (userId, addressId) => {
 
@@ -272,6 +273,17 @@ const cancelOrder = async (userId, orderId, cancellationReason) => {
     throw new Error(
       `Order cannot be cancelled. Current status: ${order.status}`
     );
+  }
+
+  if (order.paymentMethod === 'Razorpay' && order.paymentDetails?.status === 'Success') {
+    const refund = await refundPayment(order.paymentDetails.razorpayPaymentId, order.finalAmount);
+
+    order.refundDetails = {
+      refundId: refund.id,
+      status: refund.status === 'pending' ? 'Pending' : 'Processed',
+      amount: refund.finalAmount,
+      refundedAt: new Date()
+    };
   }
 
   // Restore product stock

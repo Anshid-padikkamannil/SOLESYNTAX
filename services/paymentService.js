@@ -126,7 +126,21 @@ const verifyPayment = async (payload) => {
   };
 };
 
+const refundPayment = async (razorpayPaymentId, amount) => {
+  
+  const refund = await razorpay.payments.refund(
+    razorpayPaymentId,
+    {
+      amount: Math.round(amount * 100),
+      speed: 'normal'
+    }
+  );
+
+  return refund;
+}
+
 module.exports = {
   createRazorpayOrder,
-  verifyPayment
+  verifyPayment,
+  refundPayment
 }

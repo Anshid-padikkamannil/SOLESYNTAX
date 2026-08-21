@@ -156,7 +156,7 @@ const cancelOrder = async (req, res) => {
     
     const userId = req.user.userId || req.user._id;
     const { id } = req.params;
-    const { reason } = req.body;
+    const { reason } = req.body || {};
 
     const order = await orderService.cancelOrder( userId, id, reason);
 
