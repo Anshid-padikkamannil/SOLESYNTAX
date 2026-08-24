@@ -15,6 +15,18 @@ const createOrder  = async (req, res) => {
     // 1. Get address and cart
     const { address , cart } = await orderService.getOrderData( userId, addressId );
 
+    if (paymentMethod === 'Razorpay') {
+      const existingOrder = await orderService.findReusableRazorpayOrder(userId, cart);
+
+      if (existingOrder) {
+        return res.status(200).json({
+          success: true,
+          orderId: existingOrder._id,
+          reused: true
+        });
+      }
+    }
+
     // 2. Validate product stock
     await orderService.validateCartStock(cart);
 
@@ -130,10 +142,9 @@ const getOrderById = async (req, res) => {
     const order = await orderService.getUserOrderById(userId, id);
 
     if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: 'Order not found'
-      });
+      return res.status(404).render("error", {
+        message: "Something went wrong."
+      })
     }
 
     res.render("account/index", {

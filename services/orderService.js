@@ -314,6 +314,55 @@ const cancelOrder = async (userId, orderId, cancellationReason) => {
   return order;
 };
 
+const getPendingRazorpayOrder = async (userId) => {
+  return await Order.findOne({
+    userId,
+    paymentMethod: 'Razorpay',
+    status: 'Pending',
+    'paymentDetails.status': 'Pending'
+  }).sort({ createdAt: -1 });
+};
+
+const isSameOrderItems = (orderItems, cart) => {
+
+  if (orderItems.length !== cart.items.length) {
+    return false;
+  }
+
+  return orderItems.every(orderItem => {
+
+    const cartItem = cart.items.find(item =>
+      item.productId &&
+      orderItem.product &&
+      item.productId._id.toString() === orderItem.product.toString() &&
+      item.size === orderItem.size
+    );
+
+    if (!cartItem) {
+      return false;
+    }
+
+    return cartItem.quantity === orderItem.quantity;
+  });
+};
+
+const findReusableRazorpayOrder = async (userId, cart) => {
+
+  const pendingOrder = await getPendingRazorpayOrder(userId);
+
+  if (!pendingOrder) {
+    return null;
+  }
+
+  const sameCart = isSameOrderItems(pendingOrder.orderItems, cart);
+
+  if (!sameCart) {
+    return null;
+  }
+
+  return pendingOrder;
+}
+
 module.exports = {
   getOrderData,
   validateCartStock,
@@ -323,5 +372,8 @@ module.exports = {
   createOrder,
   getUserOrders,
   getUserOrderById,
-  cancelOrder
+  cancelOrder,
+  getPendingRazorpayOrder,
+  isSameOrderItems,
+  findReusableRazorpayOrder
 };

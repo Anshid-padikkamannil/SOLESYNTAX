@@ -14,6 +14,7 @@ const { recordCouponUsage } = require('./couponService');
 const createRazorpayOrder = async (appOrderId, userId) => {
   //1. Fetch the order from our database to verify it belongs to the user
   const order = await Order.findOne({ _id: appOrderId, userId });
+  
   if (!order) {
     throw new Error('Order not found or does not belong to user');
   }

@@ -1195,7 +1195,7 @@
 
             } catch (err) {
               
-              console.error('PAYMENT VERIFICATION ERROR:', error);
+              console.err('PAYMENT VERIFICATION ERROR:', err);
 
               alert(
                 error.message ||
@@ -1207,8 +1207,19 @@
             }
           },
 
+          modal: {
+            ondismiss: function() {
+              console.log('Razorpay checkout closed by user');
+
+              showToast('Payment was not completed. You can try again.', 'warning');
+
+              button.disabled = false;
+              button.innerHTML = '<i class="fas fa-lock"></i> Place Order';
+            }
+          },
+
           theme: {
-            color: '88c8bc'
+            color: '#88c8bc'
           }
         }
         const razorpay = new Razorpay(options);

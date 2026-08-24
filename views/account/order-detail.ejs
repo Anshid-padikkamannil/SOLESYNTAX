@@ -69,9 +69,7 @@
         <% if (order.paymentMethod === 'COD') { %>
             <br> Pay when you receive
         <% } %></p>
-        <p class="small mb-1"><strong>Status:</strong> <span class="badge <%= order.paymentMethod %>"><%= order.paymentStatus %></span></p>
-        <p class="small text-muted"><%= order.paymentDetails?.status || 'Pending' %></p>
-
+        <p class="small mb-1"><strong>Status:</strong> <span class="badge <%= order.paymentMethod %>"><%= order.paymentDetails.status %></span></p>
         <h6 class="mt-3"><i class="fas fa-truck me-2" style="color:#88c8bc;"></i> Tracking</h6>
         <p class="small">Track ID: <strong><%= order.trackingId || 'Not available yet' %></strong><br>
         <a href="#" style="color:#88c8bc;">Track package</a></p>
