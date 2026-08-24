@@ -5,6 +5,7 @@ const Coupon = require('../models/couponSchema');
 const Cart = require('../models/cartSchema');
 const crypto = require('crypto');
 const { recordCouponUsage } = require('./couponService');
+const { removeOrderedItemsFromCart } = require('./cartService');
 
 
 /**
@@ -113,7 +114,10 @@ const verifyPayment = async (payload) => {
   }
 
   // 7 clear cart
-  await Cart.findOneAndDelete({ userId });
+  await removeOrderedItemsFromCart(
+    userId,
+    order.orderItems
+  );
 
   // 8. Payment successful → 'Pending' to 'Processing'
   order.status = 'Processing';

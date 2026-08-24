@@ -182,9 +182,19 @@ const removeCartItem = async (userId, productId, size) => {
 
 
 // Clear user's cart
-const clearUserCart = async (userId) => {
+const removeOrderedItemsFromCart = async (userId, orderItems) => {
 
-  await Cart.findOneAndDelete({ userId });
+  const cart = await Cart.findOne({ userId });
+
+  if (!cart) {
+    return true;
+  }
+
+  cart.items = cart.items.filter(cartItem => {
+    return !orderItems.some(orderItem => orderItem.product.toString() === cartItem.productId.toString() && orderItem.size === cartItem.size );
+  });
+
+  await cart.save();
 
   return true;
 };
@@ -195,5 +205,5 @@ module.exports = {
   getUserCart,
   updateCartItem,
   removeCartItem,
-  clearUserCart
+  removeOrderedItemsFromCart
 };

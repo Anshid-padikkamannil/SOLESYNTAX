@@ -85,7 +85,18 @@ const createOrder  = async (req, res) => {
 
   } catch (err) {
 
-    res.status(500).json({ message: err.message });
+    if (err.pendingOrderId) {
+      return res.status(400).json({
+        success: false,
+        message: err.message,
+        pendingOrderId: err.pendingOrderId
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
 
   }
 };

@@ -1078,6 +1078,125 @@
     }
 
     // ---- Place Order ----
+
+    // ---- Resume Pending Razorpay Payment ----
+    async function resumeRazorpayPayment(orderId) {
+      try {
+        
+        const response = await fetch('/checkout/create-order', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            orderId
+          })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(
+            result.message || 'Unable to resume payment.'
+          );
+        }
+
+        const options = {
+          key: result.key_id,
+          amount: result.order.amount,
+          currency: result.order.currency,
+          name: 'SOLESYNTAX',
+          description: 'Order Payment',
+          order_id: result.order.id,
+
+          handler: async function (paymentResponse) {
+            try {
+              
+              const verifyResponse = await fetch('/checkout/verify', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                razorpay_order_id: paymentResponse.razorpay_order_id,
+                razorpay_payment_id: paymentResponse.razorpay_payment_id,
+                razorpay_signature: paymentResponse.razorpay_signature,
+                appOrderId: orderId
+                })
+              });
+
+              const verifyResult = await verifyResponse.json();
+
+              if (!verifyResponse.ok) {
+                throw new Error(
+                  verifyResult.message || 'Payment verification failed.'
+                );
+              }
+
+              if (verifyResult.success !== true) {
+                throw new Error(
+                  verifyResult.message || 'Payment verification failed.'
+                );
+              }
+              launchConfetti();
+
+              setTimeout(() => {
+                window.location.href =
+                  `/account/order-details/${orderId}`;
+              }, 3000);
+
+            } catch (err) {
+              console.error('RESUMED PAYMENT VERIFICATION ERROR:',err);
+
+              Swal.fire({
+                icon: 'error',
+                title: 'Payment Verification Failed',
+                text:
+                  err.message ||
+                  'Payment was completed, but verification failed.',
+                confirmButtonColor: '#88c8bc'
+              });
+            }
+          },
+          modal: {
+            ondismiss: function() {
+              console.log(
+                'Resumed Razorpay checkout closed by user'
+              );
+
+              Swal.fire({
+                icon: 'warning',
+                title: 'Payment Not Completed',
+                text: 'You can resume this payment anytime.',
+                confirmButtonColor: '#88c8bc'
+              });
+            }
+          },
+          
+          theme: {
+            color: '#88c8bc'
+          }
+        }
+
+        const razorpay = new Razorpay(options);
+        
+        razorpay.open();
+
+      } catch (error) {
+        console.error('RESUME PAYMENT ERROR:', error);
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Unable to Resume Payment',
+          text:
+            error.message ||
+            'Something went wrong while resuming payment.',
+          confirmButtonColor: '#88c8bc'
+        });
+        
+      }
+    }
+
     document.getElementById('placeOrderBtn').addEventListener('click', async function () {
       const button = this;
 
@@ -1114,7 +1233,13 @@
         const result = await response.json();
 
         if (!response.ok || !result.success) {
-          throw new Error(result.message || 'Unable to place order.');
+          const error = new Error(
+            result.message || 'Unable to place order.'
+          );
+
+          error.pendingOrderId = result.pendingOrderId;
+
+          throw error;
         }
 
         // COD
@@ -1195,12 +1320,16 @@
 
             } catch (err) {
               
-              console.err('PAYMENT VERIFICATION ERROR:', err);
+              console.error('PAYMENT VERIFICATION ERROR:', err);
 
-              alert(
-                error.message ||
-                'Payment was completed, but verification failed.'
-              );
+              Swal.fire({
+                icon: 'error',
+                title: 'Payment Verification Failed',
+                text:
+                  err.message ||
+                  'Payment was completed, but verification failed.',
+                confirmButtonColor: '#88c8bc'
+              });
 
               button.disabled = false;
               button.innerHTML = '<i class="fas fa-lock"></i> Place Order';
@@ -1229,7 +1358,34 @@
       } catch (error) {
         console.error('ORDER ERROR:', error);
 
-        alert(error.message || 'Something went wrong while placing the order.');
+        if (error.pendingOrderId) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Pending Payment',
+            text: error.message,
+            showCancelButton: true,
+            confirmButtonText: 'Resume Payment',
+            cancelButtonText: 'Close',
+            confirmButtonColor: '#88c8bc',
+            cancelButtonColor: '#6c757d'
+          }).then((result) => {
+
+            if (result.isConfirmed) {
+              resumeRazorpayPayment(error.pendingOrderId);
+            }
+
+          });
+
+        } else {
+
+          Swal.fire({
+            icon: 'error',
+            title: 'Unable to Place Order',
+            text: error.message || 'Something went wrong.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#88c8bc'
+          });
+        }
 
         button.disabled = false;
         button.innerHTML = '<i class="fas fa-lock"></i> Place Order';

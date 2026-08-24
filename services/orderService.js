@@ -357,7 +357,13 @@ const findReusableRazorpayOrder = async (userId, cart) => {
   const sameCart = isSameOrderItems(pendingOrder.orderItems, cart);
 
   if (!sameCart) {
-    return null;
+    const error = new Error(
+      'You already have a pending Razorpay payment. Please complete or cancel that order first.'
+    );
+
+    error.pendingOrderId = pendingOrder._id;
+
+    throw error;
   }
 
   return pendingOrder;

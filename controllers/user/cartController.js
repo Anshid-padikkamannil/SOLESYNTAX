@@ -6,7 +6,6 @@ const {
   getUserCart,
   updateCartItem : updateCartItemService,
   removeCartItem : removeCartItemService,
-  clearUserCart
 } = require('../../services/cartService')
 
 
