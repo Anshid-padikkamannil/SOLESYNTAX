@@ -3,7 +3,7 @@ const Cart = require('../../models/cartSchema');
 const Order = require('../../models/orderSchema');
 const paginate = require('../../utils/pagination');
 const Address = require('../../models/addressSchema');
-const { applyCouponToOrder } = require('../../utils/couponHelper');
+const { generateInvoice } = require('../../services/invoiceService');
 const orderService = require('../../services/orderService');
 
 const createOrder  = async (req, res) => {
@@ -207,9 +207,55 @@ const cancelOrder = async (req, res) => {
   }
 }
 
+const downloadInvoice = async (req, res) => {
+  try {
+    
+    const userId = req.user.userId || req.user._id;
+    const { id } = req.params;
+
+    const order = await Order.findOne({ _id: id, userId}).populate('orderItems.product');
+
+    if (!order) {
+      return res.status(400).render('error', {
+        message: 'Order not found.'
+      });
+    }
+
+    // only generate invoices for valid orders
+    if (order.paymentMethod === 'Razorpay' && order.paymentDetails.status !== 'Success') {
+      return res.status(400).render('error', {
+        message: 'Invoice is not available because payment was not completed.'
+      });
+    }
+
+    const doc = generateInvoice(order, req.user);
+
+    res.setHeader(
+      'Content-Type',
+      'application/pdf'
+    );
+
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="invoice-${order.invoiceNumber}.pdf"`
+    );
+
+    doc.pipe(res);
+    doc.end();
+
+  } catch (err) {
+    console.error('Invoice Error:', err);
+
+    res.status(500).render('error', {
+      message: 'Unable to generate invoice.'
+    });
+  }
+}
+
 module.exports = {
   createOrder,
   allOrders,
   getOrderById,
-  cancelOrder
+  cancelOrder,
+  downloadInvoice
 }

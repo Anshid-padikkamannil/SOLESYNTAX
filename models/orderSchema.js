@@ -104,7 +104,8 @@ const orderSchema = new Schema({
   discount: { type: Number, default: 0 },
   couponDiscount: { type: Number, default: 0 },
   couponApplied: { type: Boolean, default: false },
-  couponCode: { type: String, default: null }
+  couponCode: { type: String, default: null },
+  invoiceNumber: { type: String, unique: true }
 },
 {
   timestamps:true

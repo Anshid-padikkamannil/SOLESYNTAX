@@ -183,8 +183,7 @@ const createOrder = async ({
     couponCode,
     couponDiscount,
 
-    invoiceDate: new Date(),
-    createdOn: new Date()
+    invoiceNumber: generateInvoiceNumber()
   });
 
   await order.save();
@@ -369,6 +368,13 @@ const findReusableRazorpayOrder = async (userId, cart) => {
   return pendingOrder;
 }
 
+const generateInvoiceNumber = () => {
+  const year = new Date().getFullYear();
+  const randomNumber = Math.floor(100000 + Math.random() * 900000);
+
+  return `SS-${year}-${randomNumber}`;
+}
+
 module.exports = {
   getOrderData,
   validateCartStock,
@@ -381,5 +387,6 @@ module.exports = {
   cancelOrder,
   getPendingRazorpayOrder,
   isSameOrderItems,
-  findReusableRazorpayOrder
+  findReusableRazorpayOrder,
+  generateInvoiceNumber
 };
