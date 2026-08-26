@@ -107,7 +107,10 @@ const postReviews = async (req, res) => {
     
     console.error("Post Review Error:", err);
 
-    if (err.message === 'Product not found' || err.message === 'You have already reviewed this product') {
+    if (
+      err.message === 'Product not found' || 
+      err.message === 'You have already reviewed this product' || 
+      err.message === 'You can only review products you have purchased') {
       return res.status(400).json({
         success: false,
         message: err.message
@@ -120,6 +123,29 @@ const postReviews = async (req, res) => {
     });
   }
 }
+
+const getProductReviews = async (req, res) => {
+  try {
+    
+    const { id } = req.params;
+
+    const reviews = await productService.getProductReviews(id);
+
+    res.status(200).json({
+      success: true,
+      reviews
+    });
+
+
+  } catch (err) {
+    console.error("Get Product Reviews Error:", err);
+
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
+  }
+};
 
 const getHomePage = async (req, res) => {
   try {
@@ -142,5 +168,6 @@ module.exports = {
   getShop,
   productDetails,
   postReviews,
+  getProductReviews,
   getHomePage
 };

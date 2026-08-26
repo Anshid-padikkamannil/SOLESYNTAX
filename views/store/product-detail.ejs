@@ -1,292 +1,635 @@
-<%-include("../partials/user/header")%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>product-details | SOLESYNTAX</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<style>
-	.input-number {
-		width: 60px;
-		text-align: center;
-	}
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Rokkitt:100,300,400,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
-	.product-entry img {
-    width: 90%;
+    <!-- Bootstrap 4 -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Icomoon (for cart icon) -->
+    <link rel="stylesheet" href="/css/icomoon.css">
+    <!-- Your custom theme styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/account.css">
+
+    <!-- jQuery UI (for datepicker, if used) -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+</head>
+<body>
+<%- include("../partials/user/header") %>
+	<style>
+  /* ===== Brand Colors ===== */
+  :root {
+    --primary: #88c8bc;
+    --primary-dark: #66a59b;
+    --secondary: #46698f;
+    --accent: #ff6b6b;
+    --light: #f8f9fa;
+    --dark: #343a40;
+    --gray: #ced4da;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    --border-radius: 10px;
+    --font-main: 'Poppins', sans-serif;
+  }
+  *:focus {
+    outline: none !important;
+  }
+  body {
+    font-family: var(--font-main);
+    background: #f8f9fa;
+  }
+
+  /* ===== Breadcrumb ===== */
+  .breadcrumb {
+    background: transparent;
+    padding: 10px 0;
+    font-size: 14px;
+    margin-bottom: 0;
+  }
+  .breadcrumb-item a {
+    color: var(--primary);
+    text-decoration: none;
+  }
+  .breadcrumb-item.active {
+    color: #6c757d;
+  }
+
+  /* ===== Product Detail ===== */
+  .product-wrapper {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+  }
+
+  .product-gallery {
+    position: relative;
+    background: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+  }
+  .product-gallery .main-image {
+    width: 100%;
     height: auto;
-    margin: 0 auto;
-    display: block;
-	}
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  .product-gallery .thumbnails {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+  }
+  .product-gallery .thumbnails img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.3s;
+    flex-shrink: 0;
+  }
+  .product-gallery .thumbnails img:hover,
+  .product-gallery .thumbnails img.active {
+    border-color: var(--primary);
+  }
+  .product-gallery .wishlist-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.9);
+    border: none;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: #6c757d;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+    cursor: pointer;
+    z-index: 5;
+  }
+  .product-gallery .wishlist-btn:hover {
+    background: #fff;
+    transform: scale(1.1);
+  }
+  .product-gallery .wishlist-btn.added {
+    color: var(--accent);
+    background: rgba(255,107,107,0.12);
+  }
+
+  .product-info {
+    background: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 30px;
+  }
+  .product-info .product-title {
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 6px;
+  }
+  .product-info .product-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .product-info .product-rating .stars {
+    color: #f5a623;
+    font-size: 16px;
+  }
+  .product-info .product-rating .review-count {
+    color: #6c757d;
+    font-size: 14px;
+  }
+  .product-info .product-price {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    margin-bottom: 10px;
+  }
+  .product-info .product-price .original {
+    font-size: 20px;
+    color: #adb5bd;
+    text-decoration: line-through;
+    margin-left: 10px;
+    font-weight: 400;
+  }
+  .product-info .product-description {
+    color: #555;
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .product-info .product-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #6c757d;
+  }
+  .product-info .product-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .product-info .product-meta i {
+    color: var(--primary);
+  }
+
+  /* Size & Quantity */
+  .size-select {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .size-select .size-option {
+    padding: 6px 16px;
+    border: 1.5px solid #dee2e6;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 14px;
+    color: #495057;
+    transition: all 0.2s;
+  }
+  .size-select .size-option:hover {
+    border-color: var(--primary);
+  }
+  .size-select .size-option.active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: #fff;
+  }
+  .size-select .size-option.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .qty-cart {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .qty-cart .quantity-control {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .qty-cart .quantity-control button {
+    background: transparent;
+    border: none;
+    width: 36px;
+    height: 38px;
+    font-size: 18px;
+    cursor: pointer;
+    color: #6c757d;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .qty-cart .quantity-control button:hover {
+    background: #f0f9f7;
+    color: var(--primary);
+  }
+  .qty-cart .quantity-control input {
+    width: 48px;
+    height: 38px;
+    text-align: center;
+    border: none;
+    background: transparent;
+    font-weight: 500;
+    font-size: 16px;
+    padding: 0;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  .qty-cart .quantity-control input::-webkit-outer-spin-button,
+  .qty-cart .quantity-control input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .btn-add-cart {
+    background: var(--secondary);
+    color: #fff;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 16px;
+    transition: background 0.3s, transform 0.2s;
+    cursor: pointer;
+  }
+  .btn-add-cart:hover {
+    background: #395884;
+    transform: translateY(-2px);
+  }
+  .btn-add-cart i {
+    margin-right: 8px;
+  }
+
+  /* ===== Tabs ===== */
+  .product-tabs {
+    margin-top: 40px;
+    background: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 30px;
+  }
+  .product-tabs .nav-tabs {
+    border-bottom: 2px solid #e9ecef;
+  }
+  .product-tabs .nav-tabs .nav-link {
+    border: none;
+    font-weight: 600;
+    color: #6c757d;
+    padding: 12px 24px;
+    transition: color 0.3s;
+  }
+  .product-tabs .nav-tabs .nav-link:hover {
+    color: var(--primary);
+  }
+  .product-tabs .nav-tabs .nav-link.active {
+    color: var(--primary);
+    border-bottom: 3px solid var(--primary);
+    background: transparent;
+  }
+  .product-tabs .tab-content {
+    padding-top: 20px;
+  }
+  .product-tabs .tab-content p {
+    color: #555;
+    line-height: 1.8;
+  }
+
+  /* Reviews */
+  .review-item {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 16px 0;
+  }
+  .review-item:last-child {
+    border-bottom: none;
+  }
+  .review-item .review-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+  .review-item .review-header .reviewer {
+    font-weight: 600;
+    color: var(--dark);
+  }
+  .review-item .review-header .review-date {
+    font-size: 13px;
+    color: #adb5bd;
+  }
+  .review-item .review-stars {
+    color: #f5a623;
+    font-size: 14px;
+  }
+  .review-item .review-text {
+    color: #555;
+    font-size: 14px;
+  }
+  .review-form textarea {
+    resize: vertical;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+  }
+  .review-form textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(136,200,188,0.25);
+  }
+
+  /* ===== Related Products ===== */
+  .related-products {
+    margin-top: 50px;
+  }
+  .related-products h4 {
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 20px;
+  }
+  .product-card {
+    background: #fff;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: var(--shadow);
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.10);
+  }
+  .product-card .product-image {
+    position: relative;
+    padding-top: 100%;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+  .product-card .product-image img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+  .product-card:hover .product-image img {
+    transform: scale(1.05);
+  }
+  .product-card .product-info {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+  }
+  .product-card .product-info h6 {
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+  .product-card .product-info .price {
+    font-weight: 600;
+    color: var(--primary-dark);
+  }
+  /* ===== Heart Particle Animation ===== */
+.heart-particle {
+  position: fixed;
+  pointer-events: none;
+  font-size: 24px;
+  user-select: none;
+  z-index: 9999;
+  animation: floatHeart 1.2s ease-out forwards;
+}
+
+@keyframes floatHeart {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.2) rotate(var(--rot));
+  }
+}
+
+  /* ===== Responsive ===== */
+  @media (max-width: 768px) {
+    .product-info .product-title {
+      font-size: 24px;
+    }
+    .product-info .product-price {
+      font-size: 22px;
+    }
+    .product-gallery .thumbnails img {
+      width: 60px;
+      height: 60px;
+    }
+    .qty-cart {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .btn-add-cart {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+  @media (max-width: 576px) {
+    .product-tabs .nav-tabs .nav-link {
+      padding: 10px 16px;
+      font-size: 14px;
+    }
+  }
 </style>
 
-<div id="page">
+<div class="breadcrumbs">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <p class="bread"><span><a href="/">Home</a></span> / <span>Product Details</span></p>
+      </div>
+    </div>
+  </div>
+</div>
 
-	<div class="breadcrumbs">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<p class="bread"><span><a href="/">Home</a></span> / <span>Product Details</span></p>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="product-wrapper">
+  <div class="row g-4">
+    <!-- Gallery -->
+    <div class="col-lg-6">
+      <div class="product-gallery">
+        <!-- Main image: first image from product.images -->
+        <img src="<%= product.images && product.images[0] ? product.images[0] : '/images/default.jpg' %>" alt="<%= product.productName %>" class="main-image" id="mainImage">
+        <!-- Wishlist button -->
+       <button class="wishlist-btn <%= product.inWishlist ? 'added' : '' %>" 
+        data-product="<%= product._id %>" 
+        aria-label="Add to wishlist">
+        <span class="heart-icon"><%= product.inWishlist ? '♥' : '♡' %></span>
+      </button>
+        <!-- Thumbnails -->
+        <div class="thumbnails">
+          <% if (product.images && product.images.length) { %>
+            <% product.images.forEach((img, idx) => { %>
+              <img src="<%= img %>" alt="Thumb <%= idx+1 %>" data-large="<%= img %>" class="<%= idx === 0 ? 'active' : '' %>">
+            <% }) %>
+          <% } else { %>
+            <img src="/images/default.jpg" alt="Thumb 1" data-large="/images/default.jpg" class="active">
+          <% } %>
+        </div>
+      </div>
+    </div>
 
-	<div class="colorlib-product">
-		<div class="container">
-			<div class="row row-pb-lg product-detail-wrap">
-				<div class="col-sm-8" >
-					<div class="owl-carousel product-carousel">
-						<% product.images.forEach(image => { %>
-							<div class="item">
-								<div class="product-entry border ">
-									<a href="#" class="prod-img">
-										<img 
-											src="<%= image %>"
-											class="img-fluid "
-											alt="<%= product.productName %>"
-										>
-									</a>
-								</div>
-							</div>
-						<% }) %>
-					</div>
-				</div>
-				<div class="col-sm-4">
-					<div class="product-desc">
-						<h3><%= product.productName %></h3>
-						<p class="price">
-							<span>₹<%= product.price.toLocaleString("en-IN") %></span> 
-							<span class="rate">
-								<% for(let i = 1; i <= 5; i++) { %>
-									<% if (product.averageRating >= i) { %>
-										<i class="icon-star-full"></i>
-									<% } else if (product.averageRating >= i - 0.5) { %>
-										<i class="icon-star-half"></i>
-									<% } else { %>
-										<i class="icon-star-empty"></i>
-									<% } %>
-								<% } %>
-								<%= product.averageRating %>/5
-								(<%= product.totalReviews %> Reviews)
-							</span>
-						</p>
-						<p><%= product.description %></p>
-						<div class="size-wrap">
-							<div class="block-26 mb-2">
-								<h4>Size</h4>
-								<ul>
-									<% product.sizes.forEach(size => { %>
-										<li>
-											<a href="#" class="size-option" data-size="<%= size %>"><%= size %></a>
-										</li>
-									<% }) %>
-								</ul>
-							</div>
-						</div>
-						<div class="input-group mb-4">
-							<span class="input-group-btn">
-								<button type="button" class="quantity-left-minus btn" data-type="minus" data-field="">
-									<i class="icon-minus2"></i>
-								</button>
-							</span>
-							<input type="text" id="quantity" name="quantity" class="input-number" value="1" min="1" max="<%= Math.min(10,product.stock) %>">
-							<span class="input-group-btn ml-1">
-								<button type="button" class="quantity-right-plus btn" data-type="plus" data-field="">
-									<i class="icon-plus2"></i>
-								</button>
-							</span>
-						</div>
-						<div class="row">
-							<div class="col-sm-12 text-center">
-								<p class="addtocart"><button id="addToCartBtn" class="btn btn-primary btn-addtocart" data-product-id="<%= product._id %>"><i class="icon-shopping-cart"></i> Add to Cart</button></p>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
+    <!-- Info -->
+    <div class="col-lg-6">
+      <div class="product-info">
+        <h1 class="product-title"><%= product.productName %></h1>
+        <div class="product-rating">
+          <span class="stars">
+            <% for (let i = 1; i <= 5; i++) { %>
+              <% if (product.averageRating >= i) { %>
+                <i class="fas fa-star"></i>
+              <% } else if (product.averageRating >= i - 0.5) { %>
+                <i class="fas fa-star-half-alt"></i>
+              <% } else { %>
+                <i class="fas fa-star" style="color: #ddd;"></i>
+              <% } %>
+            <% } %>
+          </span>
+          <span class="review-count">(<%= product.totalReviews || 0 %> reviews)</span>
+        </div>
+        <div class="product-price">
+          ₹<%= product.price.toLocaleString('en-IN') %>
+        </div>
+        <p class="product-description"><%= product.description %></p>
+        <div class="product-meta">
+          <span><i class="fas fa-tag"></i> Category: <%= product.categoryName || 'Sneakers' %></span>
+          <span><i class="fas fa-box"></i> <%= (product.stock && product.stock > 0) ? 'In Stock' : 'Out of Stock' %></span>
+        </div>
 
-			<div class="row">
-				<div class="col-sm-12">
-					<div class="row">
-						<div class="col-md-12 pills">
-							<div class="bd-example bd-example-tabs">
-								<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-									<li class="nav-item">
-										<a class="nav-link active" id="pills-description-tab" data-toggle="pill" href="#pills-description" role="tab" aria-controls="pills-description" aria-expanded="true">Description</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" id="pills-manufacturer-tab" data-toggle="pill" href="#pills-manufacturer" role="tab" aria-controls="pills-manufacturer" aria-expanded="true">Manufacturer</a>
-									</li>
-									<li class="nav-item">
-										<a class="nav-link" id="pills-review-tab" data-toggle="pill" href="#pills-review" role="tab" aria-controls="pills-review" aria-expanded="true">Review</a>
-									</li>
-								</ul>
+        <!-- Size -->
+        <label class="fw-bold">Size</label>
+        <div class="size-select">
+          <% if (product.sizes && product.sizes.length) { %>
+            <% product.sizes.forEach(size => { %>
+              <span class="size-option" data-size="<%= size %>"><%= size %></span>
+            <% }) %>
+          <% } else { %>
+            <span class="size-option active">Standard</span>
+          <% } %>
+        </div>
 
-								<div class="tab-content" id="pills-tabContent">
-									<div class="tab-pane border fade show active" id="pills-description" role="tabpanel" aria-labelledby="pills-description-tab">
-										<p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</p>
-										<p>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she continued her way.</p>
-										<ul>
-											<li>The Big Oxmox advised her not to do so</li>
-											<li>Because there were thousands of bad Commas</li>
-											<li>Wild Question Marks and devious Semikoli</li>
-											<li>She packed her seven versalia</li>
-											<li>tial into the belt and made herself on the way.</li>
-										</ul>
-									</div>
+        <!-- Quantity & Add to Cart -->
+        <div class="qty-cart">
+          <div class="quantity-control">
+            <button class="qty-minus">−</button>
+            <input type="number" value="1" min="1" max="<%= Math.min(10, product.stock || 10) %>" class="qty-input" id="quantity" name="quantity">
+            <button class="qty-plus">+</button>
+          </div>
+          <button class="btn-add-cart" id="addToCartBtn" data-product-id="<%= product._id %>"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-									<div class="tab-pane border fade" id="pills-manufacturer" role="tabpanel" aria-labelledby="pills-manufacturer-tab">
-										<p>Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem Ipsum decided to leave for the far World of Grammar.</p>
-										<p>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrove, the headline of Alphabet Village and the subline of her own road, the Line Lane. Pityful a rethoric question ran over her cheek, then she continued her way.</p>
-									</div>
+  <!-- ===== TABS ===== -->
+  <div class="product-tabs">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="desc-tab" data-bs-toggle="tab" data-bs-target="#desc" type="button" role="tab">Description</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">Reviews</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">Shipping & Info</button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="desc" role="tabpanel">
+        <!-- Dynamic description from product -->
+        <p><%= product.description %></p>
+        <!-- Optionally add extra info like key features if you have them -->
+      </div>
+      <div class="tab-pane fade" id="reviews" role="tabpanel">
+        <!-- Static reviews – replace with dynamic if you have review data -->
+        <div id="reviewsList">
+          <!-- Reviews will appear here -->
+        </div>
+        <!-- Review Form -->
+        <div class="review-form mt-4">
+          <h6>Write a Review</h6>
+          <div class="mb-3">
+            <label class="form-label">Rating</label>
+            <div class="star-rating">
+              <i class="fas fa-star" data-value="1"></i>
+              <i class="fas fa-star" data-value="2"></i>
+              <i class="fas fa-star" data-value="3"></i>
+              <i class="fas fa-star" data-value="4"></i>
+              <i class="fas fa-star" data-value="5"></i>
+              <input type="hidden" id="ratingInput" value="0">
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="reviewText" class="form-label">Your Review</label>
+            <textarea class="form-control" id="reviewText" rows="3" placeholder="Share your experience..."></textarea>
+          </div>
+          <button class="btn btn-primary" id="submitReview" data-product-id="<%= product._id %>">Submit Review</button>
+        </div>
+      </div>
+      <div class="tab-pane fade" id="info" role="tabpanel">
+        <p><strong>Shipping:</strong> Free shipping on orders over ₹5000. Estimated delivery: 3‑5 business days.</p>
+        <p><strong>Returns:</strong> 30‑day return policy. Items must be unworn and in original packaging.</p>
+        <p><strong>Care Instructions:</strong> Wipe clean with a damp cloth. Avoid machine washing.</p>
+      </div>
+    </div>
+  </div>
 
-									<div class="tab-pane border fade" id="pills-review" role="tabpanel" aria-labelledby="pills-review-tab">
-										<div class="row">
-											<div class="col-md-8">
-												<h3 class="head">23 Reviews</h3>
-												<div class="review">
-													<div class="user-img" style="background-image: url(images/person1.jpg)"></div>
-													<div class="desc">
-														<h4>
-															<span class="text-left">Jacob Webb</span>
-															<span class="text-right">14 March 2018</span>
-														</h4>
-														<p class="star">
-															<span>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-half"></i>
-																<i class="icon-star-empty"></i>
-															</span>
-															<span class="text-right"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
-														</p>
-														<p>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrov</p>
-													</div>
-												</div>
-												<div class="review">
-													<div class="user-img" style="background-image: url(images/person2.jpg)"></div>
-													<div class="desc">
-														<h4>
-															<span class="text-left">Jacob Webb</span>
-															<span class="text-right">14 March 2018</span>
-														</h4>
-														<p class="star">
-															<span>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-half"></i>
-																<i class="icon-star-empty"></i>
-															</span>
-															<span class="text-right"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
-														</p>
-														<p>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrov</p>
-													</div>
-												</div>
-												<div class="review">
-													<div class="user-img" style="background-image: url(images/person3.jpg)"></div>
-													<div class="desc">
-														<h4>
-															<span class="text-left">Jacob Webb</span>
-															<span class="text-right">14 March 2018</span>
-														</h4>
-														<p class="star">
-															<span>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-half"></i>
-																<i class="icon-star-empty"></i>
-															</span>
-															<span class="text-right"><a href="#" class="reply"><i class="icon-reply"></i></a></span>
-														</p>
-														<p>When she reached the first hills of the Italic Mountains, she had a last view back on the skyline of her hometown Bookmarksgrov</p>
-													</div>
-												</div>
-											</div>
-											<div class="col-md-4">
-												<div class="rating-wrap">
-													<h3 class="head">Give a Review</h3>
-													<div class="wrap">
-														<p class="star">
-															<span>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																(98%)
-															</span>
-															<span>20 Reviews</span>
-														</p>
-														<p class="star">
-															<span>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-empty"></i>
-																(85%)
-															</span>
-															<span>10 Reviews</span>
-														</p>
-														<p class="star">
-															<span>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-empty"></i>
-																<i class="icon-star-empty"></i>
-																(70%)
-															</span>
-															<span>5 Reviews</span>
-														</p>
-														<p class="star">
-															<span>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-empty"></i>
-																<i class="icon-star-empty"></i>
-																<i class="icon-star-empty"></i>
-																(10%)
-															</span>
-															<span>0 Reviews</span>
-														</p>
-														<p class="star">
-															<span>
-																<i class="icon-star-full"></i>
-																<i class="icon-star-empty"></i>
-																<i class="icon-star-empty"></i>
-																<i class="icon-star-empty"></i>
-																<i class="icon-star-empty"></i>
-																(0%)
-															</span>
-															<span>0 Reviews</span>
-														</p>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+
+	<!-- ===== SCRIPTS ===== -->
+    
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
+	<script src="/js/jquery.flexslider-min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+	
 <script src="/js/product-details.js"></script>
-<script>
-	// for the image!!
-	$('.owl-carousel').owlCarousel({
-		items: 1,
-		loop: true,
-		dots: true,
-		autoplay: true,
-		autoplayTimeout: 3000,
-		autoplayHoverPause: true,
-		animateOut: 'fadeOut', // fade effect
-		smartSpeed: 1000       // slower, smoother fade
-	});
-
-	$(document).ready(function(){
+<script src="/js/wishlist-heart.js"></script>
+	<script>
+		$(document).ready(function(){
 		var quantitiy=0;
 		$('.quantity-right-plus').click(function(e){
 			e.preventDefault();
@@ -313,6 +656,215 @@
 		const selectedSize = $(this).data('size');
 		// console.log("Selected size:", selectedSize);
 	});
-</script>
 
-<%-include("../partials/user/footer")%>
+		(function() {
+			'use strict';
+
+			// ---- Thumbnail gallery ----
+			 const mainImage = document.getElementById('mainImage');
+        const thumbs = document.querySelectorAll('.thumbnails img');
+        thumbs.forEach(img => {
+          img.addEventListener('click', function() {
+            thumbs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            const large = this.dataset.large;
+            if (large) mainImage.src = large;
+          });
+        });
+
+			
+
+			// ---- Size selection ----
+			const sizes = document.querySelectorAll('.size-option:not(.disabled)');
+			sizes.forEach(size => {
+				size.addEventListener('click', function() {
+					sizes.forEach(s => s.classList.remove('active'));
+					this.classList.add('active');
+				});
+			});
+
+			// ---- Quantity ----
+			const qtyInput = document.querySelector('.qty-input');
+			const minusBtn = document.querySelector('.qty-minus');
+			const plusBtn = document.querySelector('.qty-plus');
+			const maxQty = parseInt(qtyInput.max) || 5;
+
+			minusBtn.addEventListener('click', function() {
+				let val = parseInt(qtyInput.value) || 1;
+				if (val > 1) qtyInput.value = val - 1;
+			});
+			plusBtn.addEventListener('click', function() {
+				let val = parseInt(qtyInput.value) || 1;
+				if (val < maxQty) qtyInput.value = val + 1;
+			});
+			qtyInput.addEventListener('change', function() {
+				let val = parseInt(this.value) || 1;
+				if (val < 1) this.value = 1;
+				if (val > maxQty) this.value = maxQty;
+			});
+
+
+			// ---- Star rating ----
+			const stars = document.querySelectorAll('.star-rating i');
+			const ratingInput = document.getElementById('ratingInput');
+			stars.forEach(star => {
+				star.addEventListener('click', function() {
+					const value = parseInt(this.dataset.value);
+					ratingInput.value = value;
+					stars.forEach(s => {
+						if (parseInt(s.dataset.value) <= value) {
+							s.classList.remove('far');
+							s.classList.add('fas');
+						} else {
+							s.classList.remove('fas');
+							s.classList.add('far');
+						}
+					});
+				});
+			});
+
+			// ---- Submit review ----
+			document.getElementById('submitReview').addEventListener('click', async function() {
+				const rating = parseInt(ratingInput.value);
+        const comment = document.getElementById('reviewText').value.trim();
+        const productId = this.dataset.productId;
+
+        if (!rating) {
+          return showToast('Please select a rating.', 'warning');
+        }
+
+        if (!comment) {
+          return showToast('Please write your review.', 'warning');
+        }
+
+        try {
+          
+          const response = await fetch(`/products/${productId}/reviews`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              rating,
+              comment
+            })
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            Swal.fire({
+              icon: 'warning',
+              title: 'Failed to submit review',
+              text: data.message ||'You can resume this after some times.',
+              confirmButtonColor: '#88c8bc'
+            });
+            return;
+          }
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Review',
+            text: data.message || 'Review added successfully',
+            confirmButtonColor: '#88c8bc'
+          });
+
+          await loadProductReviews();
+
+          //clear form
+          document.getElementById('reviewText').value = '';
+
+          stars.forEach(star => {
+            star.classList.remove('fas');
+            star.classList.add('fas');
+          });
+
+          ratingInput.value = 0;
+
+        } catch (error) {
+          console.error('Review submission error:', error);
+          showToast('Something went wrong. Please try again.', 'warning');       
+        }
+				
+			});
+
+		})();
+
+    async function loadProductReviews() {
+      
+      const reviewsList = document.getElementById('reviewsList');
+      const productId = document.getElementById('submitReview').dataset.productId;
+      
+      try {
+        
+        const response = await fetch(`/products/${productId}/reviews`);
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          reviewsList.innerHTML =`
+            <p class="text-muted">Unable to load reviews.</p>
+          `;
+          return;
+        }
+
+        renderReviews(data.reviews)
+
+      } catch (error) {
+        console.error('Load reviews error:', error);
+
+        reviewsList.innerHTML = `
+          <p class="text-muted">Unable to load reviews.</p>
+        `;
+      }
+    }
+
+    loadProductReviews();
+
+    function renderReviews(reviews) {
+      const reviewsList = document.getElementById('reviewsList');
+
+      if (!reviews || reviews.length === 0) {
+        reviewsList.innerHTML = `
+          <p class="text-muted">
+            No reviews yet. Be the first to review this product!
+          </p>
+        `;
+        
+        return;
+      }
+
+      reviewsList.innerHTML = reviews.map(review => {
+
+        const stars = Array.from({ length: 5 }, (_, index) => {
+          return index < review.rating ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+        }).join('');
+
+        return `
+          <div class="review-item">
+            <div class="review-header">
+              <span class="reviewer">
+                ${review.userId?.name || 'Anonymous'}
+              </span>
+
+              <span class="review-date">
+                ${new Date(review.createdAt).toLocaleDateString('en-IN')}
+              </span>
+            </div>
+
+              <div class="review-stars">
+                ${stars}
+              </div>
+
+              <p class="review-text">
+                ${review.comment}
+              </p>
+          </div>
+        `;
+
+        }).join('');
+      }
+	</script>
+<%- include("../partials/account/footer") %>
+</body>
+</html>

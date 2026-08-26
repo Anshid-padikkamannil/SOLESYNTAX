@@ -1,5 +1,6 @@
 const Product = require('../models/productSchema');
 const Review = require('../models/reviewSchema');
+const Order = require('../models/orderSchema');
 const paginate = require('../utils/pagination');
 
 
@@ -91,6 +92,16 @@ const addProductReview = async (userId, productId, rating, comment) => {
     throw new Error('Product not found');
   }
 
+  const purchased = await Order.findOne({
+    userId,
+    status: 'Delivered',
+    'orderItems.product': productId
+  });
+
+  if (!purchased) {
+    throw new Error('You can only review products you have purchased');
+  }
+
   // Check existing review
   const existingReview = await Review.findOne({
     productId,
@@ -138,8 +149,18 @@ const addProductReview = async (userId, productId, rating, comment) => {
   };
 };
 
+const getProductReviews = async (productId) => {
+  
+  const reviews = await Review.find({ productId })
+    .populate('userId', 'name')
+    .sort({ createdAt: -1 });
+
+  return reviews;
+}
+
 module.exports = {
   getAllProducts,
   getProductDetails,
-  addProductReview
+  addProductReview,
+  getProductReviews
 };
