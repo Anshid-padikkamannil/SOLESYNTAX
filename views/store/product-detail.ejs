@@ -496,11 +496,11 @@
         <!-- Main image: first image from product.images -->
         <img src="<%= product.images && product.images[0] ? product.images[0] : '/images/default.jpg' %>" alt="<%= product.productName %>" class="main-image" id="mainImage">
         <!-- Wishlist button -->
-       <button class="wishlist-btn <%= product.inWishlist ? 'added' : '' %>" 
-        data-product="<%= product._id %>" 
-        aria-label="Add to wishlist">
-        <span class="heart-icon"><%= product.inWishlist ? '♥' : '♡' %></span>
-      </button>
+        <button class="wishlist-btn <%= wishlistProductIds.includes(product._id.toString()) ? 'added' : '' %>" data-product="<%= product._id %>" aria-label="Add to wishlist">
+          <span class="heart-icon">
+            <%= wishlistProductIds.includes(product._id.toString()) ? '♥' : '♡' %>
+          </span>
+        </button>
         <!-- Thumbnails -->
         <div class="thumbnails">
           <% if (product.images && product.images.length) { %>

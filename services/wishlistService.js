@@ -17,6 +17,19 @@ const getWishlistData = async (userId, page, limit) => {
   );
 };
 
+const getWishlistProductIds = async (userId) => {
+  const wishlist = await Wishlist.findOne(
+    { userId },
+    { 'products.productId': 1, _id: 0 }
+  );
+
+  if (!wishlist) {
+    return [];
+  }
+
+  return wishlist.products.map(item => item.productId.toString());
+};
+
 
 // Add product to wishlist
 const addWishlistItem = async (userId, productId) => {
@@ -83,5 +96,6 @@ const removeWishlistItem = async (userId, productId) => {
 module.exports = {
   getWishlistData,
   addWishlistItem,
-  removeWishlistItem
+  removeWishlistItem,
+  getWishlistProductIds
 };

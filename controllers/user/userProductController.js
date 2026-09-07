@@ -1,7 +1,6 @@
 const Product = require('../../models/productSchema');
-const Review = require('../../models/reviewSchema');
-const Wishlist = require('../../models/wishlistSchema');
 const productService = require('../../services/productService');
+const wishlistService = require('../../services/wishlistService');
 
 const getShop = async (req, res) => {
 
@@ -25,11 +24,7 @@ const getShop = async (req, res) => {
 
     const userId = req.user.userId || req.user._id;
 
-    const wishlist = await Wishlist.findOne({ userId })
-      .select('products.productId')
-      .lean();
-
-    const wishlistProductIds = wishlist ? wishlist.products.map(item => item.productId.toString()) : [];  
+    const wishlistProductIds = await wishlistService.getWishlistProductIds(userId);
 
     return res.render('store/shop', {
       layout: false,
@@ -63,12 +58,17 @@ const productDetails = async (req, res) => {
   try {
    
     const { product, reviews } = await productService.getProductDetails(req.params.id);
+
+    const userId = req.user.userId || req.user._id;
+
+    const wishlistProductIds = await wishlistService.getWishlistProductIds(userId);
     
     res.render("store/product-detail",{
       product,
       reviews,
       averageRating: product.averageRating || 0,
       totalReviews: product.totalReviews || 0,
+      wishlistProductIds,
       layout: false
     });
     
@@ -153,11 +153,17 @@ const getHomePage = async (req, res) => {
     const products = await Product.find()
       .sort({ createdAt: -1 })
       .limit(16);
-    
-      res.render("store/index", {
-        products,
-        layout: false
-      })
+
+    const userId = req.user.userId || req.user._id;
+
+    const wishlistProductIds = await wishlistService.getWishlistProductIds(userId);
+      
+      
+    res.render("store/index", {
+      products,
+      wishlistProductIds,
+      layout: false
+    })
 
   } catch (err) {
     res.status(500).send(err.message);

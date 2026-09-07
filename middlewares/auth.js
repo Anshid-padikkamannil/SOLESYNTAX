@@ -40,7 +40,26 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
+const checkUser = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+  } catch (err) {
+    // Invalid/expired token → treat as guest
+    req.user = null;
+  }
+  
+  next();
+}
+
 module.exports = {
   isLoggedIn,
-  isAdmin
+  isAdmin,
+  checkUser
 };

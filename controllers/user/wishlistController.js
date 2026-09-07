@@ -138,11 +138,27 @@ const addToCartFromWishlist = async (req, res) => {
 
     await removeWishlistItem(userId, productId);
 
-    res.redirect('/wishlist');
+    return res.status(200).json({ 
+      success: true, 
+      message: 'Product moved to cart successfully.' 
+    });
 
 
   } catch (err) {
     console.error(' Wishlist Add To Cart Error:', err);
+
+    if (
+      err.message === 'Size is required.' ||
+      err.message === 'Quantity must be at least 1.' ||
+      err.message === 'Product not found.'
+    ) {
+      return res.status(400).render('error', {
+        layout: false,
+        status: 400,
+        title: 'Invalid Request',
+        message: err.message
+      })
+    }
 
     res.status(500).render('error', {
       layout: false,

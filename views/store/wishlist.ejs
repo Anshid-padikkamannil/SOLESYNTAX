@@ -338,7 +338,7 @@
 
               <!-- Size + Quantity -->
               <div class="wishlist-options">
-                <select class="size-select" name="size">
+                <select class="size-select" name="size" required>
                   <option value="">Select Size</option>
                   <% if (item.productId.sizes && item.productId.sizes.length) { %>
                     <% item.productId.sizes.forEach(size => { %>
@@ -423,30 +423,91 @@ document.querySelectorAll('.wishlist-card').forEach(card => {
 
     const qtyInput = card.querySelector('.qty-input');
     const selectedQty = card.querySelector('.selected-qty');
+    const form = card.querySelector('form[action="/wishlist/add-to-cart"]');
+
 
     sizeSelect.addEventListener('change', function () {
-        selectedSize.value = this.value;
+      selectedSize.value = this.value;
+    });
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const size = sizeSelect.value;
+
+      //frontend validation
+      if (!size) {
+        Swal.fire({
+          icon:'Warning',
+          title: 'Select a size',
+          text: 'Please select a size before moving this product to your cart',
+          confirmButtonColor: '#88c8bc'
+        });
+        return;
+      }
+
+      selectedSize.value = size;
+      selectedQty.value = qtyInput.value;
+
+      try {
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams(new FormData(form))
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          Swal.fire({
+            icon: 'warning', title: 'Unable to move to cart', text: data.message || 'Something went wrong.', confirmButtonColor: '#88c8bc'
+          });
+          return;
+        }
+
+        Swal.fire({
+          icon: 'success', 
+          title: 'Added to cart', 
+          text: data.message, 
+          confirmButtonColor: '#88c8bc'
+        }).then(() => {
+          window.location.reload();
+        });
+
+
+      } catch (error) {
+        console.error('Move to Cart Error:', err);
+
+        Swal.fire({
+          icon: 'error', 
+          title: 'Something went wrong', 
+          text: 'Please try again later.', 
+          confirmButtonColor: '#88c8bc'
+        });
+      }
     });
 
     card.querySelector('.qty-minus').addEventListener('click', function () {
-        let value = parseInt(qtyInput.value);
+      let value = parseInt(qtyInput.value);
 
-        if (value > 1) {
-            value--;
-            qtyInput.value = value;
-            selectedQty.value = value;
-        }
+      if (value > 1) {
+        value--;
+        qtyInput.value = value;
+        selectedQty.value = value;
+      }
     });
 
     card.querySelector('.qty-plus').addEventListener('click', function () {
-        let value = parseInt(qtyInput.value);
-        const max = parseInt(qtyInput.max);
+      let value = parseInt(qtyInput.value);
+      const max = parseInt(qtyInput.max);
 
-        if (value < max) {
-            value++;
-            qtyInput.value = value;
-            selectedQty.value = value;
-        }
+      if (value < max) {
+        value++;
+        qtyInput.value = value;
+        selectedQty.value = value;
+      }
     });
 
 });
