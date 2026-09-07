@@ -32,8 +32,6 @@ async function registerUser(e) {
 
     }
 
-    alert(data.message);
-
     // User is already logged in because the cookie is set
     window.location.href = "/"
 
@@ -43,3 +41,12 @@ async function registerUser(e) {
     
   }
 }
+
+// Toggle password visibility
+document.querySelectorAll('.toggle-password').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = btn.closest('.field').querySelector('input');
+    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+    input.setAttribute('type', type);
+  });
+});

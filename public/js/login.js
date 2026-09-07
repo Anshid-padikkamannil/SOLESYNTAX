@@ -33,8 +33,6 @@ async function loginUser(e) {
       throw new Error(data.message);
     }
 
-    alert(data.message);
-
     window.location.href = redirectAfterLogin || "/";
 
   } catch (err) {
@@ -43,4 +41,12 @@ async function loginUser(e) {
     
   }
 }
+
+document.querySelectorAll('.toggle-password').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const input = btn.closest('.field').querySelector('input');
+    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+    input.setAttribute('type', type);
+  });
+});
 

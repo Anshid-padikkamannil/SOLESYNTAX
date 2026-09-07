@@ -59,9 +59,12 @@ const productDetails = async (req, res) => {
    
     const { product, reviews } = await productService.getProductDetails(req.params.id);
 
-    const userId = req.user.userId || req.user._id;
+    let wishlistProductIds;
 
-    const wishlistProductIds = await wishlistService.getWishlistProductIds(userId);
+    if (req.user) {
+      const userId = req.user.userId || req.user._id;
+      wishlistProductIds = await wishlistService.getWishlistProductIds(userId);
+    }  
     
     res.render("store/product-detail",{
       product,
@@ -154,11 +157,13 @@ const getHomePage = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(16);
 
-    const userId = req.user.userId || req.user._id;
+    let wishlistProductIds;
 
-    const wishlistProductIds = await wishlistService.getWishlistProductIds(userId);
-      
-      
+    if (req.user) {
+      const userId = req.user.userId || req.user._id;
+      wishlistProductIds = await wishlistService.getWishlistProductIds(userId);
+    }  
+
     res.render("store/index", {
       products,
       wishlistProductIds,
