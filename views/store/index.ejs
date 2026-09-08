@@ -1,47 +1,11 @@
-<%- include("../partials/user/header") %>
+<%- include("../partials/user/header", { activePage: 'home' }) %>
 
 <div id="page">
     <!-- ===== HERO SLIDER ===== -->
     <aside id="colorlib-hero">
         <div class="flexslider">
             <ul class="slides">
-                <li style="background-image: url(images/img_bg_1.jpg);">
-                    <div class="overlay"></div>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-sm-6 offset-sm-3 text-center slider-text">
-                                <div class="slider-text-inner">
-                                    <div class="desc">
-                                        <h1 class="head-1">Men's</h1>
-                                        <h2 class="head-2">Shoes</h2>
-                                        <h2 class="head-3">Collection</h2>
-                                        <p class="category"><span>New trending shoes</span></p>
-                                        <p><a href="#" class="btn btn-primary">Shop Collection</a></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li style="background-image: url(images/img_bg_2.jpg);">
-                    <div class="overlay"></div>
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-sm-6 offset-sm-3 text-center slider-text">
-                                <div class="slider-text-inner">
-                                    <div class="desc">
-                                        <h1 class="head-1">Huge</h1>
-                                        <h2 class="head-2">Sale</h2>
-                                        <h2 class="head-3"><strong class="font-weight-bold">50%</strong> Off</h2>
-                                        <p class="category"><span>Big sale sandals</span></p>
-                                        <p><a href="#" class="btn btn-primary">Shop Collection</a></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                <li style="background-image: url(images/img_bg_3.jpg);">
+                <li style="background-image: url('images/img-bg-4.png');">
                     <div class="overlay"></div>
                     <div class="container-fluid">
                         <div class="row">
@@ -50,9 +14,45 @@
                                     <div class="desc">
                                         <h1 class="head-1">New</h1>
                                         <h2 class="head-2">Arrival</h2>
-                                        <h2 class="head-3">up to <strong class="font-weight-bold">30%</strong> off</h2>
-                                        <p class="category"><span>New stylish shoes for men</span></p>
-                                        <p><a href="#" class="btn btn-primary">Shop Collection</a></p>
+                                        <!-- <h2 class="head-3">up to <strong class="font-weight-bold">30%</strong> off</h2> -->
+                                        <p class="category"><span>New stylish shoes</span></p>
+                                        <p><a href="#" class="btn-shop btn btn-primary">Shop Collection</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li style="background-image: url('images/img-bg-2.png');">
+                    <div class="overlay"></div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6 offset-sm-3 text-center slider-text">
+                                <div class="slider-text-inner">
+                                    <div class="desc">
+                                        <h1 class="head-1">New</h1>
+                                        <h2 class="head-2">Arrival</h2>
+                                        <!-- <h2 class="head-3">up to <strong class="font-weight-bold">30%</strong> off</h2> -->
+                                        <p class="category"><span>New stylish shoes</span></p>
+                                        <p><a href="#" class="btn-shop btn btn-primary">Shop Collection</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li style="background-image: url('images/img-bg-3.png');">
+                    <div class="overlay"></div>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-sm-6 offset-sm-3 text-center slider-text">
+                                <div class="slider-text-inner">
+                                    <div class="desc">
+                                        <h1 class="head-1">New</h1>
+                                        <h2 class="head-2">Arrival</h2>
+                                        <!-- <h2 class="head-3">up to <strong class="font-weight-bold">30%</strong> off</h2> -->
+                                        <p class="category"><span>New stylish shoes</span></p>
+                                        <p><a href="#" class="btn-shop btn btn-primary">Shop Collection</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -80,7 +80,7 @@
             <div class="row">
                 <div class="col-sm-6 text-center">
                     <div class="featured">
-                        <a href="/shop?category=Men" class="featured-img" style="background-image: url(images/men.jpg);"></a>
+                        <a href="/shop?category=Men" class="featured-img" style="background-image: url(images/men.jpeg);"></a>
                         <div class="desc">
                             <h2><a href="/shop?category=Men">Shop Men's Collection</a></h2>
                         </div>
@@ -139,7 +139,7 @@
 
             <div class="row">
                 <div class="col-md-12 text-center">
-                    <p><a href="/shop" class="btn btn-primary btn-lg">Shop All Products</a></p>
+                    <p><a href="/shop" class="btn-shop btn btn-primary btn-lg">Shop All Products</a></p>
                 </div>
             </div>
         </div>
@@ -288,6 +288,26 @@
         box-shadow: none !important;
     }
 
+    .btn-shop {
+        background: #88c8bc;
+        color: #fff;
+        border: none;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 16px rgba(136, 200, 188, 0.3);
+        text-decoration: none;
+    }
+
+    .btn-shop:hover {
+        background: #66a59b !important;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(136, 200, 188, 0.4);
+        color: #fff;
+        text-decoration: none;
+    }
+
     /* Heart Particle */
     .heart-particle {
         position: fixed;
@@ -306,6 +326,194 @@
             opacity: 0;
             transform: translate(var(--tx), var(--ty)) scale(0.2) rotate(var(--rot));
         }
+    }
+
+    /* ============================================================
+    RESPONSIVE HERO SLIDER
+    ============================================================ */
+
+    /* ---------- DESKTOP ---------- */
+
+    #colorlib-hero {
+        width: 100%;
+    }
+
+    #colorlib-hero .flexslider,
+    #colorlib-hero .slides,
+    #colorlib-hero .slides > li {
+        width: 100%;
+    }
+
+    #colorlib-hero .slides > li {
+        min-height: 650px;
+        background-position: 50% center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+
+    /* ============================================================
+    TABLET
+    ============================================================ */
+
+    @media (max-width: 991px) {
+
+        #colorlib-hero .slides > li {
+            min-height: 560px;
+            background-position: 50% center;
+            background-size: cover;
+        }
+
+        #colorlib-hero .slider-text {
+            width: 70%;
+            margin: 0 auto;
+        }
+
+        #colorlib-hero .slider-text-inner {
+            padding-top: 0;
+        }
+
+        #colorlib-hero .head-1 {
+            font-size: 50px;
+        }
+
+        #colorlib-hero .head-2 {
+            font-size: 65px;
+        }
+
+        #colorlib-hero .category {
+            font-size: 18px;
+        }
+    }
+
+
+    /* ============================================================
+    MOBILE
+    ============================================================ */
+
+    @media (max-width: 767px) {
+
+        #page {
+            overflow-x: clip;
+        }
+
+        #colorlib-hero {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        #colorlib-hero .slides > li {
+            height: 440px;
+            min-height: 440px;
+
+            background-position: 50% center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        #colorlib-hero .slider-text {
+            width: 90%;
+            margin: 0 auto;
+        }
+
+        #colorlib-hero .slider-text-inner {
+            padding: 0 10px;
+        }
+
+        #colorlib-hero .head-1 {
+            font-size: 42px;
+            line-height: 1;
+        }
+
+        #colorlib-hero .head-2 {
+            font-size: 58px;
+            line-height: 1;
+        }
+
+        #colorlib-hero .category {
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        #colorlib-hero .btn-shop {
+            font-size: 14px;
+            padding: 10px 18px;
+        }
+    }
+
+
+    /* ============================================================
+    SMALL MOBILE
+    ============================================================ */
+
+    @media (max-width: 575px) {
+
+        #colorlib-hero .slides > li {
+            height: 420px;
+            min-height: 420px;
+        }
+
+        #colorlib-hero .slider-text {
+            width: 94%;
+        }
+
+        #colorlib-hero .head-1 {
+            font-size: 34px;
+        }
+
+        #colorlib-hero .head-2 {
+            font-size: 48px;
+        }
+
+        #colorlib-hero .category {
+            font-size: 15px;
+        }
+
+        #colorlib-hero .btn-shop {
+            font-size: 13px;
+            padding: 9px 16px;
+        }
+    }
+
+
+    /* ============================================================
+    VERY SMALL PHONES
+    ============================================================ */
+
+    @media (max-width: 400px) {
+
+        #colorlib-hero .slides > li {
+            height: 400px;
+            min-height: 400px;
+        }
+
+        #colorlib-hero .head-1 {
+            font-size: 30px;
+        }
+
+        #colorlib-hero .head-2 {
+            font-size: 42px;
+        }
+
+        #colorlib-hero .category {
+            font-size: 14px;
+        }
+    }
+    /* ============================================================
+   PREVENT HORIZONTAL PAGE OVERFLOW
+   ============================================================ */
+
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    #page {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: clip;
     }
 </style>
 <script src="/js/wishlist-heart.js"></script>

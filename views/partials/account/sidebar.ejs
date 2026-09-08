@@ -1,28 +1,183 @@
-<nav class="nav flex-column nav-pills">
-    <a class="nav-link <%= activeMenu === 'dashboard' ? 'active' : '' %>" href="/account">
-        <i class="fas fa-tachometer-alt"></i> Dashboard
-    </a>
-    <a class="nav-link <%= activeMenu === 'profile' ? 'active' : '' %>" href="/account/profile">
-        <i class="fas fa-user"></i> My Profile
-    </a>
-    <a class="nav-link <%= activeMenu === 'orders' ? 'active' : '' %>" href="/account/orders">
-        <i class="fas fa-box"></i> My Orders
-    </a>
-    <a class="nav-link <%= activeMenu === 'addresses' ? 'active' : '' %>" href="/account/addresses">
-        <i class="fas fa-map-marker-alt"></i> Addresses
-    </a>
-    <a class="nav-link <%= activeMenu === 'wishlist' ? 'active' : '' %>" href="/account/wishlist">
-        <i class="fas fa-heart"></i> Wishlist
-    </a>
-    <a class="nav-link <%= activeMenu === 'coupons' ? 'active' : '' %>" href="/account/coupons">
-        <i class="fas fa-ticket-alt"></i> Coupons
-    </a>
-    <a class="nav-link <%= activeMenu === 'change-password' ? 'active' : '' %>" href="/account/change-password">
-        <i class="fas fa-key"></i> Change Password
-    </a>
-    <!-- Logout Button (with JS confirmation) -->
-    <a href="/users/logout" class="dropdown-item">
-        <i class="fas fa-sign-out-alt"></i>
-        Logout
-    </a>
-</nav>
+<!-- ===== SIDEBAR - CUSTOM CLASSES (no Bootstrap conflicts) ===== -->
+<div class="sidebar-wrap">
+    <nav class="sidebar-nav">
+        <a class="sidebar-link <%= activeMenu === 'dashboard' ? 'active' : '' %>" href="/account">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        <a class="sidebar-link <%= activeMenu === 'profile' ? 'active' : '' %>" href="/account/profile">
+            <i class="fas fa-user"></i> My Profile
+        </a>
+        <a class="sidebar-link <%= activeMenu === 'orders' ? 'active' : '' %>" href="/account/orders">
+            <i class="fas fa-box"></i> My Orders
+        </a>
+        <a class="sidebar-link <%= activeMenu === 'addresses' ? 'active' : '' %>" href="/account/addresses">
+            <i class="fas fa-map-marker-alt"></i> Addresses
+        </a>
+        <a class="sidebar-link <%= activeMenu === 'wishlist' ? 'active' : '' %>" href="/account/wishlist">
+            <i class="fas fa-heart"></i> Wishlist
+        </a>
+        <a class="sidebar-link <%= activeMenu === 'coupons' ? 'active' : '' %>" href="/account/coupons">
+            <i class="fas fa-ticket-alt"></i> Coupons
+        </a>
+        <a class="sidebar-link <%= activeMenu === 'change-password' ? 'active' : '' %>" href="/account/change-password">
+            <i class="fas fa-key"></i> Change Password
+        </a>
+
+        <div class="sidebar-divider"></div>
+
+        <a class="sidebar-link logout-link" href="/users/logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </nav>
+</div>
+
+<!-- ===== SIDEBAR STYLES (completely overrides Bootstrap) ===== -->
+<style>
+    /* ---- Sidebar wrapper ---- */
+    .sidebar-wrap {
+        flex: 0 0 260px;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        border: 1px solid #e9ecef;
+        padding: 8px 0;
+        position: sticky;
+        top: 28px;
+    }
+
+    /* ---- Sidebar navigation ---- */
+    .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ---- Sidebar links (custom class - NO Bootstrap conflict) ---- */
+    .sidebar-link {
+        display: flex !important;
+        align-items: center !important;
+        gap: 14px !important;
+        padding: 11px 22px !important;
+        color: #495057 !important;
+        font-weight: 500 !important;
+        font-size: 14px !important;
+        border-left: 3px solid transparent !important;
+        transition: all 0.25s ease !important;
+        text-decoration: none !important;
+        background: transparent !important;
+        border-right: none !important;
+        border-top: none !important;
+        border-bottom: none !important;
+        border-radius: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        cursor: pointer;
+    }
+
+    .sidebar-link i {
+        width: 20px !important;
+        text-align: center !important;
+        font-size: 16px !important;
+        color: #6c757d !important;
+        transition: color 0.25s ease !important;
+    }
+
+    .sidebar-link:hover {
+        background: #f0f9f7 !important;
+        color: #66a59b !important;
+        border-left-color: #88c8bc !important;
+        text-decoration: none !important;
+    }
+
+    .sidebar-link:hover i {
+        color: #88c8bc !important;
+    }
+
+    .sidebar-link.active {
+        background: #f0f9f7 !important;
+        border-left-color: #88c8bc !important;
+        color: #66a59b !important;
+        font-weight: 600 !important;
+    }
+
+    .sidebar-link.active i {
+        color: #88c8bc !important;
+    }
+
+    /* ---- Divider ---- */
+    .sidebar-divider {
+        height: 1px !important;
+        background: #e9ecef !important;
+        margin: 8px 16px !important;
+        border: none !important;
+    }
+
+    /* ---- Logout link (red) ---- */
+    .sidebar-link.logout-link {
+        color: #dc3545 !important;
+    }
+    .sidebar-link.logout-link i {
+        color: #dc3545 !important;
+    }
+    .sidebar-link.logout-link:hover {
+        background: #fde8ea !important;
+        color: #b02a37 !important;
+        border-left-color: #dc3545 !important;
+    }
+    .sidebar-link.logout-link:hover i {
+        color: #b02a37 !important;
+    }
+
+    /* ============================================================
+       RESPONSIVE SIDEBAR (horizontal on tablets)
+       ============================================================ */
+    @media (max-width: 1024px) {
+        .sidebar-wrap {
+            flex: none !important;
+            width: 100% !important;
+            position: static !important;
+            padding: 8px 12px !important;
+            border-radius: 12px !important;
+        }
+
+        .sidebar-nav {
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            gap: 2px !important;
+        }
+
+        .sidebar-link {
+            padding: 8px 14px !important;
+            font-size: 13px !important;
+            border-left: none !important;
+            border-bottom: 2px solid transparent !important;
+            border-radius: 4px !important;
+            width: auto !important;
+        }
+
+        .sidebar-link.active {
+            border-left: none !important;
+            border-bottom-color: #88c8bc !important;
+        }
+
+        .sidebar-link:hover {
+            border-left: none !important;
+            border-bottom-color: #88c8bc !important;
+        }
+
+        .sidebar-divider {
+            display: none !important;
+        }
+    }
+
+    @media (max-width: 420px) {
+        .sidebar-link {
+            font-size: 12px !important;
+            padding: 6px 10px !important;
+            gap: 8px !important;
+        }
+        .sidebar-link i {
+            font-size: 14px !important;
+            width: 16px !important;
+        }
+    }
+</style>

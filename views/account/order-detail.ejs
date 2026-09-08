@@ -1,225 +1,536 @@
-<h4 class="mb-3"><i class="fas fa-file-invoice" style="color:#88c8bc;"></i> Order Details <span class="text-muted">#<%= order.id %></span></h4>
-
-<div class="row">
-  <!-- Left Column -->
-  <div class="col-lg-8">
-
-    <!-- Products -->
-    <div class="card border-0 shadow-sm mb-4">
-      <div class="card-body">
-        <h6 class="mb-3"><i class="fas fa-box me-2" style="color:#88c8bc;"></i> Products</h6>
-        <% order.orderItems.forEach(item => { %>
-          <div class="d-flex align-items-start border-bottom pb-3 mb-3">
-            <img src="<%= item.product.images[0] %>" alt="<%= item.name %>" style="width:80px;height:80px;object-fit:cover;border-radius:8px;">
-            <div class="ms-3 flex-grow-1">
-              <h6 class="mb-1"><%= item.name %></h6>
-              <span class="text-muted">Qty: <%= item.quantity %></span>
-              <span class="text-muted ms-2">Size: <%= item.size %></span>
-              <span class="price ms-3" style="color:#88c8bc; font-weight:600;">₹<%= item.price.toLocaleString('en-IN') %></span>
-            </div>
-          </div>
-        <% }); %>
-      </div>
-    </div>
-
-    <!-- Price Summary -->
-    <div class="card border-0 shadow-sm mb-4">
-      <div class="card-body">
-        <h6 class="mb-3"><i class="fas fa-receipt me-2" style="color:#88c8bc;"></i> Price Summary</h6>
-        <div class="row">
-          <div class="col-6 text-muted">Subtotal</div>
-          <div class="col-6 text-end">₹<%= order.totalPrice.toLocaleString('en-IN') %></div>
-        </div>
-        <div class="row">
-          <div class="col-6 text-muted">Shipping</div>
-          <div class="col-6 text-end">₹<%= order.shipping.toLocaleString('en-IN') %></div>
-        </div>
-        <% if (order.couponDiscount && order.couponDiscount > 0) { %>
-          <div class="row">
-            <div class="col-6 text-muted">Coupon Discount</div>
-            <div class="col-6 text-end text-success">−₹<%= order.couponDiscount.toLocaleString('en-IN') %></div>
-          </div>
-        <% } %>
-        <div class="row fw-bold mt-2 pt-2 border-top">
-          <div class="col-6">Total</div>
-          <div class="col-6 text-end" style="color:var(--primary-dark);">₹<%= order.finalAmount.toLocaleString('en-IN') %></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Shipping Address -->
-    <div class="card border-0 shadow-sm mb-4">
-      <div class="card-body">
-        <h6 class="mb-3"><i class="fas fa-map-pin me-2" style="color:#88c8bc;"></i> Shipping Address</h6>
-        <p class="small mb-1"><%= order.address.name %></p>
-        <p class="small mb-1"><%= order.address.addressLine1 %></p>
-        <p class="small"><%= order.address.city %> - <%= order.address.pincode %></p>
-        <p class="small"><i class="fas fa-phone me-1" style="color:#88c8bc;"></i> <%= order.address.phone || 'N/A' %></p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Right Column -->
-  <div class="col-lg-4">
-    <!-- Payment Method & Status -->
-    <div class="card border-0 shadow-sm mb-4">
-      <div class="card-body">
-        <h6 class="mb-3"><i class="fas fa-credit-card me-2" style="color:#88c8bc;"></i> Payment</h6>
-        <p class="small mb-1"><strong>Method:</strong> <%= order.paymentMethod %>
-        <% if (order.paymentMethod === 'COD') { %>
-            <br> Pay when you receive
-        <% } %></p>
-        <p class="small mb-1"><strong>Status:</strong> <span class="badge <%= order.paymentMethod %>"><%= order.paymentDetails.status %></span></p>
-        <h6 class="mt-3"><i class="fas fa-truck me-2" style="color:#88c8bc;"></i> Tracking</h6>
-        <p class="small">Track ID: <strong><%= order.trackingId || 'Not available yet' %></strong><br>
-        <a href="#" style="color:#88c8bc;">Track package</a></p>
-        <a
-  href="/account/order-details/<%= order._id %>/invoice"
-  class="btn btn-outline-secondary btn-sm mt-2"
->
-  <i class="fas fa-file-pdf"></i> Download Invoice
-</a>
-      </div>
-    </div>
-
-    <!-- Tracking Progress (if not delivered/cancelled) -->
-    <% if (order.status !== 'Cancelled') { %>
-
-        <div class="card border-0 shadow-sm mb-4">
-            <div class="card-body">
-
-            <h6 class="mb-3">
-                <i class="fas fa-truck me-2" style="color:#88c8bc;"></i>
-                Order Progress
-            </h6>
-
-            <div class="tracking-progress d-flex justify-content-between"
-                style="position:relative;">
-
-                <!-- 1. Ordered -->
-                <div class="text-center">
-                <div class="step-circle <%= 
-                    ['Pending', 'Processing', 'Shipped', 'Delivered'].includes(order.status)
-                    ? 'completed'
-                    : ''
-                %>">
-                    1
-                </div>
-                <span class="small">Ordered</span>
-                </div>
-
-                <!-- 2. Processing -->
-                <div class="text-center">
-                <div class="step-circle <%= 
-                    ['Processing', 'Shipped', 'Delivered'].includes(order.status)
-                    ? 'completed'
-                    : ''
-                %>">
-                    2
-                </div>
-                <span class="small">Processing</span>
-                </div>
-
-                <!-- 3. Shipped -->
-                <div class="text-center">
-                <div class="step-circle <%= 
-                    ['Shipped', 'Delivered'].includes(order.status)
-                    ? 'completed'
-                    : ''
-                %>">
-                    3
-                </div>
-                <span class="small">Shipped</span>
-                </div>
-
-                <!-- 4. Delivered -->
-                <div class="text-center">
-                <div class="step-circle <%= 
-                    order.status === 'Delivered'
-                    ? 'completed'
-                    : ''
-                %>">
-                    4
-                </div>
-                <span class="small">Delivered</span>
-                </div>
-
-            </div>
-
-            <style>
-                .tracking-progress .step-circle {
-                width: 32px;
-                height: 32px;
-                border-radius: 50%;
-                background: #e9ecef;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 0 auto 4px;
-                font-weight: 700;
-                font-size: 13px;
-                color: #6c757d;
-                transition: all 0.3s;
-                }
-
-                .tracking-progress .step-circle.completed {
-                background: #88c8bc;
-                color: #fff;
-                }
-
-                .tracking-progress .text-center {
-                flex: 1;
-                }
-            </style>
-
-            </div>
-        </div>
-
-    <% } %>
-
-    <!-- Cancel Order (if pending/processing/shipped) -->
-    <% if (order.status === 'Pending' || order.status === 'Processing'){ %>
-      <div class="card border-0 shadow-sm mb-4">
-        <div class="card-body text-center">
-          <button class="btn btn-outline-danger" id="cancelOrderBtn" onclick="confirmCancel()" style="border-radius:50px; padding:8px 28px; font-weight:600;">
-            <i class="fas fa-times-circle me-2"></i> Cancel Order
-          </button>
-          <p class="text-muted small mt-2 mb-0">You can cancel your order while it is still being processed.</p>
-        </div>
-      </div>
-    <% } %>
-
-    <a href="/account/orders" class="btn btn-link mt-2"><i class="fas fa-arrow-left"></i> Back to Orders</a>
-  </div>
+<!-- ===== ORDER DETAILS CONTENT ===== -->
+<div class="order-details-header">
+    <h4><i class="fas fa-file-invoice"></i> Order Details <span class="order-id-text">#<%= order.id %></span></h4>
+    <p class="text-muted">Placed on <%= order.date %></p>
 </div>
 
-<!-- SweetAlert2 & Cancel function -->
+<div class="order-details-grid">
+    <!-- Left column -->
+    <div class="order-details-main">
+
+        <!-- Products -->
+        <div class="detail-card">
+            <h6><i class="fas fa-box"></i> Products</h6>
+            <% order.orderItems.forEach(item => { %>
+                <div class="product-item">
+                    <img src="<%= item.product.images[0] %>" alt="<%= item.name %>">
+                    <div class="product-info">
+                        <h6><%= item.name %></h6>
+                        <span class="product-meta">Qty: <%= item.quantity %></span>
+                        <span class="product-meta">Size: <%= item.size %></span>
+                        <span class="product-price">₹<%= item.price.toLocaleString('en-IN') %></span>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+
+        <!-- Price Summary -->
+        <div class="detail-card">
+            <h6><i class="fas fa-receipt"></i> Price Summary</h6>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>₹<%= order.totalPrice.toLocaleString('en-IN') %></span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span>₹<%= order.shipping.toLocaleString('en-IN') %></span>
+            </div>
+            <% if (order.couponDiscount && order.couponDiscount > 0) { %>
+                <div class="summary-row discount">
+                    <span>Coupon Discount</span>
+                    <span>−₹<%= order.couponDiscount.toLocaleString('en-IN') %></span>
+                </div>
+            <% } %>
+            <div class="summary-row total">
+                <span>Total</span>
+                <span>₹<%= order.finalAmount.toLocaleString('en-IN') %></span>
+            </div>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="detail-card">
+            <h6><i class="fas fa-map-pin"></i> Shipping Address</h6>
+            <p><%= order.address.name %></p>
+            <p><%= order.address.addressLine1 %></p>
+            <p><%= order.address.city %> - <%= order.address.pincode %></p>
+            <p><i class="fas fa-phone"></i> <%= order.address.phone || 'N/A' %></p>
+        </div>
+    </div>
+
+    <!-- Right column -->
+    <div class="order-details-sidebar">
+
+        <!-- Payment -->
+        <div class="detail-card">
+            <h6><i class="fas fa-credit-card"></i> Payment</h6>
+            <p><strong>Method:</strong> <%= order.paymentMethod %></p>
+            <p><strong>Status:</strong> 
+                <span class="payment-badge <%= order.paymentDetails.status.toLowerCase() %>">
+                    <%= order.paymentDetails.status %>
+                </span>
+            </p>
+            <% if (order.paymentMethod === 'COD') { %>
+                <p class="cod-note"><i class="fas fa-info-circle"></i> Pay when you receive</p>
+            <% } %>
+            <h6 class="mt-3"><i class="fas fa-truck"></i> Tracking</h6>
+            <p>Track ID: <strong><%= order.trackingId || 'Not available yet' %></strong><br>
+            <a href="#" class="track-link">Track package</a></p>
+            <a href="/account/order-details/<%= order._id %>/invoice" class="btn-invoice">
+                <i class="fas fa-file-pdf"></i> Download Invoice
+            </a>
+        </div>
+
+        <!-- Tracking Progress (if not cancelled) -->
+        <% if (order.status !== 'Cancelled') { %>
+            <div class="detail-card">
+                <h6><i class="fas fa-truck"></i> Order Progress</h6>
+                <div class="tracking-steps">
+                    <div class="step">
+                        <div class="step-circle <%= ['Pending','Processing','Shipped','Delivered'].includes(order.status) ? 'completed' : '' %>">1</div>
+                        <span>Ordered</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle <%= ['Processing','Shipped','Delivered'].includes(order.status) ? 'completed' : '' %>">2</div>
+                        <span>Processing</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle <%= ['Shipped','Delivered'].includes(order.status) ? 'completed' : '' %>">3</div>
+                        <span>Shipped</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-circle <%= order.status === 'Delivered' ? 'completed' : '' %>">4</div>
+                        <span>Delivered</span>
+                    </div>
+                </div>
+            </div>
+        <% } %>
+
+        <!-- Cancel Order (if pending/processing) -->
+        <% if (order.status === 'Pending' || order.status === 'Processing') { %>
+            <div class="detail-card cancel-card">
+                <button class="btn-cancel-order" id="cancelOrderBtn" onclick="confirmCancel()">
+                    <i class="fas fa-times-circle"></i> Cancel Order
+                </button>
+                <p class="cancel-hint">You can cancel while order is being processed.</p>
+            </div>
+        <% } %>
+
+        <!-- Back to Orders -->
+        <a href="/account/orders" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Orders
+        </a>
+    </div>
+</div>
+
+<!-- ===== ORDER DETAILS STYLES (self‑contained) ===== -->
+<style>
+    /* ---- Page header ---- */
+    .order-details-header {
+        margin-bottom: 28px;
+    }
+    .order-details-header h4 {
+        font-weight: 600;
+        font-size: 22px;
+        color: #212529;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    .order-details-header h4 i {
+        color: #88c8bc;
+    }
+    .order-details-header .order-id-text {
+        font-weight: 400;
+        color: #6c757d;
+        font-size: 18px;
+    }
+    .order-details-header p {
+        margin: 0;
+        font-size: 14px;
+        color: #6c757d;
+    }
+
+    /* ---- Grid layout (2 columns) ---- */
+    .order-details-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+    }
+
+    /* ---- Cards (shared) ---- */
+    .detail-card {
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        padding: 20px 22px;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        transition: border-color 0.25s ease;
+    }
+    .detail-card:hover {
+        border-color: #88c8bc;
+    }
+    .detail-card h6 {
+        font-weight: 600;
+        font-size: 15px;
+        color: #212529;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .detail-card h6 i {
+        color: #88c8bc;
+        width: 20px;
+    }
+
+    /* ---- Products ---- */
+    .product-item {
+        display: flex;
+        gap: 16px;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f3f5;
+    }
+    .product-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    .product-item img {
+        width: 72px;
+        height: 72px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+    }
+    .product-item .product-info {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px 14px;
+    }
+    .product-item .product-info h6 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: #212529;
+        flex: 1 1 100%;
+    }
+    .product-item .product-meta {
+        font-size: 13px;
+        color: #6c757d;
+    }
+    .product-item .product-price {
+        font-weight: 600;
+        color: #88c8bc;
+        font-size: 15px;
+        margin-left: auto;
+    }
+
+    /* ---- Price summary ---- */
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-size: 14px;
+        color: #495057;
+    }
+    .summary-row.discount {
+        color: #28a745;
+    }
+    .summary-row.total {
+        font-weight: 700;
+        font-size: 16px;
+        border-top: 1px solid #e9ecef;
+        padding-top: 12px;
+        margin-top: 6px;
+        color: #212529;
+    }
+    .summary-row.total span:last-child {
+        color: #88c8bc;
+    }
+
+    /* ---- Shipping address ---- */
+    .detail-card p {
+        margin: 0 0 4px 0;
+        font-size: 14px;
+        color: #495057;
+    }
+    .detail-card p i {
+        color: #88c8bc;
+        width: 20px;
+    }
+
+    /* ---- Payment ---- */
+    .cod-note {
+        font-size: 13px;
+        color: #6c757d;
+        margin-top: 4px;
+    }
+    .cod-note i {
+        color: #88c8bc;
+    }
+
+    /* ---- PAYMENT STATUS BADGES (colored like order statuses) ---- */
+    .payment-badge {
+        display: inline-block;
+        padding: 3px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: capitalize;
+        letter-spacing: 0.3px;
+    }
+    .payment-badge.success,
+    .payment-badge.paid,
+    .payment-badge.completed {
+        background: #d4edda;
+        color: #155724;
+    }
+    .payment-badge.pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+    .payment-badge.failed,
+    .payment-badge.error {
+        background: #f8d7da;
+        color: #721c24;
+    }
+    .payment-badge.refunded,
+    .payment-badge.returned {
+        background: #e9ecef;
+        color: #495057;
+    }
+    .payment-badge.processing {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .track-link {
+        color: #88c8bc;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .track-link:hover {
+        text-decoration: underline;
+        color: #66a59b;
+    }
+
+    .btn-invoice {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+        padding: 6px 18px;
+        background: transparent;
+        border: 1.5px solid #6c757d;
+        border-radius: 6px;
+        color: #6c757d;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+    .btn-invoice:hover {
+        background: #6c757d;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    /* ---- TRACKING PROGRESS (with proper spacing) ---- */
+    .tracking-steps {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        padding: 8px 0;
+        gap: 4px;
+    }
+    /* Progress line */
+    .tracking-steps::before {
+        content: '';
+        position: absolute;
+        top: 16px;
+        left: 12%;
+        right: 12%;
+        height: 2px;
+        background: #e9ecef;
+        z-index: 0;
+    }
+    .step {
+        text-align: center;
+        flex: 1;
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+    }
+    .step-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #e9ecef;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 6px;
+        font-weight: 700;
+        font-size: 13px;
+        color: #6c757d;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+        flex-shrink: 0;
+    }
+    .step-circle.completed {
+        background: #88c8bc;
+        color: #fff;
+        border-color: #88c8bc;
+    }
+    .step span {
+        font-size: 11px;
+        color: #6c757d;
+        display: block;
+        line-height: 1.2;
+        white-space: nowrap;
+    }
+
+    /* ---- Cancel card ---- */
+    .cancel-card {
+        text-align: center;
+    }
+    .btn-cancel-order {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 32px;
+        background: transparent;
+        color: #dc3545;
+        border: 2px solid #dc3545;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+    }
+    .btn-cancel-order:hover {
+        background: #dc3545;
+        color: #fff;
+    }
+    .cancel-hint {
+        font-size: 12px;
+        color: #6c757d;
+        margin-top: 8px;
+    }
+
+    /* ---- Back link ---- */
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #88c8bc;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.25s ease;
+        margin-top: 4px;
+    }
+    .back-link:hover {
+        color: #66a59b;
+        text-decoration: underline;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 992px) {
+        .order-details-grid {
+            grid-template-columns: 1fr;
+        }
+        .order-details-sidebar {
+            order: -1;
+        }
+    }
+    @media (max-width: 640px) {
+        .order-details-header h4 {
+            font-size: 20px;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .detail-card {
+            padding: 16px;
+        }
+        .product-item {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .product-item img {
+            width: 100%;
+            height: auto;
+            max-height: 160px;
+        }
+        .product-item .product-price {
+            margin-left: 0;
+        }
+        .tracking-steps {
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        .tracking-steps::before {
+            display: none;
+        }
+        .step {
+            flex: 0 0 auto;
+            min-width: 60px;
+        }
+        .step span {
+            white-space: normal;
+            font-size: 10px;
+        }
+    }
+    @media (max-width: 400px) {
+        .tracking-steps {
+            gap: 8px;
+        }
+        .step {
+            min-width: 48px;
+        }
+        .step-circle {
+            width: 28px;
+            height: 28px;
+            font-size: 11px;
+        }
+        .step span {
+            font-size: 9px;
+        }
+    }
+</style>
+
+<!-- ===== SWEETALERT & CANCEL SCRIPT ===== -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  function confirmCancel() {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Cancel Order?',
-      text: 'Are you sure you want to cancel this order? This cannot be undone.',
-      showCancelButton: true,
-      confirmButtonColor: '#dc3545',
-      cancelButtonColor: '#6c757d',
-      confirmButtonText: 'Yes, cancel order',
-      cancelButtonText: 'Keep it'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        fetch('/account/order-details/<%= order.id %>/cancel', { method: 'POST' })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              Swal.fire('Cancelled', 'Your order has been cancelled.', 'success')
-                .then(() => window.location.reload());
-            } else {
-              Swal.fire('Error', data.message || 'Unable to cancel order.', 'error');
+    function confirmCancel() {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Cancel Order?',
+            text: 'Are you sure you want to cancel this order? This cannot be undone.',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, cancel order',
+            cancelButtonText: 'Keep it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch('/account/order-details/<%= order.id %>/cancel', { method: 'POST' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire('Cancelled', 'Your order has been cancelled.', 'success')
+                                .then(() => window.location.reload());
+                        } else {
+                            Swal.fire('Error', data.message || 'Unable to cancel order.', 'error');
+                        }
+                    })
+                    .catch(() => Swal.fire('Error', 'Something went wrong.', 'error'));
             }
-          })
-          .catch(() => Swal.fire('Error', 'Something went wrong.', 'error'));
-      }
-    });
-  }
+        });
+    }
 </script>

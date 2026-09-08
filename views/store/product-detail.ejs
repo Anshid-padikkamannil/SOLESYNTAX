@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
 </head>
 <body>
-<%- include("../partials/user/header") %>
+<%- include("../partials/user/header", { activePage: 'shop' }) %>
 	<style>
   /* ===== Brand Colors ===== */
   :root {
@@ -275,7 +275,7 @@
   }
 
   .btn-add-cart {
-    background: var(--secondary);
+    background: var(--primary);
     color: #fff;
     border: none;
     padding: 12px 32px;
@@ -286,7 +286,7 @@
     cursor: pointer;
   }
   .btn-add-cart:hover {
-    background: #395884;
+    background: var(--primary-dark);
     transform: translateY(-2px);
   }
   .btn-add-cart i {
@@ -477,16 +477,6 @@
     }
   }
 </style>
-
-<div class="breadcrumbs">
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        <p class="bread"><span><a href="/">Home</a></span> / <span>Product Details</span></p>
-      </div>
-    </div>
-  </div>
-</div>
 
 <div class="product-wrapper">
   <div class="row g-4">

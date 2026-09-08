@@ -1,303 +1,548 @@
-<%-include("../partials/user/header")%>
+<%- include("../partials/user/header", { activePage: 'cart' }) %>
 
-<style>	
-	.quantity-minus,
-	.quantity-plus {
-		padding: 2px 6px;
-	}
+<style>
+    /* ===== CART STYLES (self-contained) ===== */
 
-	/* Quantity Controls */
-	.quantity-control {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		border: 1px solid #eaecef;
-		border-radius: 25px;
-		overflow: hidden;
-		background: #fff;
-	}
+    /* ---- Cart header row ---- */
+    .cart-header-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 0.5fr;
+        gap: 8px;
+        padding: 14px 16px;
+        background: #f8f9fa;
+        border-radius: 10px 10px 0 0;
+        border-bottom: 2px solid #88c8bc;
+        font-weight: 600;
+        font-size: 14px;
+        color: #495057;
+        text-align: center;
+    }
+    .cart-header-row .text-left {
+        text-align: left;
+    }
 
-	.quantity-control button {
-		background: transparent;
-		border: none;
-		width: 40px;
-		height: 36px;
-		font-size: 18px;
-		cursor: pointer;
-		color: #6c757d;
-		transition: all 0.2s;
-	}
+    /* ---- Cart item row ---- */
+    .cart-item-row {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr 1fr 0.5fr;
+        gap: 8px;
+        align-items: center;
+        padding: 16px;
+        border-bottom: 1px solid #e9ecef;
+        background: #fff;
+        transition: background 0.2s;
+    }
+    .cart-item-row:hover {
+        background: #f8fffe;
+    }
+    .cart-item-row:last-child {
+        border-bottom: none;
+    }
 
-	.quantity-control button:hover {
-		background-color: #f8f9fa;
-		color: #28a745;
-	}
+    /* ---- Product cell ---- */
+    .cart-product {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .cart-product .product-img {
+        width: 70px;
+        height: 70px;
+        flex-shrink: 0;
+        border-radius: 8px;
+        background-size: cover;
+        background-position: center;
+        border: 1px solid #e9ecef;
+    }
+    .cart-product .product-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #212529;
+        margin: 0;
+        line-height: 1.3;
+    }
+    .cart-product .product-name a {
+        color: #212529;
+        text-decoration: none;
+    }
+    .cart-product .product-name a:hover {
+        color: #88c8bc;
+    }
 
-	.quantity-input {
-		width: 40px;
-		height: 36px;
-		text-align: center;
-		border: none;
-		background: transparent;
-		font-weight: 600;
-		font-size: 15px;
-		-webkit-appearance: textfield;
-		-moz-appearance: textfield;
-		appearance: textfield;
-	}
+    /* ---- Centered cells ---- */
+    .cart-cell {
+        text-align: center;
+        font-size: 14px;
+        color: #495057;
+    }
+    .cart-cell .price {
+        font-weight: 600;
+        color: #88c8bc;
+    }
+    .cart-cell .size-tag {
+        display: inline-block;
+        padding: 2px 14px;
+        background: #f1f3f5;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #495057;
+    }
 
-	.quantity-input::-webkit-outer-spin-button,
-	.quantity-input::-webkit-inner-spin-button {
-		-webkit-appearance: none;
-		margin: 0;
-	}
+    /* ---- Quantity controls ---- */
+    .quantity-control {
+        display: inline-flex;
+        align-items: center;
+        border: 1.5px solid #dee2e6;
+        border-radius: 25px;
+        overflow: hidden;
+        background: #fff;
+        transition: border-color 0.25s;
+    }
+    .quantity-control:hover {
+        border-color: #88c8bc;
+    }
 
-	.btn-primary {
-		background-color: #1e2167;
-		color: white;
-		border: none;
-		padding: 12px 25px;
-		border-radius: 5px;
-		font-weight: 600;
-		transition: all 0.3s ease;
-		box-shadow: 0 2px 5px rgba(40, 167, 69, 0.2);
-	}
+    .quantity-control button {
+        background: transparent;
+        border: none;
+        width: 34px;
+        height: 34px;
+        font-size: 18px;
+        cursor: pointer;
+        color: #6c757d;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .quantity-control button:hover {
+        background: #f0f9f7;
+        color: #88c8bc;
+    }
+    .quantity-control input {
+        width: 36px;
+        height: 34px;
+        text-align: center;
+        border: none;
+        background: transparent;
+        font-weight: 600;
+        font-size: 15px;
+        color: #212529;
+        -webkit-appearance: textfield;
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+    .quantity-control input::-webkit-outer-spin-button,
+    .quantity-control input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 
-	.btn-primary:hover {
-			background-color: #218838;
-			transform: translateY(-2px);
-			box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
-	}
+		.quantity-control button:focus,
+    .quantity-control input:focus {
+        outline: none;
+        box-shadow: none;
+    }
 
-	.btn-danger {
-		background-color: transparent;
-		color: #dc3545;
-		border: 1px solid #ef9fa7;
-		padding: 8px 12px;
-		border-radius: 5px;
-		transition: all 0.3s ease;
-	}
+    /* Optional: keep a subtle teal focus ring for accessibility */
+    .quantity-control button:focus-visible,
+    .quantity-control input:focus-visible {
+        outline: 2px solid #88c8bc;
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+    .quantity-control button:focus:not(:focus-visible),
+    .quantity-control input:focus:not(:focus-visible) {
+        outline: none;
+        box-shadow: none;
+    }
 
-	.btn-danger:hover {
-		background-color: #f56372;
-		color: white;
-	}
+    /* ---- Remove button ---- */
+    .btn-remove-cart {
+        background: transparent;
+        border: none;
+        color: #dc3545;
+        font-size: 22px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        line-height: 1;
+    }
+    .btn-remove-cart:hover {
+        background: #fde8ea;
+        color: #b02a37;
+    }
 
-	.empty-cart {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 60px 20px;
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-  }
-  .empty-cart i {
-    font-size: 60px;
-    color: #ddd;
-    margin-bottom: 20px;
-  }
-  .empty-cart h3 {
-    font-family: 'Rokkitt', Georgia, serif;
-    font-size: 28px;
-    color: #343a40;
-    margin-bottom: 10px;
-  }
-  .empty-cart p {
-    color: #6c757d;
-    font-size: 16px;
-    max-width: 400px;
-    margin: 0 auto 20px;
-  }
-  .empty-cart .shop-link {
-    display: inline-block;
-    background: #88c8bc;
-    color: white;
-    padding: 10px 30px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background 0.3s;
-  }
-  .empty-cart .shop-link:hover {
-    background: #66a59b;
-  }
+    /* ---- Totals ---- */
+    .totals-wrap {
+        margin-top: 24px;
+        padding: 24px 32px;
+        background: #f8f9fa;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        max-width: 400px;
+        margin-left: auto;
+    }
+    .totals-wrap .sub-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+        font-size: 14px;
+        color: #495057;
+    }
+    .totals-wrap .sub-row.discount {
+        color: #28a745;
+    }
+    .totals-wrap .grand-total {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0 6px;
+        border-top: 2px solid #dee2e6;
+        margin-top: 6px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #212529;
+    }
+    .totals-wrap .grand-total span:last-child {
+        color: #88c8bc;
+    }
+
+    /* ---- Checkout button ---- */
+    .btn-checkout {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 14px 28px;
+        background: #88c8bc;
+        color: #fff;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+        box-shadow: 0 4px 16px rgba(136, 200, 188, 0.3);
+        text-decoration: none;
+        margin-top: 16px;
+    }
+    .btn-checkout:hover {
+        background: #66a59b;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(136, 200, 188, 0.4);
+        color: #fff;
+        text-decoration: none;
+    }
+
+    /* ---- Empty cart ---- */
+    .empty-cart {
+        text-align: center;
+        padding: 60px 20px;
+        background: #fff;
+        border-radius: 12px;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .empty-cart i {
+        font-size: 60px;
+        color: #dee2e6;
+        margin-bottom: 16px;
+    }
+    .empty-cart h3 {
+        font-family: 'Rokkitt', Georgia, serif;
+        font-size: 28px;
+        color: #343a40;
+        margin-bottom: 10px;
+    }
+    .empty-cart p {
+        color: #6c757d;
+        font-size: 16px;
+        max-width: 400px;
+        margin: 0 auto 20px;
+    }
+    .empty-cart .shop-link {
+        display: inline-block;
+        background: #88c8bc;
+        color: #fff;
+        padding: 10px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: background 0.3s;
+    }
+    .empty-cart .shop-link:hover {
+        background: #66a59b;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    /* ---- Breadcrumbs ---- */
+    .breadcrumbs {
+        padding: 12px 0;
+        background: #f8f9fa;
+        margin-bottom: 20px;
+    }
+    .breadcrumbs .bread {
+        margin: 0;
+        font-size: 14px;
+        color: #6c757d;
+    }
+    .breadcrumbs .bread a {
+        color: #88c8bc;
+        text-decoration: none;
+    }
+    .breadcrumbs .bread a:hover {
+        text-decoration: underline;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 992px) {
+        .cart-header-row {
+            display: none;
+        }
+        .cart-item-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background: #fff;
+        }
+        .cart-product {
+            grid-column: 1 / -1;
+        }
+        .cart-product .product-img {
+            width: 80px;
+            height: 80px;
+        }
+        .cart-cell {
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 0;
+            border-bottom: 1px dashed #f1f3f5;
+        }
+        .cart-cell:last-child {
+            border-bottom: none;
+        }
+        .cart-cell .label-mobile {
+            font-weight: 600;
+            color: #6c757d;
+            font-size: 13px;
+        }
+        .cart-cell .price {
+            font-size: 15px;
+        }
+        .quantity-control {
+            margin: 0 auto;
+        }
+        .totals-wrap {
+            max-width: 100%;
+            margin: 0;
+        }
+        .btn-remove-cart {
+            font-size: 20px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .cart-item-row {
+            grid-template-columns: 1fr;
+            padding: 14px;
+        }
+        .cart-product .product-img {
+            width: 60px;
+            height: 60px;
+        }
+        .quantity-control button {
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+        }
+        .quantity-control input {
+            width: 30px;
+            height: 30px;
+            font-size: 14px;
+        }
+        .totals-wrap {
+            padding: 16px;
+        }
+    }
 </style>
 
+<!-- ===== MAIN CONTENT ===== -->
 <div id="page">
 
-	<div class="breadcrumbs">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<p class="bread"><span><a href="/">Home</a></span> / <span>Shopping Cart</span></p>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="colorlib-product">
+        <div class="container">
 
+            <% if (cart && cart.items && cart.items.length > 0) { %>
 
-	<div class="colorlib-product">
-		<div class="container">
-			<% if (cart && cart.items.length > 0) { %>
-			<div class="row row-pb-lg">
-				<div class="col-md-12">
-					<div class="product-name d-flex">
-						<div class="one-forth text-left px-4">
-							<span>Product Details</span>
-						</div>
-						<div class="one-eight text-center">
-							<span>Size</span>
-						</div>
-						<div class="one-eight text-center">
-							<span>Price</span>
-						</div>
-						<div class="one-eight text-center">
-							<span>Quantity</span>
-						</div>
-						<div class="one-eight text-center">
-							<span>Total</span>
-						</div>
-						<div class="one-eight text-center px-4">
-							<span>Remove</span>
-						</div>
-					</div>
-					<% cart.items.forEach(item => { %>
-						<div class="product-cart d-flex">
-							<div class="one-forth">
-								<div class="product-img" style="background-image: url('<%= item.productId.images[0] %>');">
-								</div>
-								<div class="display-tc">
-									<h3><%= item.productId.productName %></h3>
-								</div>
-							</div>
-							<div class="one-eight text-center">
-								<div class="display-tc">
-									<span class="price"><%= item.size %></span>
-								</div>
-							</div>
-							<div class="one-eight text-center">
-								<div class="display-tc">
-									<span class="price">₹<%= item.productId.price.toLocaleString("en-IN") %></span>
-								</div>
-							</div>
-							<div class="one-eight text-center">
-								<div class="one-eight text-center d-flex align-items-center" data-title="Quantity">
-									<div class="quantity-control quantity-group">
-										<button class="quantity-minus"
-											data-product-id="<%= item.productId._id %>"
-											data-size="<%= item.size %>">-
-										</button>
+                <!-- ===== CART HEADER ===== -->
+                <div class="cart-header-row">
+                    <span class="text-left">Product Details</span>
+                    <span>Size</span>
+                    <span>Price</span>
+                    <span>Quantity</span>
+                    <span>Total</span>
+                    <span></span>
+                </div>
 
-										<input
-											type="number" value="<%= item.quantity %>" min="1" max="<%= Math.min(item.productId.stock, 10) %>" class=" quantity-input cart-quantity"
-											readonly
-										>
+                <!-- ===== CART ITEMS ===== -->
+                <% cart.items.forEach(item => { %>
+                    <div class="cart-item-row" data-product-id="<%= item.productId._id %>" data-size="<%= item.size %>">
 
-										<button class="quantity-plus"
-											data-product-id="<%= item.productId._id %>"
-											data-size="<%= item.size %>">+
-										</button>
-									</div>
-								</div>   
-							</div>
-							<div class="one-eight text-center">
-								<div class="display-tc">
-									<span class="price">₹<%= (item.productId.price * item.quantity).toLocaleString('en-IN') %></span>
-								</div>
-							</div>
-							<div class="one-eight text-center d-flex align-items-center justify-content-center" data-title="Remove">
-								<button class="btn btn-sm btn-danger remove-item" data-product-id="<%= item.productId._id %>" data-size="<%= item.size %>">
-									×
-								</button>
-							</div>
-						</div>
-					<% }) %>
-				</div>
-			</div>
-			<div class="row row-pb-lg">
-				<div class="col-md-12">
-					<div class="total-wrap">
-						<div class="row">
-							<div class="col-sm-8">
-							</div>
-							<div class="col-sm-4 text-center">
-								<div class="total">
-									<div class="sub">
-										<p><span>Subtotal:</span> <span>₹<%= subtotal.toLocaleString("en-IN") %></span></p>
-										<p><span>Delivery:</span> <span>₹0.00</span></p>
-										<p><span>Discount:</span> <span>₹0.00</span></p>
-									</div>
-									<div class="grand-total">
-										<p><span><strong>Total:</strong></span> <span>₹<%= subtotal.toLocaleString("en-IN") %></span></p>
-									</div>
-									<p class="text-center mt-4"><a href="/checkout" id="proceedToCheckout" class="btn btn-primary btn-block">Proceed to Checkout</a></p>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<% } else { %>
-        <div class="empty-cart">
-          <i class="fas fa-heart-broken"></i>
-          <h3>Your cart is empty</h3>
-          <p>Start adding your favourite items – they’ll be saved here for later.</p>
-          <a href="/shop" class="shop-link">Start Shopping</a>
+                        <!-- Product -->
+                        <div class="cart-product">
+                            <div class="product-img" style="background-image: url('<%= item.productId.images[0] %>');"></div>
+                            <p class="product-name"><a href="/product/<%= item.productId._id %>"><%= item.productId.productName %></a></p>
+                        </div>
+
+                        <!-- Size -->
+                        <div class="cart-cell">
+                            <span class="label-mobile d-md-none">Size: </span>
+                            <span class="size-tag"><%= item.size %></span>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="cart-cell">
+                            <span class="label-mobile d-md-none">Price: </span>
+                            <span class="price">₹<%= item.productId.price.toLocaleString("en-IN") %></span>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="cart-cell">
+                            <span class="label-mobile d-md-none">Qty: </span>
+                            <div class="quantity-control quantity-group">
+                                <button class="quantity-minus" data-product-id="<%= item.productId._id %>" data-size="<%= item.size %>">−</button>
+                                <input type="number" value="<%= item.quantity %>" min="1" max="<%= Math.min(item.productId.stock || 10, 10) %>" class="quantity-input cart-quantity" readonly>
+                                <button class="quantity-plus" data-product-id="<%= item.productId._id %>" data-size="<%= item.size %>">+</button>
+                            </div>
+                        </div>
+
+                        <!-- Total -->
+                        <div class="cart-cell">
+                            <span class="label-mobile d-md-none">Total: </span>
+                            <span class="price">₹<%= (item.productId.price * item.quantity).toLocaleString('en-IN') %></span>
+                        </div>
+
+                        <!-- Remove -->
+                        <div class="cart-cell">
+                            <button class="btn-remove-cart remove-item" data-product-id="<%= item.productId._id %>" data-size="<%= item.size %>" aria-label="Remove item">
+                                ×
+                            </button>
+                        </div>
+                    </div>
+                <% }) %>
+
+                <!-- ===== TOTALS ===== -->
+                <div class="row row-pb-lg">
+                    <div class="col-md-12">
+                        <div class="totals-wrap">
+                            <div class="sub-row">
+                                <span>Subtotal</span>
+                                <span>₹<%= subtotal.toLocaleString("en-IN") %></span>
+                            </div>
+                            <div class="sub-row">
+                                <span>Delivery</span>
+                                <span>₹0.00</span>
+                            </div>
+                            <div class="sub-row discount">
+                                <span>Discount</span>
+                                <span>₹0.00</span>
+                            </div>
+                            <div class="grand-total">
+                                <span>Total</span>
+                                <span>₹<%= subtotal.toLocaleString("en-IN") %></span>
+                            </div>
+
+                            <a href="/checkout" id="proceedToCheckout" class="btn-checkout">
+                                <i class="fas fa-lock"></i> Proceed to Checkout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            <% } else { %>
+
+                <!-- ===== EMPTY CART ===== -->
+                <div class="empty-cart">
+                    <i class="fas fa-heart-broken"></i>
+                    <h3>Your cart is empty</h3>
+                    <p>Start adding your favourite items – they'll be saved here for later.</p>
+                    <a href="/shop" class="shop-link">Start Shopping</a>
+                </div>
+
+            <% } %>
+
+            <!-- ===== RELATED PRODUCTS (LEAVE UNCHANGED) ===== -->
+            <div class="row">
+                <div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">
+                    <h2>Related Products</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-lg-3 mb-4 text-center">
+                    <div class="product-entry border">
+                        <a href="#" class="prod-img">
+                            <img src="images/item-1.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                        </a>
+                        <div class="desc">
+                            <h2><a href="#">Women's Boots Shoes Maca</a></h2>
+                            <span class="price">$139.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-3 mb-4 text-center">
+                    <div class="product-entry border">
+                        <a href="#" class="prod-img">
+                            <img src="images/item-2.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                        </a>
+                        <div class="desc">
+                            <h2><a href="#">Women's Minam Meaghan</a></h2>
+                            <span class="price">$139.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-3 mb-4 text-center">
+                    <div class="product-entry border">
+                        <a href="#" class="prod-img">
+                            <img src="images/item-3.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                        </a>
+                        <div class="desc">
+                            <h2><a href="#">Men's Taja Commissioner</a></h2>
+                            <span class="price">$139.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-lg-3 mb-4 text-center">
+                    <div class="product-entry border">
+                        <a href="#" class="prod-img">
+                            <img src="images/item-4.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
+                        </a>
+                        <div class="desc">
+                            <h2><a href="#">Russ Men's Sneakers</a></h2>
+                            <span class="price">$139.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ===== END RELATED PRODUCTS ===== -->
+
         </div>
-      <% } %>
+    </div>
+</div>
 
-			<div class="row">
-				<div class="col-sm-8 offset-sm-2 text-center colorlib-heading colorlib-heading-sm">
-					<h2>Related Products</h2>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-3 col-lg-3 mb-4 text-center">
-					<div class="product-entry border">
-						<a href="#" class="prod-img">
-							<img src="images/item-1.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
-						</a>
-						<div class="desc">
-							<h2><a href="#">Women's Boots Shoes Maca</a></h2>
-							<span class="price">$139.00</span>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-3 col-lg-3 mb-4 text-center">
-					<div class="product-entry border">
-						<a href="#" class="prod-img">
-							<img src="images/item-2.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
-						</a>
-						<div class="desc">
-							<h2><a href="#">Women's Minam Meaghan</a></h2>
-							<span class="price">$139.00</span>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-3 col-lg-3 mb-4 text-center">
-					<div class="product-entry border">
-						<a href="#" class="prod-img">
-							<img src="images/item-3.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
-						</a>
-						<div class="desc">
-							<h2><a href="#">Men's Taja Commissioner</a></h2>
-							<span class="price">$139.00</span>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-3 col-lg-3 mb-4 text-center">
-					<div class="product-entry border">
-						<a href="#" class="prod-img">
-							<img src="images/item-4.jpg" class="img-fluid" alt="Free html5 bootstrap 4 template">
-						</a>
-						<div class="desc">
-							<h2><a href="#">Russ Men's Sneakers</a></h2>
-							<span class="price">$139.00</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
 <script src="/js/cart.js"></script>
-<%-include("../partials/user/footer")%>
+<%- include("../partials/user/footer") %>

@@ -39,13 +39,13 @@
 }
 .sale h3 {
     margin: 0;
-    font-family: "Rokkitt", Georgia, serif;
+    font-family: "Poppins","Rokkitt", Georgia, serif;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 1px;
     color: #fff;
 }
-.sale h3 a { color: #fff; text-decoration: none; }
+.sale h3 a { color: #fff; text-decoration: none !important; }
 .sale h3 a:hover { text-decoration: underline; }
 
 /* Account sidebar customisations */

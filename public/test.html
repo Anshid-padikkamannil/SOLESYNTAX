@@ -1,782 +1,643 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <title>My Account | SOLESYNTAX</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | SOLESYNTAX</title>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Rokkitt:100,300,400,700" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Rokkitt:wght@400;600;700&display=swap" rel="stylesheet" />
 
-    <!-- Bootstrap 4 -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Icomoon (for cart icon) -->
-    <link rel="stylesheet" href="css/icomoon.css">
-    <!-- Theme style (if any) -->
-    <link rel="stylesheet" href="/css/style.css">
+    <!-- Bootstrap 5 (CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome 6 (free) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <style>
-        /* ===== GLOBAL ===== */
-        body {
-            background: #f8f9fa;
-            font-family: "Poppins", sans-serif;
-        }
-        .colorlib-nav {
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        #colorlib-logo a {
-            font-family: "Rokkitt", Georgia, serif, sans-serif;
-            font-weight: 600;
-            font-size: 32px;
-            letter-spacing: 1px;
-            color: #88c8bc;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-        #colorlib-logo a:hover {
-            color: #66a59b;
-        }
-        .sale {
-            background: linear-gradient(to right, #88c8bc, #66a59b);
-            padding: 12px 0;
-        }
-        .sale h3 {
-            margin: 0;
-            font-family: "Rokkitt", Georgia, serif, sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-        .sale h3 a {
-            color: white;
-            text-decoration: none;
-        }
-        .sale h3 a:hover {
-            text-decoration: underline;
+        /* ============================================================
+                   ROOT VARIABLES — your brand teal
+                   ============================================================ */
+        :root {
+            --teal: #88c8bc;
+            --teal-dark: #66a59b;
+            --teal-light: #f0f9f7;
+            --teal-rgb: 136, 200, 188;
+
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
+
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --transition: 0.25s ease;
         }
 
-        /* ===== ACCOUNT LAYOUT ===== */
-        .account-wrapper {
-            margin: 30px 0 60px;
+        /* ============================================================
+                   OVERRIDE BOOTSTRAP PRIMARY
+                   ============================================================ */
+        .btn-primary {
+            background-color: var(--teal) !important;
+            border-color: var(--teal) !important;
+            color: #fff !important;
         }
-        .account-sidebar {
+        .btn-primary:hover {
+            background-color: var(--teal-dark) !important;
+            border-color: var(--teal-dark) !important;
+        }
+        .btn-outline-primary {
+            color: var(--teal) !important;
+            border-color: var(--teal) !important;
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--teal) !important;
+            border-color: var(--teal) !important;
+            color: #fff !important;
+        }
+        .text-primary {
+            color: var(--teal) !important;
+        }
+        .bg-primary {
+            background-color: var(--teal) !important;
+        }
+
+        /* ============================================================
+                   ACCOUNT LAYOUT
+                   ============================================================ */
+        body {
+            background: #f4f6f9;
+            font-family: 'Poppins', sans-serif;
+            color: var(--gray-800);
+        }
+
+        /* ---- top bar (brand) ---- */
+        .account-topbar {
             background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            padding: 20px 0;
-        }
-        .account-sidebar .nav-link {
-            color: #555;
-            font-weight: 500;
-            padding: 10px 24px;
-            border-radius: 0;
-            border-left: 3px solid transparent;
-            transition: all 0.2s ease;
-            font-size: 14px;
+            padding: 16px 32px;
+            border-bottom: 1px solid var(--gray-200);
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
             gap: 12px;
         }
-        .account-sidebar .nav-link i {
-            width: 22px;
-            text-align: center;
-            font-size: 16px;
-            color: #88c8bc;
+        .account-topbar .brand {
+            font-family: 'Rokkitt', serif;
+            font-weight: 700;
+            font-size: 28px;
+            letter-spacing: 1px;
+            color: var(--teal);
+            text-transform: uppercase;
+            text-decoration: none;
         }
-        .account-sidebar .nav-link:hover {
-            background: #f0f9f7;
-            color: #66a59b;
+        .account-topbar .brand:hover {
+            color: var(--teal-dark);
         }
-        .account-sidebar .nav-link.active {
-            background: #f0f9f7;
-            border-left-color: #88c8bc;
-            color: #66a59b;
-            font-weight: 600;
+        .account-topbar .brand span {
+            color: var(--gray-800);
         }
-        .account-content {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-            padding: 30px;
-            min-height: 500px;
+        .account-topbar .user-greeting {
+            font-size: 14px;
+            color: var(--gray-600);
         }
-        .account-content .page-section {
-            display: none;
-        }
-        .account-content .page-section.active {
-            display: block;
+        .account-topbar .user-greeting strong {
+            color: var(--gray-800);
         }
 
-        /* ===== DASHBOARD CARDS ===== */
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
+        /* ---- main wrapper (sidebar + content) ---- */
+        .account-wrapper {
+            display: flex;
+            max-width: 1360px;
+            margin: 28px auto 40px;
+            padding: 0 20px;
+            gap: 28px;
+            align-items: flex-start;
+        }
+
+        /* ---- SIDEBAR ---- */
+        .account-sidebar {
+            flex: 0 0 260px;
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            padding: 12px 0;
+            position: sticky;
+            top: 28px;
+        }
+        .account-sidebar .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 11px 22px;
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: 14px;
+            border-left: 3px solid transparent;
+            transition: all var(--transition);
+            text-decoration: none;
+            border-radius: 0;
+        }
+        .account-sidebar .nav-link i {
+            width: 20px;
             text-align: center;
-            transition: all 0.2s ease;
+            font-size: 16px;
+            color: var(--gray-500);
+            transition: color var(--transition);
+        }
+        .account-sidebar .nav-link:hover {
+            background: var(--teal-light);
+            color: var(--teal-dark);
+        }
+        .account-sidebar .nav-link:hover i {
+            color: var(--teal);
+        }
+        .account-sidebar .nav-link.active {
+            background: var(--teal-light);
+            border-left-color: var(--teal);
+            color: var(--teal-dark);
+            font-weight: 600;
+        }
+        .account-sidebar .nav-link.active i {
+            color: var(--teal);
+        }
+
+        /* logout link — separated with a top border */
+        .account-sidebar .nav-divider {
+            height: 1px;
+            background: var(--gray-200);
+            margin: 8px 16px;
+        }
+        .account-sidebar .nav-link.logout-link {
+            color: #dc3545;
+        }
+        .account-sidebar .nav-link.logout-link i {
+            color: #dc3545;
+        }
+        .account-sidebar .nav-link.logout-link:hover {
+            background: #fde8ea;
+            color: #b02a37;
+        }
+        .account-sidebar .nav-link.logout-link:hover i {
+            color: #b02a37;
+        }
+
+        /* ---- CONTENT ---- */
+        .account-content {
+            flex: 1;
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            padding: 32px 32px 40px;
+            min-height: 600px;
+        }
+
+        /* ---- page header ---- */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+        .page-header h4 {
+            font-weight: 600;
+            font-size: 22px;
+            color: var(--gray-900);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-header h4 i {
+            color: var(--teal);
+        }
+        .page-header .welcome-text {
+            font-size: 14px;
+            color: var(--gray-600);
+            margin: 0;
+        }
+        .page-header .welcome-text strong {
+            color: var(--gray-800);
+        }
+
+        /* ---- stat cards ---- */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-top: 28px;
+        }
+        .stat-card {
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            padding: 20px 16px;
+            text-align: center;
+            border: 1px solid var(--gray-200);
+            transition: all var(--transition);
         }
         .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--teal);
         }
         .stat-card .stat-icon {
-            font-size: 32px;
-            color: #88c8bc;
-            margin-bottom: 8px;
+            font-size: 28px;
+            color: var(--teal);
+            margin-bottom: 6px;
         }
         .stat-card .stat-number {
             font-size: 28px;
             font-weight: 600;
-            color: #333;
+            color: var(--gray-900);
+            line-height: 1.2;
         }
         .stat-card .stat-label {
-            font-size: 14px;
-            color: #888;
-            margin-top: 4px;
+            font-size: 13px;
+            color: var(--gray-600);
+            margin-top: 2px;
+            font-weight: 500;
         }
 
-        /* ===== ORDERS TABLE ===== */
-        .order-item {
-            border: 1px solid #eee;
-            border-radius: 10px;
-            padding: 16px 20px;
+        /* ---- recent order ---- */
+        .recent-order-section {
+            margin-top: 36px;
+            border-top: 1px solid var(--gray-200);
+            padding-top: 28px;
+        }
+        .recent-order-section .section-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--gray-900);
             margin-bottom: 16px;
-            background: #fafafa;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .recent-order-section .section-title i {
+            color: var(--teal);
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            border: 1px solid var(--gray-200);
+            transition: all var(--transition);
+        }
+        .order-item:hover {
+            border-color: var(--teal);
+            box-shadow: var(--shadow-sm);
+        }
+        .order-item .order-info {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: space-between;
+            gap: 10px 18px;
         }
-        .order-item .order-info {
-            flex: 2;
-        }
-        .order-item .order-info strong {
-            font-size: 16px;
-        }
-        .order-item .order-status {
+        .order-item .order-id {
             font-weight: 600;
-            padding: 4px 14px;
+            color: var(--gray-900);
+            font-size: 14px;
+        }
+        .order-item .order-date {
+            color: var(--gray-600);
+            font-size: 13px;
+        }
+        .order-item .order-total {
+            font-weight: 600;
+            color: var(--gray-800);
+            font-size: 15px;
+        }
+        .order-item .order-total span {
+            font-weight: 400;
+            color: var(--gray-600);
+        }
+
+        /* status badges — matching your design */
+        .order-status {
+            font-weight: 600;
+            padding: 3px 16px;
             border-radius: 20px;
-            font-size: 13px;
-        }
-        .order-status.delivered { background: #d4edda; color: #155724; }
-        .order-status.pending { background: #fff3cd; color: #856404; }
-        .order-status.shipped { background: #cce5ff; color: #004085; }
-        .order-status.cancelled { background: #f8d7da; color: #721c24; }
-
-        /* ===== ADDRESS CARD ===== */
-        .address-card {
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 16px 20px;
-            margin-bottom: 16px;
-            background: #fff;
-            transition: all 0.2s ease;
-        }
-        .address-card.default {
-            border-color: #88c8bc;
-            background: #f8fffe;
-        }
-        .address-card .address-tag {
             font-size: 12px;
-            font-weight: 600;
-            background: #88c8bc;
-            color: #fff;
-            padding: 2px 12px;
-            border-radius: 12px;
             display: inline-block;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
         }
-        .address-card .address-tag.default-tag {
-            background: #28a745;
+        .order-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        .order-status.processing {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        .order-status.shipped {
+            background: #cce5ff;
+            color: #004085;
+        }
+        .order-status.delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+        .order-status.cancelled {
+            background: #f8d7da;
+            color: #721c24;
         }
 
-        /* ===== WISHLIST ITEM ===== */
-        .wishlist-item {
+        .order-item .order-actions {
             display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .view-all-link {
+            display: inline-flex;
             align-items: center;
-            gap: 20px;
-            border-bottom: 1px solid #eee;
-            padding: 16px 0;
+            gap: 6px;
+            margin-top: 14px;
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--teal);
+            text-decoration: none;
+            transition: color var(--transition);
         }
-        .wishlist-item img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        .wishlist-item .product-info {
-            flex: 1;
-        }
-        .wishlist-item .product-info h6 {
-            margin: 0;
-            font-weight: 600;
-        }
-        .wishlist-item .product-info .price {
-            color: #88c8bc;
-            font-weight: 600;
+        .view-all-link:hover {
+            color: var(--teal-dark);
+            text-decoration: underline;
         }
 
-        /* ===== COUPON CARD ===== */
-        .coupon-card {
-            border: 1px dashed #ccc;
-            border-radius: 10px;
-            padding: 20px;
+        /* ---- empty state ---- */
+        .empty-state {
             text-align: center;
-            background: #fafafa;
+            padding: 48px 20px;
+            color: var(--gray-600);
         }
-        .coupon-card .coupon-code {
-            font-family: monospace;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            background: #88c8bc;
-            color: #fff;
-            padding: 4px 20px;
-            border-radius: 30px;
-            display: inline-block;
+        .empty-state i {
+            font-size: 48px;
+            color: var(--gray-300);
+            margin-bottom: 16px;
         }
-        .coupon-card .coupon-discount {
-            font-size: 24px;
-            font-weight: 700;
-            color: #333;
-        }
-        .coupon-card .coupon-expiry {
-            font-size: 13px;
-            color: #888;
+        .empty-state h6 {
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 4px;
         }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 767px) {
-            .account-sidebar .nav-link {
-                padding: 8px 16px;
-                font-size: 13px;
+        /* ============================================================
+                   RESPONSIVE
+                   ============================================================ */
+        @media (max-width: 1024px) {
+            .account-wrapper {
+                flex-direction: column;
+                padding: 0 16px;
             }
-            .account-sidebar .nav-link i {
-                width: 18px;
-                font-size: 14px;
+            .account-sidebar {
+                flex: none;
+                width: 100%;
+                position: static;
+                display: flex;
+                flex-wrap: wrap;
+                padding: 8px 12px;
+                gap: 2px;
+            }
+            .account-sidebar .nav-link {
+                padding: 8px 14px;
+                font-size: 13px;
+                border-left: none;
+                border-bottom: 2px solid transparent;
+                border-radius: 4px;
+            }
+            .account-sidebar .nav-link.active {
+                border-left: none;
+                border-bottom-color: var(--teal);
+            }
+            .account-sidebar .nav-divider {
+                display: none;
+            }
+            .account-sidebar .nav-link.logout-link {
+                color: #dc3545;
+            }
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .account-topbar {
+                padding: 12px 16px;
+                flex-direction: column;
+                align-items: flex-start;
             }
             .account-content {
                 padding: 20px 16px;
             }
-            .order-item {
-                flex-direction: column;
-                align-items: stretch;
+            .stats-row {
+                grid-template-columns: 1fr 1fr;
                 gap: 12px;
             }
             .stat-card .stat-number {
                 font-size: 22px;
             }
+            .order-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .order-item .order-actions {
+                justify-content: flex-start;
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            .account-sidebar .nav-link {
+                font-size: 12px;
+                padding: 6px 10px;
+                gap: 8px;
+            }
+            .account-sidebar .nav-link i {
+                font-size: 14px;
+                width: 16px;
+            }
+        }
+
+        /* ============================================================
+                   UTILITY — for demo data
+                   ============================================================ */
+        .text-teal {
+            color: var(--teal);
+        }
+        .bg-teal-light {
+            background: var(--teal-light);
+        }
+        .border-teal {
+            border-color: var(--teal) !important;
+        }
+        .gap-2 {
+            gap: 8px;
+        }
+        .gap-3 {
+            gap: 16px;
         }
     </style>
 </head>
+
 <body>
 
-<div id="page">
-
-    <!-- ========== HEADER (same as your design) ========== -->
-    <nav class="colorlib-nav navbar navbar-expand-lg" role="navigation">
-        <div class="container">
-            <div class="d-flex align-items-center justify-content-between w-100">
-                <div id="colorlib-logo">
-                    <a href="/">SOLESYNTAX</a>
-                </div>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainNavbar"
-                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-            </div>
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/shop"><i class="fas fa-store"></i> Shop</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/cart"><i class="icon-shopping-cart"></i> Cart</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/wishlist"><i class="fas fa-heart"></i> Wishlist</a></li>
-                    <li class="nav-item active"><a class="nav-link" href="/account"><i class="fas fa-user-circle"></i> My Account</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/users/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                </ul>
-            </div>
+    <!-- ============================================================
+    TOP BAR (brand + greeting)
+    ============================================================ -->
+    <header class="account-topbar">
+        <a href="#" class="brand">Sole<span>Syntax</span></a>
+        <div class="user-greeting">
+            <i class="fas fa-user-circle" style="color:var(--teal);font-size:18px;margin-right:6px;"></i>
+            Hi, <strong>John Doe</strong> 👋
         </div>
-    </nav>
+    </header>
 
-    <!-- ========== SALE BANNER ========== -->
-    <div class="sale">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-8 offset-sm-2 text-center">
-                    <div class="owl-carousel2">
-                        <div class="item"><h3><a href="#">25% off (Almost) Everything! Use Code: Summer Sale</a></h3></div>
-                        <div class="item"><h3><a href="#">Our biggest sale yet 50% off all summer shoes</a></h3></div>
+    <!-- ============================================================
+    MAIN WRAPPER
+    ============================================================ -->
+    <div class="account-wrapper">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="account-sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="#">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-user"></i> My Profile
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-box"></i> My Orders
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-map-marker-alt"></i> Addresses
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-heart"></i> Wishlist
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-ticket-alt"></i> Coupons
+                </a>
+                <a class="nav-link" href="#">
+                    <i class="fas fa-key"></i> Change Password
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a class="nav-link logout-link" href="#">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </nav>
+        </aside>
+
+        <!-- ===== CONTENT ===== -->
+        <main class="account-content">
+
+            <!-- header -->
+            <div class="page-header">
+                <div>
+                    <h4><i class="fas fa-tachometer-alt"></i> Dashboard</h4>
+                    <p class="welcome-text">👋 Hi, <strong>John Doe</strong>! Welcome back.</p>
+                </div>
+                <small class="text-muted" style="font-size:13px;">
+                    <i class="far fa-calendar-alt"></i> Last login: Today, 2:30 PM
+                </small>
+            </div>
+
+            <!-- ===== STATS CARDS ===== -->
+            <div class="stats-row">
+                <!-- Total Orders -->
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <!-- Pending Orders -->
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Pending Orders</div>
+                </div>
+                <!-- Saved Addresses -->
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-map-pin"></i></div>
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Saved Addresses</div>
+                </div>
+                <!-- Wishlist Items -->
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Wishlist Items</div>
+                </div>
+            </div>
+
+            <!-- ===== RECENT ORDER ===== -->
+            <section class="recent-order-section">
+                <div class="section-title">
+                    <i class="fas fa-receipt"></i> Recent Order
+                </div>
+
+                <!-- order item -->
+                <div class="order-item">
+                    <div class="order-info">
+                        <span class="order-id">#ORD-2026-08</span>
+                        <span class="order-date"><i class="far fa-calendar-alt" style="margin-right:4px;"></i>Aug 1, 2026</span>
+                        <span class="order-status delivered">Delivered</span>
+                        <span class="order-total"><span>Total:</span> ₹3,999</span>
+                    </div>
+                    <div class="order-actions">
+                        <a href="#" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
                     </div>
                 </div>
+
+                <!-- view all link -->
+                <a href="#" class="view-all-link">
+                    <i class="fas fa-arrow-right"></i> View All Orders
+                </a>
+            </section>
+
+            <!-- optional: extra footer note -->
+            <div style="margin-top:48px;border-top:1px solid var(--gray-200);padding-top:20px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13px;color:var(--gray-600);">
+                <span>© 2026 SOLESYNTAX. All rights reserved.</span>
+                <span><i class="fas fa-shield-alt" style="color:var(--teal);"></i> Secure account</span>
             </div>
-        </div>
+
+        </main>
     </div>
 
-    <!-- ========== MY ACCOUNT SECTION ========== -->
-    <div class="container account-wrapper">
-        <div class="row">
-            <!-- Sidebar -->
-            <div class="col-lg-3 col-md-4 mb-4">
-                <div class="account-sidebar">
-                    <nav class="nav flex-column nav-pills" id="accountTabs" role="tablist">
-                        <a class="nav-link active" data-page="dashboard" href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-                        <a class="nav-link" data-page="profile" href="#"><i class="fas fa-user"></i> My Profile</a>
-                        <a class="nav-link" data-page="orders" href="#"><i class="fas fa-box"></i> My Orders</a>
-                        <a class="nav-link" data-page="addresses" href="#"><i class="fas fa-map-marker-alt"></i> Addresses</a>
-                        <a class="nav-link" data-page="wishlist" href="#"><i class="fas fa-heart"></i> Wishlist</a>
-                        <a class="nav-link" data-page="coupons" href="#"><i class="fas fa-ticket-alt"></i> Coupons</a>
-                        <a class="nav-link" data-page="password" href="#"><i class="fas fa-key"></i> Change Password</a>
-                        <a class="nav-link" data-page="logout" href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                    </nav>
-                </div>
-            </div>
+    <!-- Bootstrap JS (optional, for any toggles) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+    </script>
 
-            <!-- Content -->
-            <div class="col-lg-9 col-md-8">
-                <div class="account-content">
-
-                    <!-- ======== DASHBOARD ======== -->
-                    <div class="page-section active" id="page-dashboard">
-                        <h4 class="mb-3"><i class="fas fa-tachometer-alt" style="color:#88c8bc;"></i> Dashboard</h4>
-                        <p class="text-muted">👋 Hi, <strong>John Doe</strong>! Welcome back.</p>
-
-                        <div class="row mt-4">
-                            <div class="col-sm-3 col-6 mb-3">
-                                <div class="stat-card">
-                                    <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
-                                    <div class="stat-number">12</div>
-                                    <div class="stat-label">Total Orders</div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 col-6 mb-3">
-                                <div class="stat-card">
-                                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                                    <div class="stat-number">3</div>
-                                    <div class="stat-label">Pending Orders</div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 col-6 mb-3">
-                                <div class="stat-card">
-                                    <div class="stat-icon"><i class="fas fa-map-pin"></i></div>
-                                    <div class="stat-number">2</div>
-                                    <div class="stat-label">Saved Addresses</div>
-                                </div>
-                            </div>
-                            <div class="col-sm-3 col-6 mb-3">
-                                <div class="stat-card">
-                                    <div class="stat-icon"><i class="fas fa-heart"></i></div>
-                                    <div class="stat-number">4</div>
-                                    <div class="stat-label">Wishlist Items</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-4">
-                            <h5>Recent Order</h5>
-                            <div class="order-item">
-                                <div class="order-info">
-                                    <strong>#ORD-2026-08</strong> <span class="text-muted">· Aug 1, 2026</span>
-                                    <span class="order-status delivered ml-2">Delivered</span>
-                                    <div class="text-muted small">Total: ₹3,999</div>
-                                </div>
-                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-08">View Details</a>
-                            </div>
-                            <a href="#" class="btn btn-primary btn-sm mt-2" data-page="orders"><i class="fas fa-list"></i> View All Orders</a>
-                        </div>
-                    </div>
-
-                    <!-- ======== PROFILE ======== -->
-                    <div class="page-section" id="page-profile">
-                        <h4 class="mb-3"><i class="fas fa-user" style="color:#88c8bc;"></i> My Profile</h4>
-                        <div class="profile-display">
-                            <p><strong>Name:</strong> John Doe</p>
-                            <p><strong>Email:</strong> john@example.com</p>
-                            <p><strong>Phone:</strong> +91 98765 43210</p>
-                            <button class="btn btn-outline-primary btn-sm" id="editProfileBtn"><i class="fas fa-edit"></i> Edit Profile</button>
-                        </div>
-                        <div class="profile-edit mt-3" style="display:none;">
-                            <form id="profileForm">
-                                <div class="form-group">
-                                    <label>Full Name</label>
-                                    <input type="text" class="form-control" value="John Doe">
-                                </div>
-                                <div class="form-group">
-                                    <label>Email</label>
-                                    <input type="email" class="form-control" value="john@example.com">
-                                </div>
-                                <div class="form-group">
-                                    <label>Phone</label>
-                                    <input type="text" class="form-control" value="+91 98765 43210">
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-sm">Save Changes</button>
-                                <button type="button" class="btn btn-secondary btn-sm" id="cancelEditProfile">Cancel</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- ======== ORDERS ======== -->
-                    <div class="page-section" id="page-orders">
-                        <h4 class="mb-3"><i class="fas fa-box" style="color:#88c8bc;"></i> My Orders</h4>
-                        <div id="ordersList">
-                            <div class="order-item">
-                                <div class="order-info">
-                                    <strong>#ORD-2026-08</strong> <span class="text-muted">· Aug 1, 2026</span><br>
-                                    <span class="order-status delivered">Delivered</span>
-                                    <span class="ml-3">₹3,999</span>
-                                </div>
-                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-08">View Details</a>
-                            </div>
-                            <div class="order-item">
-                                <div class="order-info">
-                                    <strong>#ORD-2026-07</strong> <span class="text-muted">· Jul 25, 2026</span><br>
-                                    <span class="order-status shipped">Shipped</span>
-                                    <span class="ml-3">₹1,299</span>
-                                </div>
-                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-07">View Details</a>
-                            </div>
-                            <div class="order-item">
-                                <div class="order-info">
-                                    <strong>#ORD-2026-06</strong> <span class="text-muted">· Jul 10, 2026</span><br>
-                                    <span class="order-status pending">Pending</span>
-                                    <span class="ml-3">₹5,450</span>
-                                </div>
-                                <a href="#" class="btn btn-sm btn-outline-primary view-order-btn" data-order="ORD-2026-06">View Details</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ======== ORDER DETAILS (hidden by default, shown via JS) ======== -->
-                    <div class="page-section" id="page-order-detail">
-                        <h4 class="mb-3"><i class="fas fa-file-invoice" style="color:#88c8bc;"></i> Order Details <span id="orderDetailId"></span></h4>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h6>Products</h6>
-                                <div class="wishlist-item border-bottom pb-2">
-                                    <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Shoe" alt="product">
-                                    <div class="product-info">
-                                        <h6>Nike Air Max</h6>
-                                        <span class="text-muted">Qty: 1</span>
-                                        <span class="price ml-3">₹3,999</span>
-                                    </div>
-                                </div>
-                                <div class="wishlist-item border-bottom pb-2">
-                                    <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Bag" alt="product">
-                                    <div class="product-info">
-                                        <h6>Leather Backpack</h6>
-                                        <span class="text-muted">Qty: 2</span>
-                                        <span class="price ml-3">₹1,298</span>
-                                    </div>
-                                </div>
-                                <div class="mt-3"><strong>Total: ₹5,297</strong></div>
-                            </div>
-                            <div class="col-md-4">
-                                <h6>Shipping Address</h6>
-                                <p class="small">John Doe<br>123, MG Road,<br>Mumbai - 400001</p>
-                                <h6>Payment</h6>
-                                <p class="small">UPI / Credit Card • **** 1234</p>
-                                <h6>Status</h6>
-                                <span class="order-status delivered">Delivered on Aug 3, 2026</span>
-                                <h6 class="mt-3">Tracking</h6>
-                                <p class="small">Track ID: <strong>TRK-987654</strong><br> <a href="#">Track package</a></p>
-                                <button class="btn btn-outline-secondary btn-sm mt-2"><i class="fas fa-file-pdf"></i> Download Invoice</button>
-                            </div>
-                        </div>
-                        <a href="#" class="btn btn-link mt-3" data-page="orders"><i class="fas fa-arrow-left"></i> Back to Orders</a>
-                    </div>
-
-                    <!-- ======== ADDRESSES ======== -->
-                    <div class="page-section" id="page-addresses">
-                        <h4 class="mb-3"><i class="fas fa-map-marker-alt" style="color:#88c8bc;"></i> Addresses</h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="address-card default">
-                                    <div class="d-flex justify-content-between">
-                                        <span><strong>Home</strong></span>
-                                        <span class="address-tag default-tag">Default</span>
-                                    </div>
-                                    <p class="mb-1 small">John Doe<br>123, MG Road,<br>Mumbai - 400001</p>
-                                    <div class="mt-2">
-                                        <button class="btn btn-sm btn-outline-primary edit-address" data-address="home">Edit</button>
-                                        <button class="btn btn-sm btn-outline-danger delete-address" data-address="home">Delete</button>
-                                        <button class="btn btn-sm btn-outline-secondary set-default-address" data-address="home">Set Default</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="address-card">
-                                    <div class="d-flex justify-content-between">
-                                        <span><strong>Work</strong></span>
-                                    </div>
-                                    <p class="mb-1 small">John Doe<br>456, BKC,<br>Mumbai - 400051</p>
-                                    <div class="mt-2">
-                                        <button class="btn btn-sm btn-outline-primary edit-address" data-address="work">Edit</button>
-                                        <button class="btn btn-sm btn-outline-danger delete-address" data-address="work">Delete</button>
-                                        <button class="btn btn-sm btn-outline-secondary set-default-address" data-address="work">Set Default</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary btn-sm mt-3" id="addAddressBtn"><i class="fas fa-plus"></i> Add Address</button>
-                        <!-- Add address form (hidden) -->
-                        <div id="addAddressForm" style="display:none;" class="mt-3 p-3 border rounded">
-                            <h6>Add New Address</h6>
-                            <form>
-                                <div class="form-group">
-                                    <label>Address Label</label>
-                                    <input type="text" class="form-control" placeholder="e.g. Home, Work">
-                                </div>
-                                <div class="form-group">
-                                    <label>Full Address</label>
-                                    <textarea class="form-control" rows="2"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary btn-sm">Save Address</button>
-                                <button type="button" class="btn btn-secondary btn-sm" id="cancelAddAddress">Cancel</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- ======== WISHLIST ======== -->
-                    <div class="page-section" id="page-wishlist">
-                        <h4 class="mb-3"><i class="fas fa-heart" style="color:#88c8bc;"></i> Wishlist</h4>
-                        <div class="wishlist-item">
-                            <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Nike" alt="product">
-                            <div class="product-info">
-                                <h6>Nike Air Max</h6>
-                                <span class="price">₹4,999</span>
-                            </div>
-                            <div>
-                                <button class="btn btn-sm btn-success move-to-cart"><i class="fas fa-shopping-cart"></i> Move to Cart</button>
-                                <button class="btn btn-sm btn-outline-danger remove-wishlist"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                        <div class="wishlist-item">
-                            <img src="https://via.placeholder.com/80x80/88c8bc/fff?text=Adidas" alt="product">
-                            <div class="product-info">
-                                <h6>Adidas Ultraboost</h6>
-                                <span class="price">₹3,299</span>
-                            </div>
-                            <div>
-                                <button class="btn btn-sm btn-success move-to-cart"><i class="fas fa-shopping-cart"></i> Move to Cart</button>
-                                <button class="btn btn-sm btn-outline-danger remove-wishlist"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ======== COUPONS ======== -->
-                    <div class="page-section" id="page-coupons">
-                        <h4 class="mb-3"><i class="fas fa-ticket-alt" style="color:#88c8bc;"></i> Coupons</h4>
-                        <div class="row">
-                            <div class="col-md-4 mb-3">
-                                <div class="coupon-card">
-                                    <div class="coupon-code">SAVE10</div>
-                                    <div class="coupon-discount">10% OFF</div>
-                                    <div class="coupon-expiry">Valid until Aug 31, 2026</div>
-                                    <span class="badge badge-success mt-2">Available</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="coupon-card">
-                                    <div class="coupon-code">FLAT50</div>
-                                    <div class="coupon-discount">₹50 OFF</div>
-                                    <div class="coupon-expiry">Valid until Sep 15, 2026</div>
-                                    <span class="badge badge-secondary mt-2">Used</span>
-                                </div>
-                            </div>
-                            <div class="col-md-4 mb-3">
-                                <div class="coupon-card">
-                                    <div class="coupon-code">SUMMER25</div>
-                                    <div class="coupon-discount">25% OFF</div>
-                                    <div class="coupon-expiry">Expired on Jul 30, 2026</div>
-                                    <span class="badge badge-danger mt-2">Expired</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- ======== CHANGE PASSWORD ======== -->
-                    <div class="page-section" id="page-password">
-                        <h4 class="mb-3"><i class="fas fa-key" style="color:#88c8bc;"></i> Change Password</h4>
-                        <form>
-                            <div class="form-group">
-                                <label>Current Password</label>
-                                <input type="password" class="form-control" placeholder="Enter current password">
-                            </div>
-                            <div class="form-group">
-                                <label>New Password</label>
-                                <input type="password" class="form-control" placeholder="Enter new password">
-                            </div>
-                            <div class="form-group">
-                                <label>Confirm New Password</label>
-                                <input type="password" class="form-control" placeholder="Confirm new password">
-                            </div>
-                            <button type="submit" class="btn btn-primary btn-sm">Change Password</button>
-                        </form>
-                    </div>
-
-                    <!-- ======== LOGOUT (just a button with confirm) ======== -->
-                    <div class="page-section" id="page-logout">
-                        <h4 class="mb-3"><i class="fas fa-sign-out-alt" style="color:#88c8bc;"></i> Logout</h4>
-                        <p>Are you sure you want to log out?</p>
-                        <button class="btn btn-danger" id="confirmLogoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                    </div>
-
-                </div><!-- /account-content -->
-            </div>
-        </div>
-    </div>
-
-    <!-- ========== FOOTER (optional) ========== -->
-    <footer class="text-center py-4 bg-light mt-4">
-        <div class="container">
-            <small class="text-muted">© 2026 SOLESYNTAX. All rights reserved.</small>
-        </div>
-    </footer>
-
-</div><!-- /page -->
-
-
-<!-- ========== SCRIPTS ========== -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="/js/owl.carousel.min.js"></script>
-<script>
-$(document).ready(function() {
-
-    // ===== OWL CAROUSEL (sale banner) =====
-    if ($('.owl-carousel2').length) {
-        $('.owl-carousel2').owlCarousel({
-            loop: true, margin: 0, nav: false, dots: false,
-            autoplay: true, autoplayTimeout: 4000, autoplayHoverPause: true,
-            responsive: { 0: { items: 1 }, 600: { items: 1 }, 1000: { items: 1 } }
-        });
-    }
-
-    // ===== SIDEBAR NAVIGATION =====
-    $('.account-sidebar .nav-link').on('click', function(e) {
-        e.preventDefault();
-        var page = $(this).data('page');
-
-        // Special case: Logout -> show logout page
-        if (page === 'logout') {
-            // show logout section
-            $('.page-section').removeClass('active');
-            $('#page-logout').addClass('active');
-            $('.account-sidebar .nav-link').removeClass('active');
-            $(this).addClass('active');
-            return;
-        }
-
-        // If it's a view order detail, we handle separately
-        // But we have a separate handler for view-order-btn
-
-        // Hide all, show target
-        $('.page-section').removeClass('active');
-        $('#page-' + page).addClass('active');
-        $('.account-sidebar .nav-link').removeClass('active');
-        $(this).addClass('active');
-    });
-
-    // ===== VIEW ORDER DETAILS =====
-    $(document).on('click', '.view-order-btn', function(e) {
-        e.preventDefault();
-        var orderId = $(this).data('order');
-        // Update the order detail ID
-        $('#orderDetailId').text(' - ' + orderId);
-        // Show order detail page
-        $('.page-section').removeClass('active');
-        $('#page-order-detail').addClass('active');
-        $('.account-sidebar .nav-link').removeClass('active');
-        // Highlight orders in sidebar (optional)
-        $('.account-sidebar .nav-link[data-page="orders"]').addClass('active');
-        // Scroll to top
-        $('html, body').animate({ scrollTop: 0 }, 300);
-    });
-
-    // ===== BACK TO ORDERS from detail =====
-    $(document).on('click', '[data-page="orders"]', function(e) {
-        e.preventDefault();
-        $('.page-section').removeClass('active');
-        $('#page-orders').addClass('active');
-        $('.account-sidebar .nav-link').removeClass('active');
-        $('.account-sidebar .nav-link[data-page="orders"]').addClass('active');
-    });
-
-    // ===== EDIT PROFILE TOGGLE =====
-    $('#editProfileBtn').click(function() {
-        $('.profile-display').hide();
-        $('.profile-edit').show();
-    });
-    $('#cancelEditProfile').click(function() {
-        $('.profile-display').show();
-        $('.profile-edit').hide();
-    });
-    $('#profileForm').submit(function(e) {
-        e.preventDefault();
-        alert('Profile updated successfully! (demo)');
-        $('.profile-display').show();
-        $('.profile-edit').hide();
-    });
-
-    // ===== ADDRESS ACTIONS =====
-    // Add address toggle
-    $('#addAddressBtn').click(function() {
-        $('#addAddressForm').toggle();
-    });
-    $('#cancelAddAddress').click(function() {
-        $('#addAddressForm').hide();
-    });
-    // Edit address
-    $(document).on('click', '.edit-address', function() {
-        alert('Edit address: ' + $(this).data('address') + ' (demo)');
-    });
-    // Delete address
-    $(document).on('click', '.delete-address', function() {
-        if (confirm('Delete this address?')) {
-            $(this).closest('.address-card').remove();
-        }
-    });
-    // Set default
-    $(document).on('click', '.set-default-address', function() {
-        $('.address-card').removeClass('default').find('.address-tag.default-tag').remove();
-        $(this).closest('.address-card').addClass('default').find('.d-flex').append('<span class="address-tag default-tag ml-2">Default</span>');
-        alert('Default address updated!');
-    });
-
-    // ===== WISHLIST ACTIONS =====
-    $(document).on('click', '.move-to-cart', function() {
-        alert('Item moved to cart! (demo)');
-        $(this).closest('.wishlist-item').remove();
-    });
-    $(document).on('click', '.remove-wishlist', function() {
-        if (confirm('Remove from wishlist?')) {
-            $(this).closest('.wishlist-item').remove();
-        }
-    });
-
-    // ===== LOGOUT CONFIRM =====
-    $('#confirmLogoutBtn').click(function() {
-        if (confirm('Are you sure you want to logout?')) {
-            alert('Logging out... (redirect to home)');
-            // window.location.href = '/users/logout'; // uncomment for real backend
-        }
-    });
-
-    // ===== CLOSE MOBILE MENU AFTER CLICK =====
-    $('.navbar-nav .nav-link').on('click', function() {
-        if ($(window).width() < 992) {
-            $('#mainNavbar').collapse('hide');
-        }
-    });
-
-    // ===== Auto-show dashboard on load =====
-    // (already active by default)
-
-});
-</script>
 </body>
+
 </html>

@@ -7644,7 +7644,7 @@ h1, h2, h3, h4, h5,
             background: #616161;
             color: #fff; }
           #colorlib-hero .flexslider .slider-text > .slider-text-inner .btn:hover {
-            background: #000 !important; }
+            background: #000; }
           @media (max-width: 767.98px) {
             #colorlib-hero .flexslider .slider-text > .slider-text-inner .btn {
               width: 100%; } }
@@ -8681,7 +8681,8 @@ input[type="text"] {
   border-bottom: none !important; }
   @media (max-width: 767.98px) {
     .colorlib-nav-toggle {
-      display: block; } }
+      /* display: block; */
+    } }
 
 .pagination li {
   margin: 2px; }

@@ -474,8 +474,8 @@
     }
     .coupon-form .btn-apply {
       background: var(--primary) !important;
-      border: none;
-      color: #fff;
+      border: none !important;
+      color: #fff !important;
       font-weight: 600;
       padding: 0 20px;
       border-radius: 50px;
@@ -552,8 +552,8 @@
 
     .btn-place-order {
       width: 100%;
-      background: linear-gradient(135deg, var(--secondary), #395884);
-      border: none;
+      background: linear-gradient(135deg, #88c8bc, #66a59b) !important;
+      border: none !important;
       color: #fff;
       padding: 18px;
       font-size: 18px;
@@ -562,13 +562,14 @@
       transition: all 0.4s ease;
       margin-top: 18px;
       letter-spacing: 0.5px;
-      box-shadow: 0 4px 20px rgba(70, 105, 143, 0.35);
+      box-shadow: 0 4px 20px rgba(136,200,188,0.35) !important;
       position: relative;
       overflow: hidden;
     }
     .btn-place-order:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px rgba(70, 105, 143, 0.5);
+      background: linear-gradient(135deg, #66a59b, #4d8a7d) !important;
+      box-shadow: 0 8px 30px rgba(136,200,188,0.5) !important;
+      transform: scale(1.03);
     }
     .btn-place-order::after {
       content: '';
@@ -682,7 +683,7 @@
     }
   </style>
 
-<%- include("../partials/user/header") %>
+<%- include("../partials/user/header", { activePage: 'checkout' }) %>
 
 <!-- ===== USP BANNER ===== -->
 <!-- <div class="usp-banner">
@@ -691,17 +692,6 @@
   <span><i class="fas fa-lock"></i> 100% Secure Checkout</span>
   <span><i class="fas fa-clock"></i> Express Delivery Available</span>
 </div> -->
-
-<!-- ===== BREADCRUMB ===== -->
-<div class="breadcrumbs">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<p class="bread"><span><a href="/">Home</a></span> / <span>Checkout</span></p>
-				</div>
-			</div>
-		</div>
-	</div>
 
 <!-- ===== CHECKOUT ===== -->
 <div class="checkout-wrapper">

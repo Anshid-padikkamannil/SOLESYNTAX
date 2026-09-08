@@ -1,3 +1,4 @@
+<!-- ===== ADDRESSES CONTENT ===== -->
 <h4 class="mb-3"><i class="fas fa-map-marker-alt" style="color:#88c8bc;"></i> Addresses</h4>
 
 <div class="row">
@@ -28,20 +29,14 @@
                     </div>
                 </div>
 
-                <!-- Summary (always visible) – without labels, clean -->
-                <div class="address-summary mt-2">
+                <!-- Full address always visible (no toggle) -->
+                <div class="address-full mt-2">
                     <p class="mb-1 small">
                         <strong>Name:</strong> <%= addr.name %><br>
                         <strong>Address Line 1:</strong> <%= addr.addressLine1 %><br>
                         <% if (addr.addressLine2) { %>
-                            <strong>Address Line 2:</strong> <%= addr.addressLine2 %>
+                            <strong>Address Line 2:</strong> <%= addr.addressLine2 %><br>
                         <% } %>
-                    </p>
-                </div>
-
-                <!-- Full details (hidden by default) – with labels for all fields -->
-                <div id="details-<%= addr._id %>" class="address-details mt-2" style="display:none;">
-                    <p class="mb-1 small">
                         <strong>City:</strong> <%= addr.city %><br>
                         <strong>State:</strong> <%= addr.state %><br>
                         <strong>Pincode:</strong> <%= addr.pincode %><br>
@@ -54,11 +49,6 @@
                         <% } %>
                     </p>
                 </div>
-
-                <!-- Single toggle button – always at the bottom -->
-                <button class="btn btn-link btn-sm p-0 mt-2 toggle-details" data-target="details-<%= addr._id %>">
-                    Show more <i class="fas fa-chevron-down"></i>
-                </button>
             </div>
         </div>
     <% }); %>
@@ -141,8 +131,162 @@
     </form>
 </div>
 
+<!-- ===== STYLES (UI refresh with no toggle) ===== -->
+<style>
+    /* ---- Address Card ---- */
+    .address-card {
+        border-radius: 12px !important;
+        border: 1px solid #e9ecef !important;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+        transition: all 0.25s ease !important;
+        height: 100%;
+        position: relative;
+        background: #fff !important;
+    }
+    .address-card:hover {
+        border-color: #88c8bc !important;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08) !important;
+    }
+    .address-card.default {
+        border-color: #88c8bc !important;
+        background: #f8fffe !important;
+    }
+    .address-card.default::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #88c8bc;
+        border-radius: 12px 12px 0 0;
+    }
+
+    /* ---- Badge ---- */
+    .badge.bg-success {
+        background-color: #88c8bc !important;
+        font-weight: 600;
+        font-size: 11px;
+        padding: 3px 12px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* ---- Buttons ---- */
+    .address-card .btn-outline-primary {
+        color: #88c8bc !important;
+        border-color: #88c8bc !important;
+    }
+    .address-card .btn-outline-primary:hover {
+        background: #88c8bc !important;
+        color: #fff !important;
+    }
+    .address-card .btn-outline-danger:hover {
+        background: #dc3545 !important;
+        color: #fff !important;
+    }
+    .address-card .btn-outline-secondary:hover {
+        background: #6c757d !important;
+        color: #fff !important;
+    }
+
+    /* ---- Full address display ---- */
+    .address-full p {
+        line-height: 1.8 !important;
+        font-size: 14px !important;
+        margin-bottom: 4px !important;
+    }
+    .address-full strong {
+        color: #495057;
+        font-weight: 600;
+        min-width: 95px;
+        display: inline-block;
+    }
+
+    /* ---- Add address button ---- */
+    .btn-primary {
+        background-color: #88c8bc !important;
+        border-color: #88c8bc !important;
+        padding: 10px 24px !important;
+        font-weight: 600 !important;
+        border-radius: 6px !important;
+        transition: all 0.25s ease !important;
+    }
+    .btn-primary:hover {
+        background-color: #66a59b !important;
+        border-color: #66a59b !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(136,200,188,0.3);
+    }
+    .btn-secondary:disabled {
+        background: #e9ecef !important;
+        border-color: #e9ecef !important;
+        color: #6c757d !important;
+        cursor: not-allowed !important;
+    }
+
+    /* ---- Form ---- */
+    #addressFormContainer {
+        border: 1px solid #e9ecef !important;
+        border-radius: 12px !important;
+        background: #f8f9fa !important;
+        padding: 24px 28px !important;
+        margin-top: 28px !important;
+    }
+    #addressFormContainer h5 {
+        font-weight: 600;
+        font-size: 18px;
+        color: #212529;
+        margin-bottom: 20px;
+    }
+    #addressFormContainer .form-label {
+        font-weight: 500;
+        font-size: 14px;
+        color: #495057;
+    }
+    #addressFormContainer .form-control,
+    #addressFormContainer .form-select {
+        padding: 10px 14px;
+        border: 1.5px solid #ced4da;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    #addressFormContainer .form-control:focus,
+    #addressFormContainer .form-select:focus {
+        border-color: #88c8bc;
+        box-shadow: 0 0 0 4px rgba(136,200,188,0.15);
+        outline: none;
+    }
+    #addressFormContainer .form-check-input:checked {
+        background-color: #88c8bc;
+        border-color: #88c8bc;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 768px) {
+        .address-card .d-flex {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+        .address-card .d-flex > div:last-child {
+            margin-top: 8px;
+            align-self: flex-end;
+        }
+        #addressFormContainer {
+            padding: 20px 16px !important;
+        }
+        .address-full strong {
+            min-width: 70px;
+        }
+    }
+</style>
+
+<!-- ===== JAVASCRIPT (add & edit only – no toggle) ===== -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+
         // ---- Toggle form visibility ----
         const addBtn = document.getElementById('addAddressBtn');
         const formContainer = document.getElementById('addressFormContainer');
@@ -166,15 +310,9 @@
             addBtn.addEventListener('click', function() {
                 resetForm();
                 formContainer.style.display = 'block';
-                formContainer.scrollIntoView({ behavior: 'smooth', block:
-                'center' });
-            });    
+                formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
         }
-        
-            
-            
-             
-        
 
         cancelBtn.addEventListener('click', function() {
             formContainer.style.display = 'none';
@@ -199,29 +337,11 @@
 
                 // Set form action to update endpoint
                 form.action = '/account/address/' + addr._id + '/update';
-                methodInput.value = 'POST'; // we'll use POST with a hidden _method=PUT if needed, but we can keep POST
-                // If your framework supports PUT, you can set methodInput to 'PUT' and use method override
-                // For simplicity, we'll use POST to the update route.
+                methodInput.value = 'POST';
                 formTitle.textContent = 'Edit Address';
                 submitBtn.textContent = 'Update Address';
                 formContainer.style.display = 'block';
                 formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            });
-        });
-
-        // ---- Toggle details (show more / less) ----
-        // Single toggle button – works for all cards
-        document.querySelectorAll('.toggle-details').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const targetId = this.dataset.target;
-                const details = document.getElementById(targetId);
-                if (details.style.display === 'none') {
-                    details.style.display = 'block';
-                    this.innerHTML = 'Show less <i class="fas fa-chevron-up"></i>';
-                } else {
-                    details.style.display = 'none';
-                    this.innerHTML = 'Show more <i class="fas fa-chevron-down"></i>';
-                }
             });
         });
     });

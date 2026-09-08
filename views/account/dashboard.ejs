@@ -1,50 +1,306 @@
-<h4 class="mb-3"><i class="fas fa-tachometer-alt" style="color:#88c8bc;"></i> Dashboard</h4>
-<p class="text-muted">👋 Hi, <strong><%= user ? user.name : 'Guest' %></strong>! Welcome back.</p>
+<!-- ===== DASHBOARD CONTENT ===== -->
+<div class="dashboard-header">
+    <div>
+        <h4><i class="fas fa-tachometer-alt"></i> Dashboard</h4>
+        <p class="welcome-text">👋 Hi, <strong><%= user ? user.name : 'Guest' %></strong>! Welcome back.</p>
+    </div>
+    <small class="last-login"><i class="far fa-calendar-alt"></i> Last login: NA</small>
+</div>
 
-<div class="row mt-4">
-    <div class="col-sm-3 col-6 mb-3">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
-            <div class="stat-number"><%= totalOrders || 0 %></div>
-            <div class="stat-label">Total Orders</div>
-        </div>
+<!-- Stats cards -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+        <div class="stat-number"><%= totalOrders || 0 %></div>
+        <div class="stat-label">Total Orders</div>
     </div>
-    <div class="col-sm-3 col-6 mb-3">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-clock"></i></div>
-            <div class="stat-number"><%= pendingOrders || 0 %></div>
-            <div class="stat-label">Pending Orders</div>
-        </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+        <div class="stat-number"><%= pendingOrders || 0 %></div>
+        <div class="stat-label">Pending Orders</div>
     </div>
-    <div class="col-sm-3 col-6 mb-3">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-map-pin"></i></div>
-            <div class="stat-number"><%= savedAddresses || 0 %></div>
-            <div class="stat-label">Saved Addresses</div>
-        </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-map-pin"></i></div>
+        <div class="stat-number"><%= savedAddresses || 0 %></div>
+        <div class="stat-label">Saved Addresses</div>
     </div>
-    <div class="col-sm-3 col-6 mb-3">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="fas fa-heart"></i></div>
-            <div class="stat-number"><%= wishlistItems || 0 %></div>
-            <div class="stat-label">Wishlist Items</div>
-        </div>
+    <div class="stat-card">
+        <div class="stat-icon"><i class="fas fa-heart"></i></div>
+        <div class="stat-number"><%= wishlistItems || 0 %></div>
+        <div class="stat-label">Wishlist Items</div>
     </div>
 </div>
 
-<div class="mt-4">
-    <h5>Recent Order</h5>
+<!-- Recent Order -->
+<section class="recent-order-section">
+    <div class="section-title"><i class="fas fa-receipt"></i> Recent Order</div>
     <% if (recentOrder) { %>
         <div class="order-item">
             <div class="order-info">
-                <strong><%= recentOrder.id %></strong> <span class="text-muted">· <%= recentOrder.date %></span>
-                <span class="order-status <%= recentOrder.statusClass %> ml-2"><%= recentOrder.status %></span>
-                <div class="text-muted small">Total: ₹<%= recentOrder.total %></div>
+                <span class="order-id"><%= recentOrder.id || recentOrder._id %></span>
+                <span class="order-date"><i class="far fa-calendar-alt"></i> <%= recentOrder.date %></span>
+                <span class="order-status <%= recentOrder.statusClass %>"><%= recentOrder.status %></span>
+                <span class="order-total"><span>Total:</span> ₹<%= recentOrder.total %></span>
             </div>
-            <a href="/account/order-details/<%= recentOrder.id %>" class="btn btn-sm btn-outline-primary">View Details</a>
+            <div class="order-actions">
+                <a href="/account/order-details/<%= recentOrder.id %>" class="btn-view">
+                    <i class="fas fa-eye"></i> View Details
+                </a>
+            </div>
         </div>
     <% } else { %>
         <p class="text-muted">No recent orders.</p>
     <% } %>
-    <a href="/account/orders" class="btn btn-primary btn-sm mt-2"><i class="fas fa-list"></i> View All Orders</a>
+    <a href="/account/orders" class="view-all-link">
+        <i class="fas fa-arrow-right"></i> View All Orders
+    </a>
+</section>
+
+<!-- Footer -->
+<div class="account-footer">
+    <span><i class="fas fa-shield-alt"></i> Secure account</span>
 </div>
+
+<!-- ===== DASHBOARD STYLES (self‑contained) ===== -->
+<style>
+    /* ---- Dashboard header ---- */
+    .dashboard-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 8px;
+    }
+    .dashboard-header h4 {
+        font-weight: 600;
+        font-size: 22px;
+        color: #212529;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .dashboard-header h4 i {
+        color: #88c8bc;
+    }
+    .dashboard-header .welcome-text {
+        font-size: 14px;
+        color: #6c757d;
+        margin: 0;
+    }
+    .dashboard-header .welcome-text strong {
+        color: #212529;
+    }
+    .dashboard-header .last-login {
+        font-size: 13px;
+        color: #6c757d;
+    }
+
+    /* ---- Stats grid ---- */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px;
+        margin-top: 28px;
+    }
+    .stat-card {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px 16px;
+        text-align: center;
+        border: 1px solid #e9ecef;
+        transition: all 0.25s ease;
+    }
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        border-color: #88c8bc;
+    }
+    .stat-card .stat-icon {
+        font-size: 28px;
+        color: #88c8bc;
+        margin-bottom: 6px;
+    }
+    .stat-card .stat-number {
+        font-size: 28px;
+        font-weight: 600;
+        color: #212529;
+        line-height: 1.2;
+    }
+    .stat-card .stat-label {
+        font-size: 13px;
+        color: #6c757d;
+        margin-top: 2px;
+        font-weight: 500;
+    }
+
+    /* ---- Recent Order ---- */
+    .recent-order-section {
+        margin-top: 36px;
+        border-top: 1px solid #e9ecef;
+        padding-top: 28px;
+    }
+    .recent-order-section .section-title {
+        font-size: 17px;
+        font-weight: 600;
+        color: #212529;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .recent-order-section .section-title i {
+        color: #88c8bc;
+    }
+
+    .order-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 16px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 16px 20px;
+        border: 1px solid #e9ecef;
+        transition: all 0.25s ease;
+    }
+    .order-item:hover {
+        border-color: #88c8bc;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .order-item .order-info {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 18px;
+    }
+    .order-item .order-id {
+        font-weight: 600;
+        color: #212529;
+        font-size: 14px;
+    }
+    .order-item .order-date {
+        color: #6c757d;
+        font-size: 13px;
+    }
+    .order-item .order-date i {
+        margin-right: 4px;
+    }
+    .order-item .order-total {
+        font-weight: 600;
+        color: #343a40;
+        font-size: 15px;
+    }
+    .order-item .order-total span {
+        font-weight: 400;
+        color: #6c757d;
+    }
+    .order-item .order-actions {
+        display: flex;
+        gap: 8px;
+        flex-shrink: 0;
+    }
+
+    /* ---- View Details button (custom) ---- */
+    .btn-view {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 16px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #88c8bc;
+        background: transparent;
+        border: 1.5px solid #88c8bc;
+        border-radius: 6px;
+        text-decoration: none;
+        transition: all 0.25s ease;
+    }
+    .btn-view:hover {
+        background: #88c8bc;
+        color: #fff;
+        text-decoration: none;
+    }
+
+    /* ---- Status badges ---- */
+    .order-status {
+        font-weight: 600;
+        padding: 3px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        display: inline-block;
+        text-transform: capitalize;
+        letter-spacing: 0.3px;
+    }
+    .order-status.pending   { background: #fff3cd; color: #856404; }
+    .order-status.processing{ background: #d1ecf1; color: #0c5460; }
+    .order-status.shipped   { background: #cce5ff; color: #004085; }
+    .order-status.delivered { background: #d4edda; color: #155724; }
+    .order-status.cancelled { background: #f8d7da; color: #721c24; }
+
+    .view-all-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 14px;
+        font-weight: 500;
+        font-size: 14px;
+        color: #88c8bc;
+        text-decoration: none;
+        transition: color 0.25s ease;
+    }
+    .view-all-link:hover {
+        color: #66a59b;
+        text-decoration: underline;
+    }
+
+    /* ---- Account footer ---- */
+    .account-footer {
+        margin-top: 48px;
+        border-top: 1px solid #e9ecef;
+        padding-top: 20px;
+        display: flex;
+        justify-content: right;
+        flex-wrap: wrap;
+        gap: 12px;
+        font-size: 13px;
+        color: #6c757d;
+    }
+    .account-footer i {
+        color: #88c8bc;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 1024px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 640px) {
+        .stats-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .stat-card .stat-number {
+            font-size: 22px;
+        }
+        .order-item {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        .order-item .order-actions {
+            justify-content: flex-start;
+        }
+        .dashboard-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    @media (max-width: 420px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
