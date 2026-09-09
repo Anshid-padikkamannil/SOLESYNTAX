@@ -102,13 +102,10 @@ removeButtons.forEach(button => {
       throw new Error(data.message);
     }
 
-    alert(data.message);
-
     location.reload();
 
     } catch (error) {
       alert(error.message)
-      console.log(error);
     }
     
   });

@@ -52,6 +52,6 @@ sizeOptions.forEach(option => {
 
     selectedSize = Number(this.dataset.size);
 
-    console.log("Selected Size:", selectedSize);
+    // console.log("Selected Size:", selectedSize);
   });
 });
