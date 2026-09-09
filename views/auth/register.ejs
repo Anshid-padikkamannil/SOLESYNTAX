@@ -22,7 +22,7 @@
             <div class="card-brand">
               <!-- <a class="beta" href="/"><img class="logo-md" src="/images/icon.1.1.png" alt="logo"></a> -->
                 <!-- <span class="brand-icon">✦</span> -->
-                <span class="brand-name"><span class="brand-accent">SOLESYNTAX</span></span>
+                <span class="brand-name"><span class="brand-accent"><a href="/">SOLESYNTAX</a></span></span>
             </div>
 
             <!-- header -->
@@ -31,27 +31,39 @@
                 <p>Join us — it takes less than a minute.</p>
             </div>
 
+            <!-- ===== GLOBAL ERROR ALERT (hidden by default) ===== -->
+            <div id="globalError" class="error-alert" style="display:none;"></div>
+
             <!-- form -->
             <form class="form" id="registerForm" novalidate>
                 <!-- email -->
                 <div class="field">
-                    <input type="email" id="email" placeholder=" " required />
-                    <label for="email">Email address</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" placeholder=" " required />
+                        <label for="email">Email address</label>
+                    </div>
+                    <div class="error-message" id="emailError"></div>
                 </div>
 
                 <!-- username -->
                 <div class="field">
-                    <input type="text" id="name" placeholder=" " required />
-                    <label for="username">Username</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="name" placeholder=" " required />
+                        <label for="username">Username</label>
+                    </div>
+                    <div class="error-message" id="nameError"></div>
                 </div>
 
                 <!-- password -->
                 <div class="field">
-                    <input type="password" id="password" placeholder=" " required />
-                    <label for="password">Password</label>
-                    <button type="button" class="toggle-password" aria-label="Toggle password visibility">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </button>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" placeholder=" " required />
+                        <label for="password">Password</label>
+                        <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                    </div>
+                    <div class="error-message" id="passwordError"></div>
                 </div>
 
                 <!-- terms -->
@@ -63,6 +75,7 @@
                             I agree to the <a href="#">Terms of Use</a> &amp; <a href="#">Privacy Policy</a>
                         </span>
                     </label>
+                    <!-- <div class="error-message" id="termsError"></div> -->
                 </div>
 
                 <!-- submit -->
@@ -91,8 +104,8 @@
 
     <style>
         /* ============================================================
-               DESIGN SYSTEM (your existing tokens, extended)
-               ============================================================ */
+        DESIGN SYSTEM (your existing tokens, extended)
+        ============================================================ */
         :root {
             /* ---- primary brand ---- */
             --primary: #88c8bc;
@@ -156,8 +169,8 @@
         }
 
         /* ============================================================
-               RESET & BASE
-               ============================================================ */
+        RESET & BASE
+        ============================================================ */
         *,
         *::before,
         *::after {
@@ -202,8 +215,8 @@
         }
 
         /* ============================================================
-               PAGE – subtle background with soft circles
-               ============================================================ */
+        PAGE – subtle background with soft circles
+        ============================================================ */
         .page {
             position: relative;
             width: 100%;
@@ -234,8 +247,8 @@
         }
 
         /* ============================================================
-               CARD
-               ============================================================ */
+        CARD
+        ============================================================ */
         .card {
             position: relative;
             z-index: 1;
@@ -270,9 +283,10 @@
         .brand-name {
             font-weight: var(--font-weight-medium);
         }
-        .brand-accent {
-            font-weight: var(--font-weight-bold);
+        .brand-accent a {
+            font-weight: var(--font-weight-bold) !important;
             color: var(--primary);
+            text-decoration: none;
         }
 
         /* ---- header ---- */
@@ -295,21 +309,28 @@
         }
 
         /* ============================================================
-               FORM
-               ============================================================ */
+        FORM
+        ============================================================ */
         .form {
             display: flex;
             flex-direction: column;
             gap: 1.8rem;
         }
 
-        /* ---- floating label fields ---- */
+        /* ---- Floating label fields ---- */
         .field {
-            position: relative;
             display: flex;
             flex-direction: column;
+            gap: 4px;
         }
-        .field input {
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
             width: 100%;
             height: 52px;
             padding: 0 1.6rem;
@@ -323,15 +344,16 @@
             transition: border-color var(--duration) ease, box-shadow var(--duration) ease;
             -webkit-appearance: none;
         }
-        .field input:focus {
+
+        .input-wrapper input:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 4px rgba(136, 200, 188, 0.18);
         }
-        .field input:not(:placeholder-shown) {
+        .input-wrapper input:not(:placeholder-shown) {
             border-color: var(--gray-400);
         }
 
-        .field label {
+        .input-wrapper label {
             position: absolute;
             top: 50%;
             left: 1.6rem;
@@ -345,8 +367,9 @@
             padding: 0 4px;
             line-height: 1;
         }
-        .field input:focus+label,
-        .field input:not(:placeholder-shown)+label {
+
+        .input-wrapper input:focus + label,
+        .input-wrapper input:not(:placeholder-shown) + label {
             top: 0;
             left: 1.2rem;
             transform: translateY(-50%);
@@ -355,8 +378,53 @@
             color: var(--primary-dark);
             background: var(--white);
         }
-        .field input:not(:focus):not(:placeholder-shown)+label {
+
+        .input-wrapper input:not(:focus):not(:placeholder-shown) + label {
             color: var(--gray-600);
+        }
+
+        /* ---- Toggle password button (moved inside .input-wrapper) ---- */
+        .input-wrapper .toggle-password {
+            position: absolute;
+            right: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: color var(--duration) ease, background var(--duration) ease;
+        }
+
+        .input-wrapper .toggle-password:hover {
+            color: var(--gray-700);
+            background: var(--gray-100);
+        }
+
+        .input-wrapper .toggle-password svg {
+            display: block;
+        }
+
+        /* ---- Error message ---- */
+        .error-message {
+            font-size: 1.2rem;
+            color: #dc3545;
+            min-height: 1.8rem;
+            transition: all 0.2s ease;
+        }
+
+        /* ---- Field error state ---- */
+        .field.error .input-wrapper input {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 4px rgba(220,53,69,0.15);
+        }
+        .field.error .input-wrapper label {
+            color: #dc3545;
         }
 
         /* ---- password toggle ---- */
@@ -478,8 +546,8 @@
         }
 
         /* ============================================================
-               DIVIDER
-               ============================================================ */
+        DIVIDER
+        ============================================================ */
         .divider {
             display: flex;
             align-items: center;
@@ -503,8 +571,8 @@
         }
 
         /* ============================================================
-               GOOGLE BUTTON
-               ============================================================ */
+        GOOGLE BUTTON
+        ============================================================ */
         .btn-google {
             width: 100%;
             height: 48px;
@@ -540,9 +608,40 @@
             flex-shrink: 0;
         }
 
+        /* ---- Error messages ---- */
+        .error-message {
+            font-size: 1.2rem;
+            color: #dc3545;
+            margin-top: 4px;
+            min-height: 1.8rem;
+            transition: all 0.2s ease;
+        }
+        .field.error input {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 4px rgba(220,53,69,0.15);
+        }
+        .field.error label {
+            color: #dc3545;
+        }
+        .error-alert {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 1.4rem;
+            margin-bottom: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .error-alert i {
+            font-size: 1.8rem;
+        }
+
         /* ============================================================
-               FOOTER
-               ============================================================ */
+        FOOTER
+        ============================================================ */
         .card-footer {
             margin-top: 2.8rem;
             text-align: center;
@@ -554,8 +653,8 @@
         }
 
         /* ============================================================
-               RESPONSIVE
-               ============================================================ */
+        RESPONSIVE
+        ============================================================ */
         @media (max-width: 500px) {
             .card {
                 padding: 3.2rem 2rem 2.8rem;
@@ -599,8 +698,8 @@
         }
 
         /* ============================================================
-               ACCESSIBILITY – reduced motion
-               ============================================================ */
+        ACCESSIBILITY – reduced motion
+        ============================================================ */
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
