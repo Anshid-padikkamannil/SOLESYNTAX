@@ -33,9 +33,17 @@ passport.use(
           );
         }
 
+        const googleEmail = profile.emails?.[0];
+
+        if (!googleEmail || googleEmail.verified === false) {
+          return done(
+            new Error('Google email could not be verified'), null
+          );
+        }
+
         const newUser = await User.create({
           name: profile.displayName,
-          email: profile.emails[0].value,
+          email: googleEmail.value,
           googleId: profile.id,
           authProvider: 'google',
           isVerified: true
