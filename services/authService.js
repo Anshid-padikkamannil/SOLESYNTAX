@@ -67,6 +67,10 @@ const loginUser = async (email, password) => {
     throw new Error('Email is INVALID');
   }
 
+  if (user.authProvider === 'google') {
+    throw new Error('This account uses Google login. Please continue with Google.')
+  }
+
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
