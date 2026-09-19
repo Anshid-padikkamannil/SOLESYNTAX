@@ -1,6 +1,7 @@
 const express = require('express');
 const cookiesParser = require('cookie-parser');
 const dotenv = require('dotenv').config();
+const passport = require('./config/passport');
 
 const path = require("path");
 
@@ -14,6 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookiesParser());
+app.use(passport.initialize());
 
 app.set("view engine", "ejs");
 app.set("views", "./views");

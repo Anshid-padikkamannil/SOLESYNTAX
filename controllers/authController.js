@@ -51,8 +51,11 @@ const getLoginPage = (req, res) => {
 
   const redirect = req.query.redirect || "/";
 
+  const error = req.query.error || null;
+
   res.render("auth/login", {
     redirect,
+    error,
     layout: false
   });
 }

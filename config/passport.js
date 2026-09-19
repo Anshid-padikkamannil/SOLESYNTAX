@@ -1,0 +1,53 @@
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const User = require('../models/userSchema');
+
+
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: 'http://localhost:3000/users/auth/google/callback'
+    },
+
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        console.log('Google Profile:', profile);;
+
+        const existingUser = await User.findOne({
+          googleId: profile.id
+        });
+
+        if (existingUser) {
+          return done(null, existingUser);
+        }
+
+        const existingEmailUser = await User.findOne({
+          email: profile.emails[0].value
+        });
+
+        if (existingEmailUser) {
+          return done(
+            new Error('An account with this email already exists. Please log in using your password'), null
+          );
+        }
+
+        const newUser = await User.create({
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          googleId: profile.id,
+          authProvider: 'google',
+          isVerified: true
+        });
+
+        return done(null, newUser);
+        
+      } catch (error) {
+        return done(error, null);
+      }
+    }
+  )
+);
+
+module.exports = passport;
