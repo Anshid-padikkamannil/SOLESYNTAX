@@ -5,7 +5,8 @@ const {
   loginUser, 
   getLoginPage, 
   logout, 
-  loadRegisterPage 
+  loadRegisterPage,
+  verifyEmail
 } = require('../../controllers/authController');
 
 const passport = require('../../config/passport');
@@ -19,6 +20,7 @@ router.get('/logout', logout);
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.get('/verify-email', verifyEmail);
 
 router.get('/auth/google', passport.authenticate('google', {
   scope: ['profile', 'email']

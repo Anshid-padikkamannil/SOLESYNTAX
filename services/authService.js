@@ -1,5 +1,7 @@
 const User = require('../models/userSchema');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
+const { sendVerificationEmail } = require('./emailService');
 
 const changePassword = async (userId, currentPassword, newPassword) => {
 
@@ -49,12 +51,25 @@ const registerUser = async (name, email, password) => {
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
 
+  const verificationToken = crypto.randomBytes(32).toString('hex');
+
+  const verificationExpires = new Date(
+    Date.now() + 15 * 60 * 1000
+  )
+
   // Create user
   const user = await User.create({
     name,
     email,
-    password: hashedPassword
+    password: hashedPassword,
+    emailVerificationToken: verificationToken,
+    emailVerificationExpires: verificationExpires,
+    isVerified: false
   });
+
+  const verificationLink = `http://localhost:3000/users/verify-email?token=${verificationToken}`;
+
+  await sendVerificationEmail(email, verificationLink);
 
   return user;
 };
@@ -77,11 +92,35 @@ const loginUser = async (email, password) => {
     throw new Error('Password is INVALID');
   }
 
+  if (user.authProvider === 'local' && !user.isVerified) {
+    throw new Error('Please verify your email before logging in.');
+  }
+
   return user;
 };
+
+const verifyEmail = async (token) => {
+    const user = await User.findOne({
+      emailVerificationToken: token,
+      emailVerificationExpires: {$gt: new Date()}
+    });
+
+    if (!user) {
+      throw new Error('Invalid or expired verification link');
+    }
+
+    user.isVerified = true;
+    user.emailVerificationToken = null;
+    user.emailVerificationExpires = null;
+
+    await user.save();
+
+    return user;
+  }
 
 module.exports = {
   registerUser,
   loginUser,
-  changePassword
+  changePassword,
+  verifyEmail
 };

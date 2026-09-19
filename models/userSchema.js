@@ -47,6 +47,14 @@ const userSchema = new Schema({
     type: Boolean,
     default: false
   },
+  emailVerificationToken: {
+    type: String,
+    default: null
+  },
+  emailVerificationExpires: {
+    type: Date,
+    default: null
+  },
 }, {timestamps: true});
 
 module.exports = mongoose.model('User', userSchema);

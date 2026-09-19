@@ -10,7 +10,7 @@ const registerUser = async (req, res) => {
     const user = await authService.registerUser(name, email, password);
 
     // Automatically login after registration - from util
-    generateTokenAndSetCookie(user, res);
+    // generateTokenAndSetCookie(user, res);
     
     return res.status(201).json({ message: 'User registered successfully' });
 
@@ -141,6 +141,24 @@ const getPasswordPage = async (req, res) => {
   });
 };
 
+const verifyEmail = async (req, res) => {
+  try {
+    
+    const {token} = req.query;
+
+    if (!token) {
+      return res.status(400).send('Verification token is missing');
+    }
+
+    await authService.verifyEmail(token);
+
+    return res.send('Email verified successfully! You can now log in');
+
+  } catch (err) {
+    return res.status(400).send(err.message);
+  }
+}
+
 module.exports = {
   registerUser,
   loginUser,
@@ -148,5 +166,6 @@ module.exports = {
   getLoginPage,
   logout,
   changePassword,
-  getPasswordPage
+  getPasswordPage,
+  verifyEmail
 };

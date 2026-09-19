@@ -10,7 +10,7 @@ const connectDB = require('./config/db');
 connectDB();
 
 const app = express();
-
+require('./services/emailService');
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
