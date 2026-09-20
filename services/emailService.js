@@ -33,7 +33,33 @@ const sendVerificationEmail = async (email, verificationLink) => {
   });
 };
 
+const sendPasswordResetEmail = async (email, resetLink) => {
+
+
+  const info = await transporter.sendMail({
+    from: `"SOLESYNTAX" <${process.env.EMAIL_USER}>`,
+    to: email,
+    subject: 'Reset Your SOLESYNTAX Password',
+    html: `
+      <h2>Password Reset Request</h2>
+
+      <p>We received a request to reset your SOLESYNTAX password.</p>
+
+      <p>Click the link below to create a new password:</p>
+
+      <a href="${resetLink}">
+        Reset Password
+      </a>
+
+      <p>This link will expire in 15 minutes.</p>
+
+      <p>If you didn't request this, you can ignore this email.</p>
+    `
+  });
+}
+
 module.exports = {
   transporter,
-  sendVerificationEmail
+  sendVerificationEmail,
+  sendPasswordResetEmail
 };

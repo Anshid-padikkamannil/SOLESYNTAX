@@ -1,7 +1,7 @@
 const User = require('../models/userSchema');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
-const { sendVerificationEmail } = require('./emailService');
+const { sendVerificationEmail , sendPasswordResetEmail} = require('./emailService');
 
 const changePassword = async (userId, currentPassword, newPassword) => {
 
@@ -148,10 +148,56 @@ const resendVerificationEmail = async (email) => {
   return user;
 }
 
+const forgotPassword = async (email) => {
+  
+  const user = await User.findOne({email, authProvider: 'local'});
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  const resetExpires = new Date(
+    Date.now() + 15 * 60 * 1000
+  );
+
+  user.passwordResetToken = resetToken;
+  user.passwordResetExpires = resetExpires;
+
+  await user.save();
+
+  const resetLink = `http://localhost:3000/users/reset-password?token=${resetToken}`;
+
+  await sendPasswordResetEmail(email, resetLink);
+}
+
+const resetPassword = async (token, newPassword) => {
+
+  const user = await User.findOne({
+    passwordResetToken: token,
+    passwordResetExpires: { $gt: new Date() }
+  });
+
+  if (!user) {
+    throw new Error('Invalid or expired password reset link');
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  user.password = hashedPassword;
+  user.passwordResetToken = null;
+  user.passwordResetExpires = null;
+
+  await user.save();
+}
+
 module.exports = {
   registerUser,
   loginUser,
   changePassword,
   verifyEmail,
-  resendVerificationEmail
+  resendVerificationEmail,
+  forgotPassword,
+  resetPassword
 };

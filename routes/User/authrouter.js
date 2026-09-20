@@ -7,7 +7,9 @@ const {
   logout, 
   loadRegisterPage,
   verifyEmail,
-  resendVerificationEmail
+  resendVerificationEmail,
+  forgotPassword,
+  resetPassword
 } = require('../../controllers/authController');
 
 const passport = require('../../config/passport');
@@ -26,6 +28,19 @@ router.get('/verify-notice',(req, res) => {
   res.render('users/verify-notice', {layout: false});
 });
 router.post('/resend-verification', resendVerificationEmail);
+router.post('/forgot-password', forgotPassword);
+router.get('/forgot-password', (req, res) => {
+  res.render('users/forgot-password', {layout: false});
+});
+router.post('/reset-password', resetPassword);
+router.get('/reset-password', (req, res) => {
+  const { token } = req.query;
+
+  res.render('users/reset-password', {
+    layout: false,
+    token
+  });
+});
 
 router.get('/auth/google', passport.authenticate('google', {
   scope: ['profile', 'email']

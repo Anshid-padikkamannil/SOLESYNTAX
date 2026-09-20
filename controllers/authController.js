@@ -184,6 +184,53 @@ const resendVerificationEmail = async (req, res) => {
   }
 }
 
+const forgotPassword = async (req, res) => {
+  try {
+    
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        error: 'Email is required'
+      });
+    }
+
+    await authService.forgotPassword(email);
+
+    return res.status(200).json({
+      message: 'Password reset email sent successfully'
+    });
+
+  } catch (err) {
+    return res.status(400).json({
+      err: err.message
+    });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        error: 'Token and new pasword are required'
+      });
+    }
+
+    await authService.resetPassword(token, newPassword);
+
+    return res.status(200).json({
+      message: 'Password reset successfully'
+    });
+  } catch (err) {
+    return res.status(400).json({
+      err: err.message
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -193,5 +240,7 @@ module.exports = {
   changePassword,
   getPasswordPage,
   verifyEmail,
-  resendVerificationEmail
+  resendVerificationEmail,
+  forgotPassword,
+  resetPassword
 };
