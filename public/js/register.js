@@ -106,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(data.message || 'Registration failed. Please try again.');
             }
 
-            // Success – redirect
-            window.location.href = '/';
+            // Success – redirect to verification notice page
+            window.location.href = '/users/verify-notice';
 
         } catch (err) {
             // Display server error

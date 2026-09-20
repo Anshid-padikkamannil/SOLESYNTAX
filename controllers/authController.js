@@ -12,7 +12,7 @@ const registerUser = async (req, res) => {
     // Automatically login after registration - from util
     // generateTokenAndSetCookie(user, res);
     
-    return res.status(201).json({ message: 'User registered successfully' });
+    return res.status(201).json({ message: 'User registered successfully. Please verify your email before logging in.' });
 
   } catch (error) {
 
@@ -150,12 +150,37 @@ const verifyEmail = async (req, res) => {
       return res.status(400).send('Verification token is missing');
     }
 
-    await authService.verifyEmail(token);
+    const user = await authService.verifyEmail(token);
 
-    return res.send('Email verified successfully! You can now log in');
+    generateTokenAndSetCookie(user, res);
+
+    return res.redirect('/');
 
   } catch (err) {
     return res.status(400).send(err.message);
+  }
+}
+
+const resendVerificationEmail = async (req, res) => {
+  try {
+    
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        error: 'Email is required'
+      });
+    }
+
+    await authService.resendVerificationEmail(email);
+
+    return res.status(200).json({
+      message: 'A new verification email has been sent'
+    })
+  } catch (err) {
+    return res.status(400).json({
+      err: err.message
+    })
   }
 }
 
@@ -167,5 +192,6 @@ module.exports = {
   logout,
   changePassword,
   getPasswordPage,
-  verifyEmail
+  verifyEmail,
+  resendVerificationEmail
 };

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Your Email | SOLESYNTAX</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* ============================================================
+           DESIGN SYSTEM (matches your auth pages)
+           ============================================================ */
+        :root {
+            --primary: #88c8bc;
+            --primary-dark: #66a59b;
+            --primary-light: #f0f9f7;
+
+            --white: #ffffff;
+            --off-white: #f8fafc;
+            --gray-100: #f1f3f5;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #1a1a2e;
+
+            --success: #28a745;
+            --danger: #dc3545;
+
+            --radius-sm: 8px;
+            --radius: 14px;
+            --radius-lg: 24px;
+
+            --shadow-md: 0 8px 40px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 16px 60px rgba(0, 0, 0, 0.10);
+
+            --font: 'Poppins', system-ui, -apple-system, sans-serif;
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+
+            --duration: 0.30s;
+        }
+
+        /* ============================================================
+           RESET & BASE
+           ============================================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%; /* 10px base */
+        }
+
+        body {
+            font-family: var(--font);
+            font-size: 1.6rem;
+            font-weight: var(--font-weight-normal);
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--off-white);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-weight: var(--font-weight-medium);
+            transition: color var(--duration) ease;
+        }
+        a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        /* ============================================================
+           CARD
+           ============================================================ */
+        .card {
+            position: relative;
+            width: 100%;
+            max-width: 460px;
+            background: var(--white);
+            padding: 4.8rem 3.2rem 3.6rem;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            transition: box-shadow var(--duration) ease;
+        }
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ---- Brand ---- */
+        .brand {
+            margin-bottom: 2.4rem;
+        }
+        .brand a {
+            font-family: 'Rokkitt', Georgia, serif;
+            font-size: 3.2rem;
+            font-weight: var(--font-weight-bold);
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none !important;
+        }
+        .brand a:hover {
+            color: var(--primary-dark);
+        }
+
+        /* ---- Email icon ---- */
+        .email-icon {
+            width: 76px;
+            height: 76px;
+            margin: 0 auto 2.4rem;
+            border-radius: 50%;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            animation: pop 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .email-icon svg {
+            width: 36px;
+            height: 36px;
+        }
+
+        @keyframes pop {
+            0%   { transform: scale(0.5); opacity: 0; }
+            70%  { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+
+        /* ---- Headings ---- */
+        h1 {
+            font-size: 2.6rem;
+            font-weight: var(--font-weight-semibold);
+            letter-spacing: -0.5px;
+            color: var(--gray-900);
+            line-height: 1.2;
+            margin-bottom: 1.2rem;
+        }
+
+        p {
+            color: var(--gray-600);
+            font-size: 1.4rem;
+            line-height: 1.8;
+            margin-bottom: 2.4rem;
+        }
+
+        /* ---- Notice box ---- */
+        .notice {
+            background: var(--primary-light);
+            border: 1px solid #d5eee8;
+            border-radius: 10px;
+            padding: 1.6rem;
+            color: #467b72;
+            font-size: 1.3rem;
+            line-height: 1.7;
+            margin-bottom: 2.8rem;
+            text-align: left;
+        }
+        .notice strong {
+            color: var(--primary-dark);
+        }
+
+        /* ============================================================
+           BUTTONS
+           ============================================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 1.4rem;
+            border-radius: var(--radius-sm);
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            font-family: var(--font);
+            font-size: 1.5rem;
+            font-weight: var(--font-weight-semibold);
+            border: none;
+            cursor: pointer;
+            transition: all var(--duration) ease;
+            box-shadow: 0 4px 14px rgba(136, 200, 188, 0.25);
+        }
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(136, 200, 188, 0.35);
+            text-decoration: none;
+            color: var(--white);
+        }
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ============================================================
+           RESEND FORM
+           ============================================================ */
+        .resend-section {
+            margin-top: 3.2rem;
+            padding-top: 2.4rem;
+            border-top: 1px solid var(--gray-200);
+        }
+        .resend-section > p {
+            font-size: 1.3rem;
+            color: var(--gray-600);
+            margin-bottom: 1.2rem;
+        }
+
+        .resend-section input {
+            width: 100%;
+            padding: 1.3rem 1.4rem;
+            margin-bottom: 1.2rem;
+            border: 1.5px solid var(--gray-300);
+            border-radius: var(--radius-sm);
+            font-family: var(--font);
+            font-size: 1.4rem;
+            color: var(--gray-900);
+            background: var(--white);
+            outline: none;
+            transition: border-color var(--duration) ease, box-shadow var(--duration) ease;
+        }
+        .resend-section input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(136, 200, 188, 0.18);
+        }
+        .resend-section input::placeholder {
+            color: var(--gray-500);
+        }
+
+        /* ---- Feedback messages ---- */
+        #resendMessage {
+            font-size: 1.3rem;
+            margin-top: 1rem;
+            margin-bottom: 0;
+            padding: 0;
+            min-height: 1.8rem;
+            transition: all 0.2s ease;
+        }
+        #resendMessage.success {
+            color: var(--success);
+            padding: 1rem 1.2rem;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 6px;
+            margin-top: 1.2rem;
+        }
+        #resendMessage.error {
+            color: #721c24;
+            padding: 1rem 1.2rem;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            border-radius: 6px;
+            margin-top: 1.2rem;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            margin-top: 2.4rem;
+            font-size: 1.3rem;
+            color: var(--gray-600);
+        }
+        .footer a {
+            color: var(--primary-dark);
+            font-weight: var(--font-weight-medium);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 480px) {
+            .card {
+                padding: 3.6rem 2.4rem 2.8rem;
+            }
+            .brand a {
+                font-size: 2.8rem;
+            }
+            h1 {
+                font-size: 2.3rem;
+            }
+            .email-icon {
+                width: 64px;
+                height: 64px;
+            }
+            .email-icon svg {
+                width: 30px;
+                height: 30px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+        <!-- Brand -->
+        <div class="brand">
+            <a href="/">SOLESYNTAX</a>
+        </div>
+
+        <!-- Icon (SVG instead of emoji for crisp rendering) -->
+        <div class="email-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+            </svg>
+        </div>
+
+        <!-- Heading -->
+        <h1>Check Your Email</h1>
+        <p>
+            Your account has been created successfully!
+            We've sent a verification link to your email address.
+        </p>
+
+        <!-- Notice -->
+        <div class="notice">
+            Please open your email and click the
+            <strong>Verify Email</strong> button to activate your account.
+        </div>
+
+        <!-- Primary CTA -->
+        <a href="/users/login" class="btn">Go to Login</a>
+
+        <!-- Resend form -->
+        <div class="resend-section">
+            <p>Didn't receive the email?</p>
+
+            <form id="resendForm" novalidate>
+                <input
+                    type="email"
+                    id="resendEmail"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                    required
+                >
+                <button type="submit" class="btn" id="resendBtn">
+                    Resend Verification Email
+                </button>
+                <p id="resendMessage" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <a href="/users/register">← Back to Registration</a>
+        </div>
+    </div>
+
+    <script>
+        const resendForm = document.getElementById('resendForm');
+        const resendEmail = document.getElementById('resendEmail');
+        const resendMessage = document.getElementById('resendMessage');
+
+        resendForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const email = resendEmail.value.trim();
+
+            try {
+                const response = await fetch('/users/resend-verification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Failed to resend email');
+                }
+
+                resendMessage.textContent = data.message;
+                resendMessage.style.color = 'green';
+
+            } catch (error) {
+                resendMessage.textContent = error.message;
+                resendMessage.style.color = 'red';
+            }
+        });
+    </script>
+</body>
+
+</html>

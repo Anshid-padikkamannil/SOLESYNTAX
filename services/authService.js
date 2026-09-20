@@ -100,27 +100,58 @@ const loginUser = async (email, password) => {
 };
 
 const verifyEmail = async (token) => {
-    const user = await User.findOne({
-      emailVerificationToken: token,
-      emailVerificationExpires: {$gt: new Date()}
-    });
+  const user = await User.findOne({
+    emailVerificationToken: token,
+    emailVerificationExpires: {$gt: new Date()}
+  });
 
-    if (!user) {
-      throw new Error('Invalid or expired verification link');
-    }
-
-    user.isVerified = true;
-    user.emailVerificationToken = null;
-    user.emailVerificationExpires = null;
-
-    await user.save();
-
-    return user;
+  if (!user) {
+    throw new Error('Invalid or expired verification link');
   }
+
+  user.isVerified = true;
+  user.emailVerificationToken = null;
+  user.emailVerificationExpires = null;
+
+  await user.save();
+
+  return user;
+}
+
+const resendVerificationEmail = async (email) => {
+
+  const user = await User.findOne({email, authProvider: 'local'});
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  if (user.isVerified) {
+    throw new Error('This email is already verified');
+  }
+
+  const verificationToken = crypto.randomBytes(32).toString('hex');
+
+  const verificationExpires = new Date(
+    Date.now() + 15 * 60 * 1000
+  );
+
+  user.emailVerificationToken = verificationToken;
+  user.emailVerificationExpires = verificationExpires;
+
+  await user.save();
+
+  const verificationLink = `http://localhost:3000/users/verify-email?token=${verificationToken}`;
+
+  await sendVerificationEmail(email, verificationLink);
+
+  return user;
+}
 
 module.exports = {
   registerUser,
   loginUser,
   changePassword,
-  verifyEmail
+  verifyEmail,
+  resendVerificationEmail
 };
