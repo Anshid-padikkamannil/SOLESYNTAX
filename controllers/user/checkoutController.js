@@ -78,11 +78,18 @@ const getCheckout = async (req, res) => {
   try {
     const userId = req.user.userId || req.user._id;
 
+    const addresses = await getAddresses(userId);
+
+    if (!addresses || addresses.length === 0) {
+      return res.redirect(
+        '/account/addresses');
+    }
+
     const { cart } = await orderService.getOrderData(userId);
 
     const { totalPrice } = orderService.buildOrderItems(cart);
 
-    const addresses = await getAddresses(userId);
+    
     const coupons = await getCouponsForUser(userId);
     
     const shipping = totalPrice >= 5000 ? 0 : 100;
