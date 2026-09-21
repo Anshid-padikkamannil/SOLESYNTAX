@@ -63,6 +63,10 @@ const userSchema = new Schema({
     type: Date,
     default: null
   },
+  passwordChangedAt: {
+    type: Date,
+    default: null
+  },
 }, {timestamps: true});
 
 module.exports = mongoose.model('User', userSchema);

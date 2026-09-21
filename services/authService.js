@@ -174,6 +174,10 @@ const forgotPassword = async (email) => {
 
 const resetPassword = async (token, newPassword) => {
 
+  if (!newPassword || newPassword.length < 8) {
+    throw new Error('Password must be at least 8 characters long');
+  }
+
   const user = await User.findOne({
     passwordResetToken: token,
     passwordResetExpires: { $gt: new Date() }
@@ -186,6 +190,7 @@ const resetPassword = async (token, newPassword) => {
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
   user.password = hashedPassword;
+  user.passwordChangedAt = new Date();
   user.passwordResetToken = null;
   user.passwordResetExpires = null;
 

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/userSchema');
 
-const isLoggedIn = (req, res, next) => {
+const isLoggedIn = async (req, res, next) => {
 
   const token = req.cookies.token;
 
@@ -20,6 +21,25 @@ const isLoggedIn = (req, res, next) => {
   try {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(401).json({
+        message: 'User not found please login again'
+      });
+    }
+
+    if (user.passwordChangedAt && decoded.iat * 1000 < user.passwordChangedAt.getTime()) {
+      res.clearCookie('token');
+
+      if (req.accepts('html')) {
+        return res.redirect(
+          `/users/login?redirect=${encodeURIComponent(req.originalUrl)}&message=${encodeURIComponent('Your password was changed. Please login again.')}`
+        );
+      }
+    }
+
     req.user = decoded;
     next();
 
@@ -40,7 +60,7 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
-const checkUser = (req, res, next) => {
+const checkUser = async (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -49,7 +69,24 @@ const checkUser = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      req.user = null;
+      return next();
+    }
+
+    if (user.passwordChangedAt && decoded.iat * 1000 < user.passwordChangedAt.getTime()) {
+      req.user = null;
+      res.clearCookie('token');
+      return next();
+    }
+
+
     req.user = decoded;
+
+
   } catch (err) {
     // Invalid/expired token → treat as guest
     req.user = null;
