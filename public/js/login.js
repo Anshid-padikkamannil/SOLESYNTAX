@@ -87,8 +87,12 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       // Success – redirect
-      const redirectUrl = window.redirectAfterLogin || '/';
-      window.location.href = redirectUrl;
+      if (data.role === 'admin') {
+        window.location.href = '/admin';
+      } else {
+        const redirectUrl = window.redirectAfterLogin || '/';
+        window.location.href = redirectUrl;
+      }
 
     } catch (err) {
       // Display server error

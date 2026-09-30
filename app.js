@@ -30,6 +30,7 @@ app.set('layout', 'layouts/account-layout'); //default layout
 // Routes
 const authRouter = require('./routes/User/authRouter');
 const profileRouter = require('./routes/User/profileRouter');
+const adminProfile = require('./routes/admin/adminProfileRrouter');
 const adminProductRouter = require('./routes/admin/adminProductRouter');
 const productRouter = require('./routes/productRouter');
 const cartRouter = require('./routes/User/cartRouter');
@@ -59,7 +60,7 @@ app.use('/coupons', userCouponRouter);
 app.use('/checkout', checkoutRouter);
 
 // Admin
-app.use('/admin', require('./routes/admin/admin-test'));
+app.use('/admin', adminProfile);
 app.use('/admin/products', adminProductRouter);
 app.use('/admin/orders', adminOrderRouter);
 app.use('/admin', customerRouter);

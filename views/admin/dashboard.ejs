@@ -1,0 +1,663 @@
+<style>
+  /* ============================================================
+     DASHBOARD – Stat cards with soft colour backgrounds
+     ============================================================ */
+
+  .page-header {
+    margin-bottom: 30px;
+  }
+  .page-header h1 {
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+    letter-spacing: -0.6px;
+  }
+  .page-header p {
+    color: #6c757d;
+    font-size: 14px;
+    margin: 6px 0 0;
+  }
+
+  /* ---------- STAT CARDS (soft coloured backgrounds) ---------- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 22px;
+    margin-bottom: 26px;
+  }
+
+  .stat-card {
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid;
+    transition: transform 0.25s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  }
+
+  .stat-card .stat-icon {
+    width: 54px;
+    height: 54px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 22px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .stat-card .stat-label {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .stat-card .stat-value {
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 34px;
+    font-weight: 700;
+    color: #1a1a2e;
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+
+  .stat-card .stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    margin-top: 14px;
+    font-weight: 600;
+  }
+  .stat-card .stat-trend i { font-size: 11px; }
+  .stat-card .stat-trend.up   { color: #28a745; }
+  .stat-card .stat-trend.down { color: #dc3545; }
+  .stat-card .stat-trend span {
+    color: #8892a0;
+    font-weight: 400;
+    margin-left: 2px;
+  }
+
+  /* --- Individual card colours --- */
+
+  /* Total Customers – Teal (brand primary) */
+  .stat-card.primary {
+    background: #eef9f7;
+    border-color: #d4ede7;
+  }
+  .stat-card.primary .stat-icon { color: #66a59b; }
+
+  /* Total Products – Green */
+  .stat-card.success {
+    background: #eef9f1;
+    border-color: #d1ecd9;
+  }
+  .stat-card.success .stat-icon { color: #28a745; }
+
+  /* Total Orders – Purple */
+  .stat-card.info {
+    background: #f1f0ff;
+    border-color: #dcd9ff;
+  }
+  .stat-card.info .stat-icon { color: #635bff; }
+
+  /* Pending Orders – Orange/Gold */
+  .stat-card.warning {
+    background: #fff7ec;
+    border-color: #ffe4c0;
+  }
+  .stat-card.warning .stat-icon { color: #d68700; }
+
+  /* ---------- Revenue Card ---------- */
+  .revenue-card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #252547 100%);
+    border-radius: 16px;
+    padding: 28px 34px;
+    margin-bottom: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    min-height: 170px;
+    box-shadow: 0 8px 32px rgba(26, 26, 46, 0.18);
+  }
+
+  .revenue-card::after {
+    content: '';
+    position: absolute;
+    bottom: -80px;
+    right: -80px;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(136, 200, 188, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .revenue-left {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    z-index: 1;
+  }
+
+  .revenue-icon {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #88c8bc, #66a59b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: #fff;
+    flex-shrink: 0;
+    box-shadow: 0 10px 28px rgba(136, 200, 188, 0.4);
+  }
+
+  .revenue-info .label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .revenue-info .value {
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1;
+    color: #ffffff;
+    letter-spacing: -0.8px;
+  }
+
+  .revenue-trend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #4ade80;
+    margin-top: 12px;
+  }
+  .revenue-trend span { color: rgba(255, 255, 255, 0.55); }
+
+  .revenue-chart {
+    flex: 1;
+    max-width: 360px;
+    height: 100px;
+    position: relative;
+    z-index: 1;
+  }
+  .revenue-chart svg { width: 100%; height: 100%; }
+
+  /* ---------- Two-Column Row ---------- */
+  .dashboard-row {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 24px;
+  }
+
+  /* ---------- Card wrapper ---------- */
+  .dash-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #eef1f4;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+    overflow: hidden;
+  }
+
+  .dash-card-header {
+    padding: 22px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    border-bottom: 1px solid #f4f6f8;
+  }
+
+  .dash-card-header h5 {
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .dash-card-header .card-link {
+    font-size: 13px;
+    font-weight: 600;
+    color: #88c8bc;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+  }
+  .dash-card-header .card-link:hover {
+    color: #66a59b;
+    gap: 10px;
+  }
+  .dash-card-header .card-link i { font-size: 11px; }
+
+  /* ---------- Tables ---------- */
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .admin-table thead th {
+    background: #fafbfc;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+    color: #8892a0;
+    padding: 14px 20px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid #f4f6f8;
+  }
+
+  .admin-table tbody td {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f4f6f8;
+    vertical-align: middle;
+  }
+
+  .admin-table tbody tr:last-child td { border-bottom: none; }
+  .admin-table tbody tr { transition: background 0.15s ease; }
+  .admin-table tbody tr:hover { background: #f0f9f7; }
+
+  .cell-primary {
+    font-weight: 600;
+    color: #1a1a2e;
+    font-size: 13.5px;
+  }
+  .cell-secondary {
+    font-size: 12px;
+    color: #8892a0;
+    margin-top: 3px;
+  }
+
+  /* ---------- Low Stock rows ---------- */
+  .low-stock-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f4f6f8;
+    transition: background 0.15s ease;
+  }
+  .low-stock-item:last-child { border-bottom: none; }
+  .low-stock-item:hover { background: #f0f9f7; }
+
+  .low-stock-item .stock-thumb {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: #f0f0f0;
+    border: 1px solid #eef1f4;
+    flex-shrink: 0;
+  }
+
+  .low-stock-item .stock-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .low-stock-item .stock-info .name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a2e;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .low-stock-item .stock-info .qty {
+    font-size: 12px;
+    color: #8892a0;
+    margin-top: 3px;
+  }
+
+  /* ============================================================
+     STATUS BADGES – with borders (like reference image)
+     ============================================================ */
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    text-transform: capitalize;
+    border: 1.5px solid transparent;
+    white-space: nowrap;
+  }
+
+  /* Delivered – green */
+  .status-badge.status-delivered {
+    background: #e8f9ee;
+    color: #1b7a3a;
+    border-color: #a3d9b1;
+  }
+
+  /* Shipped – blue */
+  .status-badge.status-shipped {
+    background: #e8f2ff;
+    color: #1c5a9e;
+    border-color: #a4c8f0;
+  }
+
+  /* Processing – orange */
+  .status-badge.status-processing {
+    background: #fff4e3;
+    color: #b35c00;
+    border-color: #ffd29a;
+  }
+
+  /* Pending – pink/red */
+  .status-badge.status-pending {
+    background: #ffeded;
+    color: #b83030;
+    border-color: #f5b5b5;
+  }
+
+  /* Cancelled – grey */
+  .status-badge.status-cancelled {
+    background: #f0f2f5;
+    color: #5a6472;
+    border-color: #cfd6de;
+  }
+
+  /* Return Request – yellow */
+  .status-badge.status-return-request {
+    background: #fff8e0;
+    color: #8a6d00;
+    border-color: #f0d68c;
+  }
+
+  /* Returned – violet */
+  .status-badge.status-returned {
+    background: #f1efff;
+    color: #5e50a8;
+    border-color: #c8c0f0;
+  }
+
+  /* ---------- Low stock badges ---------- */
+  .stock-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border: 1.5px solid transparent;
+  }
+  .stock-badge.critical {
+    background: #ffeded;
+    color: #b83030;
+    border-color: #f5b5b5;
+  }
+  .stock-badge.low {
+    background: #fff4e3;
+    color: #b35c00;
+    border-color: #ffd29a;
+  }
+
+  /* ---------- Empty states ---------- */
+  .table-empty {
+    text-align: center;
+    padding: 50px 20px;
+    color: #adb5bd;
+    font-size: 14px;
+  }
+  .table-empty i {
+    font-size: 38px;
+    display: block;
+    margin-bottom: 12px;
+    color: #dee2e6;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1200px) {
+    .dashboard-row { grid-template-columns: 1fr; }
+    .revenue-chart { max-width: 100%; }
+  }
+
+  @media (max-width: 768px) {
+    .page-header h1 { font-size: 26px; }
+    .stat-card .stat-value { font-size: 28px; }
+    .revenue-card {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 24px;
+    }
+    .revenue-info .value { font-size: 32px; }
+    .revenue-chart { width: 100%; height: 80px; }
+  }
+</style>
+
+
+<!-- ============================================================ -->
+<!--  PAGE HEADER                                                 -->
+<!-- ============================================================ -->
+<div class="page-header">
+  <h1>Admin Dashboard</h1>
+  <p>Welcome back, here's what's happening with your store today.</p>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  STAT CARDS                                                  -->
+<!-- ============================================================ -->
+<div class="stat-grid">
+
+  <div class="stat-card primary">
+    <div class="stat-icon"><i class="fas fa-users"></i></div>
+    <div class="stat-label">Total Customers</div>
+    <div class="stat-value"><%= totalCustomers %></div>
+    <div class="stat-trend up">
+      <i class="fas fa-arrow-up"></i> 12%
+      <span>from last month</span>
+    </div>
+  </div>
+
+  <div class="stat-card success">
+    <div class="stat-icon"><i class="fas fa-box"></i></div>
+    <div class="stat-label">Total Products</div>
+    <div class="stat-value"><%= totalProducts %></div>
+    <div class="stat-trend up">
+      <i class="fas fa-arrow-up"></i> 8%
+      <span>from last month</span>
+    </div>
+  </div>
+
+  <div class="stat-card info">
+    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+    <div class="stat-label">Total Orders</div>
+    <div class="stat-value"><%= totalOrders %></div>
+    <div class="stat-trend up">
+      <i class="fas fa-arrow-up"></i> 15%
+      <span>from last month</span>
+    </div>
+  </div>
+
+  <div class="stat-card warning">
+    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+    <div class="stat-label">Pending Orders</div>
+    <div class="stat-value"><%= pendingOrders %></div>
+    <div class="stat-trend down">
+      <i class="fas fa-arrow-down"></i> 20%
+      <span>from last month</span>
+    </div>
+  </div>
+
+</div>
+
+
+<!-- ============================================================ -->
+<!--  REVENUE CARD                                                -->
+<!-- ============================================================ -->
+<div class="revenue-card">
+  <div class="revenue-left">
+    <div class="revenue-icon">
+      <i class="fas fa-dollar-sign"></i>
+    </div>
+    <div class="revenue-info">
+      <div class="label">Total Revenue</div>
+      <div class="value">₹<%= totalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 }) %></div>
+      <div class="revenue-trend">
+        <i class="fas fa-arrow-up"></i> 18%
+        <span>from last month</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="revenue-chart">
+    <svg viewBox="0 0 340 100" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%"  stop-color="#88c8bc" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="#88c8bc" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="M0,75 L30,60 L60,65 L90,42 L120,55 L150,35 L180,48 L210,28 L240,42 L270,22 L300,32 L340,12 L340,100 L0,100 Z"
+            fill="url(#revFill)" />
+      <path d="M0,75 L30,60 L60,65 L90,42 L120,55 L150,35 L180,48 L210,28 L240,42 L270,22 L300,32 L340,12"
+            fill="none" stroke="#88c8bc" stroke-width="2.5"
+            stroke-linejoin="round" stroke-linecap="round" />
+      <circle cx="340" cy="12" r="4" fill="#88c8bc" />
+    </svg>
+  </div>
+</div>
+
+
+<!-- ============================================================ -->
+<!--  TWO-COLUMN ROW                                              -->
+<!-- ============================================================ -->
+<div class="dashboard-row">
+
+  <!-- ===== RECENT ORDERS ===== -->
+  <div class="dash-card">
+    <div class="dash-card-header">
+      <h5>Recent Orders</h5>
+      <a href="/admin/orders" class="card-link">
+        View All <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <% if (!recentOrders || recentOrders.length === 0) { %>
+      <div class="table-empty">
+        <i class="fas fa-shopping-bag"></i>
+        No orders yet.
+      </div>
+    <% } else { %>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% recentOrders.forEach(order => {
+            const statusClass = (order.status || 'Pending').toLowerCase().replace(/\s+/g, '-');
+          %>
+            <tr>
+              <td>
+                <span class="cell-primary">
+                  #<%= String(order._id).slice(-6).toUpperCase() %>
+                </span>
+              </td>
+              <td>
+                <div class="cell-primary"><%= order.userId?.name || 'Guest' %></div>
+                <div class="cell-secondary"><%= order.userId?.email || '—' %></div>
+              </td>
+              <td>
+                <span class="cell-primary">
+                  ₹<%= order.finalAmount.toLocaleString('en-IN', { maximumFractionDigits: 0 }) %>
+                </span>
+              </td>
+              <td>
+                <span class="status-badge status-<%= statusClass %>">
+                  <%= order.status %>
+                </span>
+              </td>
+              <td>
+                <span class="cell-secondary">
+                  <%= new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+                </span>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } %>
+  </div>
+
+
+  <!-- ===== LOW STOCK ALERT ===== -->
+  <div class="dash-card">
+    <div class="dash-card-header">
+      <h5>
+        <i class="fas fa-exclamation-triangle" style="color:#f5a623; margin-right:8px;"></i>
+        Low Stock Alert
+      </h5>
+      <a href="/admin/products" class="card-link">
+        View All <i class="fas fa-arrow-right"></i>
+      </a>
+    </div>
+
+    <% if (!lowStockProducts || lowStockProducts.length === 0) { %>
+      <div class="table-empty">
+        <i class="fas fa-check-circle" style="color:#28a745;"></i>
+        All products have sufficient stock.
+      </div>
+    <% } else { %>
+      <% lowStockProducts.forEach(product => {
+        const stockNum = Number(product.stock) || 0;
+        const isCritical = stockNum <= 3;
+        const badgeClass = isCritical ? 'critical' : 'low';
+        const badgeText = isCritical ? 'Critical' : 'Low';
+      %>
+        <div class="low-stock-item">
+          <img
+            src="<%= product.images && product.images[0] ? product.images[0] : '/images/default.jpg' %>"
+            alt="<%= product.productName %>"
+            class="stock-thumb"
+          >
+          <div class="stock-info">
+            <div class="name"><%= product.productName %></div>
+            <div class="qty"><%= stockNum %> left</div>
+          </div>
+          <span class="stock-badge <%= badgeClass %>"><%= badgeText %></span>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+
+</div>

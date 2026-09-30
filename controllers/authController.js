@@ -31,7 +31,8 @@ const loginUser = async (req, res) => {
     generateTokenAndSetCookie(user, res);
 
     res.status(200).json({ 
-      message: 'User logged in successfully'
+      message: 'User logged in successfully',
+      role: user.role
     });
     
 

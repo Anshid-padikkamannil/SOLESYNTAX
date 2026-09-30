@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { isAdmin } = require('../../middlewares/auth');
+const { isLoggedIn ,isAdmin } = require('../../middlewares/auth');
 
 const {
 
@@ -11,7 +11,7 @@ const {
 
 } = require('../../controllers/admin/couponController');
 
-router.use( isAdmin );
+router.use( isLoggedIn, isAdmin );
 
 router.post('/', createCoupon);
 router.get('/', getAllCoupons);

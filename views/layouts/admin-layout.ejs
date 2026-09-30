@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | SOLESYNTAX Admin</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Rokkitt:wght@100;300;400;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+  <!-- Admin CSS -->
+  <link rel="stylesheet" href="/css/admin.css">
+</head>
+
+<body>
+
+<div class="admin-wrapper">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="admin-sidebar">
+
+    <!-- Logo -->
+    <div class="admin-logo">
+      <div class="admin-logo-icon">
+        <i class="fas fa-shoe-prints"></i>
+      </div>
+      <div class="admin-logo-text">
+        <span class="brand-name">Solesyntax</span>
+        <span class="brand-tagline">Step Into Style</span>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="admin-nav">
+      <a href="/admin" class="<%= currentPage === 'dashboard' ? 'active' : '' %>">
+        <i class="fas fa-th-large"></i> Dashboard
+      </a>
+      <a href="/admin/products" class="<%= currentPage === 'products' ? 'active' : '' %>">
+        <i class="fas fa-box"></i> Products
+      </a>
+      <a href="/admin/orders" class="<%= currentPage === 'orders' ? 'active' : '' %>">
+        <i class="fas fa-shopping-cart"></i> Orders
+      </a>
+      <a href="/admin/customers" class="<%= currentPage === 'customers' ? 'active' : '' %>">
+        <i class="fas fa-users"></i> Customers
+      </a>
+      <a href="/admin/coupons" class="<%= currentPage === 'coupons' ? 'active' : '' %>">
+        <i class="fas fa-tag"></i> Coupons
+      </a>
+      <a href="/admin/reviews" class="<%= currentPage === 'reviews' ? 'active' : '' %>">
+        <i class="fas fa-star"></i> Reviews
+      </a>
+      <a href="/admin/reports" class="<%= currentPage === 'reports' ? 'active' : '' %>">
+        <i class="fas fa-chart-line"></i> Reports
+      </a>
+    </nav>
+
+    <!-- Sidebar Footer (User Info) -->
+    <div class="admin-sidebar-footer">
+      <div class="avatar">
+        <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+      </div>
+      <div class="info">
+        <div class="name"><%= user?.name || 'Admin' %></div>
+        <div class="email"><%= user?.email || 'admin@solesyntax.com' %></div>
+      </div>
+      <a href="/users/logout" class="logout-icon" title="Logout">
+        <i class="fas fa-sign-out-alt"></i>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- ===== MAIN CONTAINER ===== -->
+  <div class="admin-container">
+
+    <!-- ===== TOPBAR ===== -->
+    <header class="admin-topbar">
+
+      <!-- Notifications -->
+      <div class="topbar-notif" title="Notifications">
+        <i class="far fa-bell"></i>
+        <span class="badge-dot"></span>
+      </div>
+
+      <!-- User dropdown -->
+      <div class="topbar-user">
+        <div class="avatar">
+          <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+        </div>
+        <span class="name"><%= user?.name || 'Admin' %></span>
+        <i class="fas fa-chevron-down chevron"></i>
+      </div>
+
+    </header>
+
+    <!-- ===== CONTENT ===== -->
+    <main class="admin-main">
+      <div class="admin-content">
+        <%- body %>
+      </div>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="admin-footer">
+      <div class="footer-left">
+        © <%= new Date().getFullYear() %> Solesyntax. All rights reserved.
+      </div>
+      <div class="footer-right">
+        <span>Admin Panel</span>
+        <span class="divider">|</span>
+        <span>v1.0.0</span>
+      </div>
+    </footer>
+
+  </div>
+
+</div>
+
+</body>
+</html>
