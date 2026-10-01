@@ -126,6 +126,26 @@
                     >
                 </div>
 
+                <!-- Product Images -->
+                <div class="form-group">
+
+                    <label for="images">Product Images</label>
+
+                    <input
+                        type="file"
+                        id="images"
+                        name="images"
+                        class="form-control"
+                        accept="image/jpeg,image/jpg,image/png,image/webp"
+                        multiple
+                    >
+
+                    <small class="form-text text-muted">
+                        You can upload up to 5 images. Maximum 5MB per image.
+                    </small>
+
+                </div>
+
 
                 <!-- Sizes -->
                 <div class="form-group">
@@ -176,36 +196,79 @@ document.getElementById('addProductForm').addEventListener('submit', async funct
 
     const form = e.target;
 
-    const selectedSizes = Array.from(
-        form.querySelectorAll('input[name="sizes"]:checked')
-    ).map(input => Number(input.value));
+    const formData = new FormData();
 
-    const productData = {
-        productName: form.productName.value.trim(),
-        description: form.description.value.trim(),
-        category: form.category.value,
-        brand: form.brand.value.trim(),
-        shoeType: form.shoeType.value,
-        price: Number(form.price.value),
-        stock: Number(form.stock.value),
-        sizes: selectedSizes
-    };
+    formData.append(
+        'productName',
+        form.productName.value.trim()
+    );
+
+    formData.append(
+        'description',
+        form.description.value.trim()
+    );
+
+    formData.append(
+        'category',
+        form.category.value
+    );
+
+    formData.append(
+        'brand',
+        form.brand.value.trim()
+    );
+
+    formData.append(
+        'shoeType',
+        form.shoeType.value
+    );
+
+    formData.append(
+        'price',
+        Number(form.price.value)
+    );
+
+    formData.append(
+        'stock',
+        Number(form.stock.value)
+    );
+
+
+    // Add selected sizes
+    const selectedSizes = form.querySelectorAll(
+        'input[name="sizes"]:checked'
+    );
+
+    selectedSizes.forEach(input => {
+        formData.append('sizes', input.value);
+    });
+
+
+    // Add images
+    const imageInput = document.getElementById('images');
+
+    Array.from(imageInput.files).forEach(file => {
+        formData.append('images', file);
+    });
+
 
     try {
 
-        const response = await fetch('/admin/products/add-product', {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(productData)
-        });
+        const response = await fetch(
+            '/admin/products/add-product',
+            {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            }
+        );
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.message || 'Failed to add product');
+            throw new Error(
+                data.message || 'Failed to add product'
+            );
         }
 
         alert('Product added successfully');

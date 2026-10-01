@@ -5,12 +5,27 @@ const paginate = require('../../utils/pagination')
 const createProduct = async (req, res) => {
 
   try {
-    const product = await Product.create(req.body);
+    const imagePaths = req.files ? req.files.map(file => `/images/${file.filename}`) : [];
+
+    const productData = {
+      ...req.body,
+      images: imagePaths
+    };
+
+    if(req.body.sizes) {
+      productData.sizes = Array.isArray(req.body.sizes) ? req.body.sizes.map(Number) : [Number(req.body.sizes)];
+    } else {
+      productData.sizes = [];
+    }
+
+    const product = await Product.create(productData);
 
     res.status(201).json({ message: 'Product created successfully', product });
 
 
   } catch (err) {
+
+    console.error('CREATE PRODUCT ERROR:', err);
 
     res.status(500).json({
       message: err.message

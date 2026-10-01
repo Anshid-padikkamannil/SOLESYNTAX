@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const upload = require('../../config/multer');
 
 const { 
   createProduct, 
@@ -18,7 +19,7 @@ router.use(isLoggedIn, isAdmin); // Apply authentication middleware to all route
 router.get('/', getAdminProductsPage);
 
 router.get('/add-product', getAddProductPage);
-router.post('/add-product', createProduct);
+router.post('/add-product', upload.array('images', 5), createProduct);
 
 router.put('/update-product/:id', validateId(),updateProduct);
 router.delete('/delete-product/:id', validateId(),deleteProduct);
