@@ -1,0 +1,404 @@
+<form id="editProductForm">
+
+    <div class="form-group">
+        <label for="productName">Product Name</label>
+
+        <input
+            type="text"
+            id="productName"
+            name="productName"
+            value="<%= product.productName %>"
+            required
+        >
+    </div>
+
+
+    <div class="form-group">
+        <label for="description">Description</label>
+
+        <textarea
+            id="description"
+            name="description"
+            required
+        ><%= product.description %></textarea>
+    </div>
+
+
+    <div class="form-group">
+        <label for="category">Category</label>
+
+        <select
+            id="category"
+            name="category"
+            required
+        >
+            <option
+                value="Men"
+                <%= product.category === 'Men' ? 'selected' : '' %>
+            >
+                Men
+            </option>
+
+            <option
+                value="Women"
+                <%= product.category === 'Women' ? 'selected' : '' %>
+            >
+                Women
+            </option>
+
+            <option
+                value="unisex"
+                <%= product.category === 'unisex' ? 'selected' : '' %>
+            >
+                Unisex
+            </option>
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label for="brand">Brand</label>
+
+        <input
+            type="text"
+            id="brand"
+            name="brand"
+            value="<%= product.brand %>"
+            required
+        >
+    </div>
+
+
+    <div class="form-group">
+        <label for="shoeType">Shoe Type</label>
+
+        <select
+            id="shoeType"
+            name="shoeType"
+            required
+        >
+            <% const shoeTypes = [
+                'Running',
+                'Casual',
+                'Sneakers',
+                'Basketball',
+                'Training',
+                'Formal'
+            ]; %>
+
+            <% shoeTypes.forEach(type => { %>
+
+                <option
+                    value="<%= type %>"
+                    <%= product.shoeType === type ? 'selected' : '' %>
+                >
+                    <%= type %>
+                </option>
+
+            <% }) %>
+
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label for="price">Price</label>
+
+        <input
+            type="number"
+            id="price"
+            name="price"
+            value="<%= product.price %>"
+            min="0"
+            required
+        >
+    </div>
+
+
+    <div class="form-group">
+        <label for="stock">Stock</label>
+
+        <input
+            type="number"
+            id="stock"
+            name="stock"
+            value="<%= product.stock %>"
+            min="0"
+            required
+        >
+    </div>
+
+
+    <div class="form-group">
+
+        <label>Available Sizes (UK / India)</label>
+
+        <% [6, 7, 8, 9, 10, 11, 12, 13].forEach(size => { %>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="sizes"
+                    value="<%= size %>"
+                    <%= product.sizes.includes(size) ? 'checked' : '' %>
+                >
+
+                <%= size %>
+            </label>
+
+        <% }) %>
+
+    </div>
+
+    <div class="form-group">
+
+        <label>Current Product Images</label>
+
+        <div class="product-images">
+
+            <% if (product.images && product.images.length > 0) { %>
+
+                <% product.images.forEach((image, index) => { %>
+
+                    <div class="product-image-item">
+
+                        <img
+                            src="<%= image %>"
+                            alt="<%= product.productName %>"
+                            width="150"
+                        >
+
+                        <button
+                            type="button"
+                            class="delete-image-btn"
+                            data-image="<%= image %>"
+                        >
+                            Delete
+                        </button>
+
+                    </div>
+
+                <% }) %>
+
+            <% } else { %>
+
+                <p>No product images available.</p>
+
+            <% } %>
+
+        </div>
+
+    </div>
+
+    <div class="form-group">
+
+        <label for="newImages">Add More Images</label>
+
+        <input
+            type="file"
+            id="newImages"
+            name="images"
+            class="form-control"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            multiple
+        >
+
+        <small class="form-text text-muted">
+            You can add up to 5 images in total.
+        </small>
+
+    </div>
+
+
+    <button
+        type="submit"
+        class="btn btn-primary"
+    >
+        Update Product
+    </button>
+
+</form>
+
+<script>
+document.getElementById('editProductForm').addEventListener('submit', async function (e) {
+
+    e.preventDefault();
+
+    const form = e.target;
+
+    const formData = new FormData();
+
+    formData.append(
+        'productName',
+        form.productName.value.trim()
+    );
+
+    formData.append(
+        'description',
+        form.description.value.trim()
+    );
+
+    formData.append(
+        'category',
+        form.category.value
+    );
+
+    formData.append(
+        'brand',
+        form.brand.value.trim()
+    );
+
+    formData.append(
+        'shoeType',
+        form.shoeType.value
+    );
+
+    formData.append(
+        'price',
+        Number(form.price.value)
+    );
+
+    formData.append(
+        'stock',
+        Number(form.stock.value)
+    );
+
+
+    // Sizes
+    const selectedSizes = form.querySelectorAll(
+        'input[name="sizes"]:checked'
+    );
+
+    selectedSizes.forEach(input => {
+        formData.append('sizes', input.value);
+    });
+
+
+    // New images
+    const imageInput = document.getElementById('newImages');
+
+    Array.from(imageInput.files).forEach(file => {
+        formData.append('images', file);
+    });
+
+
+    try {
+
+        const response = await fetch(
+            `/admin/products/update-product/<%= product._id %>`,
+            {
+                method: 'PUT',
+                credentials: 'include',
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.message || 'Failed to update product'
+            );
+        }
+
+        alert('Product updated successfully');
+
+        window.location.href = '/admin/products';
+
+    } catch (err) {
+
+        console.error('UPDATE PRODUCT ERROR:', err);
+
+        alert(err.message);
+
+    }
+
+});
+
+document.querySelectorAll('.delete-image-btn').forEach(button => {
+
+    button.addEventListener('click', async function () {
+
+        const image = this.dataset.image;
+
+        const confirmed = confirm(
+            'Are you sure you want to delete this image?'
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch(
+                '/admin/products/<%= product._id %>/images',
+                {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        image
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.message || 'Failed to delete image'
+                );
+            }
+
+            // Remove the image card from the page
+            this.closest('.product-image-item').remove();
+
+        } catch (err) {
+
+            console.error('DELETE IMAGE ERROR:', err);
+
+            alert(err.message);
+
+        }
+
+    });
+
+});
+</script>
+
+<style>
+  .product-images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.product-image-item {
+    position: relative;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.product-image-item img {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    display: block;
+    margin-bottom: 10px;
+}
+
+.delete-image-btn {
+    width: 100%;
+    border: none;
+    background: #dc3545;
+    color: white;
+    padding: 7px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+</style>
