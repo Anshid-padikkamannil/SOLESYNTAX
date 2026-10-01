@@ -120,9 +120,51 @@ const getAllProducts = async (req, res) => {
   
 }
 
+const getAdminProductsPage = async (req, res) => {
+
+  try {
+    
+    const  products = await Product.find()
+      .sort({ createdAt: -1 });
+
+    res.render('admin/products', {
+      title: 'Products',
+      currentPage: 'products',
+      user: req.user,
+      products,
+      layout: 'layouts/admin-layout'
+    });
+
+  } catch (err) {
+
+    console.error('ADMIN PRODUCTS PAGE ERROR:', err);
+
+    return res.status(500).render('error', {
+      layout: false,
+      status: 500,
+      title: 'Server Error',
+      message: 'Something went wrong while loading products.'
+    });
+
+  }  
+};
+
+const getAddProductPage = async (req, res) => {
+
+  res.render('admin/add-product', {
+    title: 'Add Product',
+    currentPage: 'products',
+    user: req.user,
+    layout: 'layouts/admin-layout'
+  });
+  
+};
+
 module.exports = {
   createProduct, 
   getAllProducts,
   updateProduct,
   deleteProduct,
+  getAdminProductsPage,
+  getAddProductPage
 }

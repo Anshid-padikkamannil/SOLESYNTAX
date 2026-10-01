@@ -1,0 +1,224 @@
+<div class="admin-page">
+
+    <div class="page-header">
+        <div>
+            <h1>Add Product</h1>
+            <p>Add a new product to your store</p>
+        </div>
+
+        <a href="/admin/products" class="btn btn-secondary">
+            Back to Products
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+
+            <form id="addProductForm">
+
+                <!-- Product Name -->
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+
+                    <input
+                        type="text"
+                        id="productName"
+                        name="productName"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description">Description</label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        class="form-control"
+                        rows="4"
+                        required
+                    ></textarea>
+                </div>
+
+
+                <!-- Category -->
+                <div class="form-group">
+                    <label for="category">Category</label>
+
+                    <select
+                        id="category"
+                        name="category"
+                        class="form-control"
+                        required
+                    >
+                        <option value="">Select category</option>
+                        <option value="Men">Men</option>
+                        <option value="Women">Women</option>
+                        <option value="unisex">Unisex</option>
+                    </select>
+                </div>
+
+
+                <!-- Brand -->
+                <div class="form-group">
+                    <label for="brand">Brand</label>
+
+                    <input
+                        type="text"
+                        id="brand"
+                        name="brand"
+                        class="form-control"
+                        required
+                    >
+                </div>
+
+
+                <!-- Shoe Type -->
+                <div class="form-group">
+                    <label for="shoeType">Shoe Type</label>
+
+                    <select
+                        id="shoeType"
+                        name="shoeType"
+                        class="form-control"
+                        required
+                    >
+                        <option value="">Select shoe type</option>
+                        <option value="Running">Running</option>
+                        <option value="Casual">Casual</option>
+                        <option value="Sneakers">Sneakers</option>
+                        <option value="Basketball">Basketball</option>
+                        <option value="Training">Training</option>
+                        <option value="Formal">Formal</option>
+                    </select>
+                </div>
+
+
+                <!-- Price -->
+                <div class="form-group">
+                    <label for="price">Price</label>
+
+                    <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        class="form-control"
+                        min="0"
+                        required
+                    >
+                </div>
+
+
+                <!-- Stock -->
+                <div class="form-group">
+                    <label for="stock">Stock</label>
+
+                    <input
+                        type="number"
+                        id="stock"
+                        name="stock"
+                        class="form-control"
+                        min="0"
+                        required
+                    >
+                </div>
+
+
+                <!-- Sizes -->
+                <div class="form-group">
+
+                    <label>Available Sizes (UK / India)</label>
+
+                    <div>
+
+                        <% [6, 7, 8, 9, 10, 11, 12, 13].forEach(size => { %>
+
+                            <label style="margin-right: 15px;">
+
+                                <input
+                                    type="checkbox"
+                                    name="sizes"
+                                    value="<%= size %>"
+                                >
+
+                                <%= size %>
+
+                            </label>
+
+                        <% }) %>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Add Product
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.getElementById('addProductForm').addEventListener('submit', async function (e) {
+
+    e.preventDefault();
+
+    const form = e.target;
+
+    const selectedSizes = Array.from(
+        form.querySelectorAll('input[name="sizes"]:checked')
+    ).map(input => Number(input.value));
+
+    const productData = {
+        productName: form.productName.value.trim(),
+        description: form.description.value.trim(),
+        category: form.category.value,
+        brand: form.brand.value.trim(),
+        shoeType: form.shoeType.value,
+        price: Number(form.price.value),
+        stock: Number(form.stock.value),
+        sizes: selectedSizes
+    };
+
+    try {
+
+        const response = await fetch('/admin/products/add-product', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(productData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to add product');
+        }
+
+        alert('Product added successfully');
+
+        window.location.href = '/admin/products';
+
+    } catch (err) {
+
+        console.error('ADD PRODUCT ERROR:', err);
+
+        alert(err.message);
+
+    }
+
+});
+</script>
