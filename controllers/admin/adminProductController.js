@@ -144,11 +144,25 @@ const deleteProduct = async (req, res) => {
 
   try {
 
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findById(req.params.id);
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+
+    //delete prodcut images from filesystem
+    if (product.images && product.images.length > 0) {
+      product.images.forEach(image => {
+        const imagePath = path.join(__dirname, '../../public', image.replace(/^\/+/, ''));
+
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+      });
+    }
+
+    //delete product from db
+    await Product.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ 
       message: 'Product deleted successfully',
@@ -156,6 +170,7 @@ const deleteProduct = async (req, res) => {
     });
   } catch (err) {
 
+    console.error('DELETE PRODUCT ERROR:', err);
     res.status(500).json({ message: err.message });
 
   }
