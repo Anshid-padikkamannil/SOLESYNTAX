@@ -1,0 +1,409 @@
+<div class="admin-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <div>
+            <h1>Order Details</h1>
+            <p>
+                Order #<%= order._id %>
+            </p>
+        </div>
+
+        <a href="/admin/orders" class="btn btn-secondary">
+            Back to Orders
+        </a>
+
+    </div>
+
+
+    <!-- Order Overview -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Order Information</h2>
+        </div>
+
+        <div class="order-info-grid">
+
+            <div>
+                <span>Order ID</span>
+                <strong>#<%= order._id %></strong>
+            </div>
+
+            <div>
+                <span>Order Date</span>
+                <strong>
+                    <%= new Date(order.createdAt).toLocaleDateString('en-IN') %>
+                </strong>
+            </div>
+
+            <div>
+                <span>Status</span>
+                <strong>
+                    <%= order.status %>
+                </strong>
+            </div>
+
+            <div>
+                <span>Payment Method</span>
+                <strong>
+                    <%= order.paymentMethod %>
+                </strong>
+            </div>
+
+        </div>
+        <a
+          href="/admin/orders/<%= order._id %>/invoice"
+          class="btn btn-secondary"
+        >
+          Download Invoice
+        </a>
+
+    </div>
+
+
+    <!-- Customer -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Customer</h2>
+        </div>
+
+        <div class="customer-details">
+
+            <p>
+                <strong>Name:</strong>
+                <%= order.userId?.name || 'N/A' %>
+            </p>
+
+            <p>
+                <strong>Email:</strong>
+                <%= order.userId?.email || 'N/A' %>
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Products -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Ordered Products</h2>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="admin-table">
+
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Return Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <% order.orderItems.forEach(item => { %>
+
+                        <tr>
+
+                            <td>
+
+                                <div class="order-product">
+
+                                    <% if (item.productImage && item.productImage.length > 0) { %>
+
+                                        <img
+                                            src="<%= item.productImage[0] %>"
+                                            alt="<%= item.name %>"
+                                        >
+
+                                    <% } else if (item.product?.images?.length) { %>
+
+                                        <img
+                                            src="<%= item.product.images[0] %>"
+                                            alt="<%= item.name %>"
+                                        >
+
+                                    <% } %>
+
+                                    <span>
+                                        <%= item.name %>
+                                    </span>
+
+                                </div>
+
+                            </td>
+
+                            <td>
+                                <%= item.size %>
+                            </td>
+
+                            <td>
+                                <%= item.quantity %>
+                            </td>
+
+                            <td>
+                                ₹<%= item.price %>
+                            </td>
+
+                            <td>
+                                <%= item.returnStatus %>
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- Shipping Address -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Shipping Address</h2>
+        </div>
+
+        <div class="address-details">
+
+            <p>
+                <strong><%= order.address.name %></strong>
+            </p>
+
+            <p>
+                <%= order.address.addressLine1 %>
+            </p>
+
+            <% if (order.address.addressLine2) { %>
+                <p>
+                    <%= order.address.addressLine2 %>
+                </p>
+            <% } %>
+
+            <% if (order.address.landmark) { %>
+                <p>
+                    Landmark: <%= order.address.landmark %>
+                </p>
+            <% } %>
+
+            <p>
+                <%= order.address.city %>,
+                <%= order.address.state %>
+                - <%= order.address.pincode %>
+            </p>
+
+            <p>
+                Phone: <%= order.address.phone %>
+            </p>
+
+            <% if (order.address.altPhone) { %>
+                <p>
+                    Alternate Phone:
+                    <%= order.address.altPhone %>
+                </p>
+            <% } %>
+
+        </div>
+
+    </div>
+
+
+    <!-- Payment -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Payment</h2>
+        </div>
+
+        <div class="order-info-grid">
+
+            <div>
+                <span>Method</span>
+                <strong>
+                    <%= order.paymentMethod %>
+                </strong>
+            </div>
+
+            <div>
+                <span>Payment Status</span>
+                <strong>
+                    <%= order.paymentDetails?.status || 'Pending' %>
+                </strong>
+            </div>
+
+            <% if (order.paymentDetails?.razorpayPaymentId) { %>
+
+                <div>
+                    <span>Razorpay Payment ID</span>
+                    <strong>
+                        <%= order.paymentDetails.razorpayPaymentId %>
+                    </strong>
+                </div>
+
+            <% } %>
+
+        </div>
+
+    </div>
+
+
+    <!-- Order Summary -->
+    <div class="admin-card order-summary-card">
+
+        <div class="card-header">
+            <h2>Order Summary</h2>
+        </div>
+
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <strong>₹<%= order.totalPrice %></strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Shipping</span>
+            <strong>₹<%= order.shipping %></strong>
+        </div>
+
+        <% if (order.couponDiscount > 0) { %>
+
+            <div class="summary-row">
+                <span>Coupon Discount</span>
+                <strong>
+                    - ₹<%= order.couponDiscount %>
+                </strong>
+            </div>
+
+        <% } %>
+
+        <div class="summary-row total-row">
+            <span>Final Amount</span>
+            <strong>
+                ₹<%= order.finalAmount %>
+            </strong>
+        </div>
+
+    </div>
+
+
+    <!-- Admin Actions -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Order Actions</h2>
+        </div>
+
+        <div class="order-actions">
+
+            <label for="orderStatus">
+                Order Status
+            </label>
+
+            <select id="orderStatus">
+
+                <option value="Pending"
+                    <%= order.status === 'Pending' ? 'selected' : '' %>>
+                    Pending
+                </option>
+
+                <option value="Processing"
+                    <%= order.status === 'Processing' ? 'selected' : '' %>>
+                    Processing
+                </option>
+
+                <option value="Shipped"
+                    <%= order.status === 'Shipped' ? 'selected' : '' %>>
+                    Shipped
+                </option>
+
+                <option value="Delivered"
+                    <%= order.status === 'Delivered' ? 'selected' : '' %>>
+                    Delivered
+                </option>
+
+                <option value="Cancelled"
+                    <%= order.status === 'Cancelled' ? 'selected' : '' %>>
+                    Cancelled
+                </option>
+
+                <option value="Return Request"
+                    <%= order.status === 'Return Request' ? 'selected' : '' %>>
+                    Return Request
+                </option>
+
+                <option value="Returned"
+                    <%= order.status === 'Returned' ? 'selected' : '' %>>
+                    Returned
+                </option>
+
+            </select>
+
+            <button
+                type="button"
+                id="updateStatusBtn"
+                class="btn btn-primary">
+                Update Status
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const updateStatusBtn = document.getElementById('updateStatusBtn');
+    const orderStatus = document.getElementById('orderStatus');
+
+    updateStatusBtn.addEventListener('click', async () => {
+
+        const status = orderStatus.value;
+
+        try {
+
+            const response = await fetch(
+                '/admin/orders/<%= order._id %>',
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status
+                    })
+                }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || 'Failed to update order status');
+            }
+
+            alert('Order status updated successfully');
+
+            window.location.reload();
+
+        } catch (err) {
+
+            console.error(err);
+
+            alert(err.message);
+
+        }
+
+    });
+</script>

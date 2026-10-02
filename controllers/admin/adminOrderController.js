@@ -1,11 +1,9 @@
-const User = require('../../models/userSchema');
-const Product = require('../../models/productSchema');
-const Cart = require('../../models/cartSchema');
 const Order = require('../../models/orderSchema');
 const paginate = require('../../utils/pagination');
+const { generateInvoice } = require('../../services/invoiceService');
 
 
-const adminGetAllOrders = async (req, res) => {
+const getAdminOrdersPage = async (req, res) => {
   
   try {
 
@@ -20,15 +18,63 @@ const adminGetAllOrders = async (req, res) => {
       }
     )
 
-    res.status(200).json({
-      success: true,
-      ...result
+    res.render('admin/orders', {
+      layout: 'layouts/admin-layout',
+      title: 'Orders',
+      currentPage: 'orders',
+      orders: result.data,
+      pagination: result
     });
 
   } catch (err) {
 
-    res.status(500).json({ message: err.message });
+    console.error('ADMIN ORDERS ERROR:', err);
     
+    res.status(500).render('error', {
+      layout: false,
+      status: 500,
+      title: 'Server Error',
+      message: 'Unable to load orders.'
+    });
+  }
+}
+
+const getAdminOrderById = async (req, res) => {
+
+  try {
+    
+    const { id } = req.params;
+
+    const order = await Order.findById(id)
+      .populate('userId', 'name email')
+      .populate('orderItems.product', 'images');
+
+    if (!order) {
+      return res.status(404).render('error', {
+        layout: false,
+        status: 404,
+        title: 'Order not found',
+        message: 'The requested order could not be found'
+      });
+    }
+
+    res.render('admin/order-details', {
+      layout: 'layouts/admin-layout',
+      title: 'Order Details',
+      currentPage: 'orders',
+      order
+    })
+
+  } catch (err) {
+    
+    console.error('ADMIN ORDER DETAILS ERROR:', err);
+
+    res.status(500).render('error', {
+      layout: false,
+      status: 500,
+      title: 'Server Error',
+      message: 'Unable to load order details.'
+    });
   }
 }
 
@@ -61,7 +107,69 @@ const adminUpdateOrderStatus = async (req, res) => {
   }
 };
 
+const downloadAdminInvoice = async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const order = await Order.findById(id)
+      .populate('orderItems.product');
+
+    if (!order) {
+      return res.status(404).render('error', {
+        layout: false,
+        status: 404,
+        title: 'Order Not Found',
+        message: 'Order not found.'
+      });
+    }
+
+    // Razorpay orders must have successful payment
+    if (
+      order.paymentMethod === 'Razorpay' &&
+      order.paymentDetails?.status !== 'Success'
+    ) {
+      return res.status(400).render('error', {
+        layout: false,
+        status: 400,
+        title: 'Invoice Unavailable',
+        message: 'Invoice is not available because payment was not completed.'
+      });
+    }
+
+    const doc = generateInvoice(order, order.userId);
+
+    res.setHeader(
+      'Content-Type',
+      'application/pdf'
+    );
+
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="invoice-${order.invoiceNumber}.pdf"`
+    );
+
+    doc.pipe(res);
+    doc.end();
+
+  } catch (err) {
+
+    console.error('Admin Invoice Error:', err);
+
+    res.status(500).render('error', {
+      layout: false,
+      status: 500,
+      title: 'Server Error',
+      message: 'Unable to generate invoice.'
+    });
+
+  }
+};
+
 module.exports = {
-  adminGetAllOrders,
-  adminUpdateOrderStatus
+  getAdminOrdersPage,
+  getAdminOrderById,
+  adminUpdateOrderStatus,
+  downloadAdminInvoice
 }

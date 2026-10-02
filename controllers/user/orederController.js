@@ -1,8 +1,4 @@
-const Product = require('../../models/productSchema');
-const Cart = require('../../models/cartSchema');
 const Order = require('../../models/orderSchema');
-const paginate = require('../../utils/pagination');
-const Address = require('../../models/addressSchema');
 const { generateInvoice } = require('../../services/invoiceService');
 const orderService = require('../../services/orderService');
 

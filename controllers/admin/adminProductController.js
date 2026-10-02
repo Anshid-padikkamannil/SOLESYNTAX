@@ -234,14 +234,18 @@ const getAdminProductsPage = async (req, res) => {
 
   try {
     
-    const  products = await Product.find()
-      .sort({ createdAt: -1 });
+    const  { data: products, pagination } = await paginate(Product, {}, {
+      page: req.query.page || 1,
+      limit: req.query.limit || 5,
+      sort: { createdAt: -1 }
+    })
 
     res.render('admin/products', {
       title: 'Products',
       currentPage: 'products',
       user: req.user,
       products,
+      pagination,
       layout: 'layouts/admin-layout'
     });
 
