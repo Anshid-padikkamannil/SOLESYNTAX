@@ -14,11 +14,16 @@ const paginate = async (model, filter = {}, options = {}) => {
   const skip = (page -1) * limit;
   const sort = options.sort || { createdAt: -1 };
   const populate = options.populate || null;
+  const select = options.select || null;
 
   let query = model.find(filter).sort(sort).skip(skip).limit(limit);
 
   if (populate) {
     query = query.populate(populate);
+  }
+
+  if (select) {
+    query = query.select(select);
   }
 
   const data = await query;

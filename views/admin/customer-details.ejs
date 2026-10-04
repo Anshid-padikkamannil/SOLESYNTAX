@@ -1,0 +1,335 @@
+<div class="admin-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <div>
+            <h1>Customer Details</h1>
+            <p>View customer account information</p>
+        </div>
+
+        <a
+            href="/admin/customers"
+            class="btn btn-secondary">
+            Back to Customers
+        </a>
+
+    </div>
+
+
+    <!-- Customer Information -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Customer Information</h2>
+        </div>
+
+        <div class="customer-info-grid">
+
+            <div>
+                <span>Name</span>
+                <strong>
+                    <%= customer.name || 'N/A' %>
+                </strong>
+            </div>
+
+            <div>
+                <span>Email</span>
+                <strong>
+                    <%= customer.email || 'N/A' %>
+                </strong>
+            </div>
+
+            <div>
+                <span>Role</span>
+                <strong>
+                    <%= customer.role %>
+                </strong>
+            </div>
+
+            <div>
+                <span>Joined</span>
+                <strong>
+                    <%= new Date(customer.createdAt)
+                        .toLocaleDateString('en-IN') %>
+                </strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Account Status -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Account</h2>
+        </div>
+
+        <div class="customer-status">
+
+          <span>Account Status</span>
+
+          <% if (customer.isBlocked) { %>
+
+              <span class="status-badge status-blocked">
+                  Blocked
+              </span>
+
+          <% } else { %>
+
+              <span class="status-badge status-active">
+                  Active
+              </span>
+
+          <% } %>
+
+      </div>
+
+      
+        <div class="customer-actions">
+
+            <form
+                action="/admin/customers/<%= customer._id %>/toggle-block"
+                method="POST">
+
+                <% if (customer.isBlocked) { %>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+                        Unblock Customer
+                    </button>
+
+                <% } else { %>
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger">
+                        Block Customer
+                    </button>
+
+                <% } %>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <!-- Saved Addresses -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Saved Addresses</h2>
+        </div>
+
+        <% if (addresses.length === 0) { %>
+
+            <div class="empty-state">
+                This customer has no saved addresses.
+            </div>
+
+        <% } else { %>
+
+            <div class="customer-addresses">
+
+                <% addresses.forEach(address => { %>
+
+                    <div class="address-card">
+
+                        <div class="address-card-header">
+
+                            <div>
+                                <strong>
+                                    <%= address.addressType %>
+                                </strong>
+
+                                <% if (address.isDefault) { %>
+
+                                    <span class="status-badge status-active">
+                                        Default
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="address-card-body">
+
+                            <strong>
+                                <%= address.name %>
+                            </strong>
+
+                            <p>
+                                <%= address.addressLine1 %>
+                            </p>
+
+                            <% if (address.addressLine2) { %>
+
+                                <p>
+                                    <%= address.addressLine2 %>
+                                </p>
+
+                            <% } %>
+
+                            <% if (address.landmark) { %>
+
+                                <p>
+                                    Landmark: <%= address.landmark %>
+                                </p>
+
+                            <% } %>
+
+                            <p>
+                                <%= address.city %>,
+                                <%= address.state %>
+                                - <%= address.pincode %>
+                            </p>
+
+                            <p>
+                                Phone: <%= address.phone %>
+                            </p>
+
+                            <% if (address.altPhone) { %>
+
+                                <p>
+                                    Alternate Phone:
+                                    <%= address.altPhone %>
+                                </p>
+
+                            <% } %>
+
+                        </div>
+
+                    </div>
+
+                <% }) %>
+
+            </div>
+
+        <% } %>
+
+    </div>
+
+    <!-- Order History -->
+    <div class="admin-card">
+
+        <div class="card-header">
+            <h2>Order History</h2>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="admin-table">
+
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <% if (orders.length === 0) { %>
+
+                        <tr>
+                            <td colspan="6" class="empty-state">
+                                This customer has no orders.
+                            </td>
+                        </tr>
+
+                    <% } else { %>
+
+                        <% orders.forEach(order => { %>
+
+                            <tr>
+
+                                <td>
+                                    #<%= order._id %>
+                                </td>
+
+                                <td>
+                                    <%= new Date(order.createdAt)
+                                        .toLocaleDateString('en-IN') %>
+                                </td>
+
+                                <td>
+                                    ₹<%= order.finalAmount %>
+                                </td>
+
+                                <td>
+                                    <%= order.paymentMethod %>
+                                </td>
+
+                                <td>
+                                    <span class="status-badge">
+                                        <%= order.status %>
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a
+                                        href="/admin/orders/<%= order._id %>"
+                                        class="btn-view-order">
+                                        View
+                                    </a>
+                                </td>
+
+                            </tr>
+
+                        <% }) %>
+
+                    <% } %>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Order Pagination -->
+        <% if (pagination.totalPages > 1) { %>
+
+            <div class="admin-pagination">
+
+                <% if (pagination.hasPrev) { %>
+
+                    <a href="/admin/customers/<%= customer._id %>?page=<%= pagination.page - 1 %>">
+                        Previous
+                    </a>
+
+                <% } %>
+
+
+                <span>
+                    Page <%= pagination.page %>
+                    of <%= pagination.totalPages %>
+                </span>
+
+
+                <% if (pagination.hasNext) { %>
+
+                    <a href="/admin/customers/<%= customer._id %>?page=<%= pagination.page + 1 %>">
+                        Next
+                    </a>
+
+                <% } %>
+
+            </div>
+
+        <% } %>
+
+    </div>
+
+</div>

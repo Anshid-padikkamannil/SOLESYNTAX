@@ -10,7 +10,7 @@ const validateId = require('../middlewares/validateId')
 
 router.get('/',checkUser, getHomePage);
 router.get('/products', getAllProducts);
-router.get('/products/:id',checkUser, validateId(), productDetails);
+router.get('/products/:id',isLoggedIn, checkUser, validateId(), productDetails);
 router.post('/products/:id/reviews',isLoggedIn,validateId(), postReviews);
 router.get('/products/:id/reviews', getProductReviews);
 

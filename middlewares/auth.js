@@ -30,6 +30,21 @@ const isLoggedIn = async (req, res, next) => {
       });
     }
 
+    if (user.isBlocked) {
+      res.clearCookie('token');
+
+      if (req.accepts('html')) {
+        return res.redirect(
+          `/users/login?message=${encodeURIComponent('Your account has been blocked.'
+          )}`
+        );
+      }
+
+      return res.status(403).json({
+        message: 'Your account has been blocked.'
+      });
+    }
+
     if (user.passwordChangedAt && decoded.iat * 1000 < user.passwordChangedAt.getTime()) {
       res.clearCookie('token');
 
@@ -38,6 +53,10 @@ const isLoggedIn = async (req, res, next) => {
           `/users/login?redirect=${encodeURIComponent(req.originalUrl)}&message=${encodeURIComponent('Your password was changed. Please login again.')}`
         );
       }
+
+      return res.status(401).json({
+        message: 'Your password was changed. Please login again'
+      });
     }
 
     req.user = decoded;

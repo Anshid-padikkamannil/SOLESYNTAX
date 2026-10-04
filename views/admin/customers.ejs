@@ -1,0 +1,125 @@
+<div class="admin-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <div>
+            <h1>Customers</h1>
+            <p>Manage registered customers</p>
+        </div>
+
+    </div>
+
+
+    <!-- Customers Table -->
+    <div class="admin-card">
+
+        <div class="table-responsive">
+
+            <table class="admin-table">
+
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <% if (customers.length === 0) { %>
+
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                No customers found.
+                            </td>
+                        </tr>
+
+                    <% } else { %>
+
+                        <% customers.forEach(customer => { %>
+
+                            <tr>
+
+                                <td>
+                                    <strong>
+                                        <%= customer.name || 'N/A' %>
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    <%= customer.email || 'N/A' %>
+                                </td>
+
+                                <td>
+                                    <span class="status-badge">
+                                        <%= customer.role %>
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <%= new Date(customer.createdAt)
+                                        .toLocaleDateString('en-IN') %>
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="/admin/customers/<%= customer._id %>"
+                                        class="btn-view-order">
+                                        View
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        <% }) %>
+
+                    <% } %>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- Pagination -->
+    <% if (pagination.totalPages > 1) { %>
+
+        <div class="admin-pagination">
+
+            <% if (pagination.hasPrev) { %>
+
+                <a href="/admin/customers?page=<%= pagination.page - 1 %>">
+                    Previous
+                </a>
+
+            <% } %>
+
+
+            <span>
+                Page <%= pagination.page %>
+                of <%= pagination.totalPages %>
+            </span>
+
+
+            <% if (pagination.hasNext) { %>
+
+                <a href="/admin/customers?page=<%= pagination.page + 1 %>">
+                    Next
+                </a>
+
+            <% } %>
+
+        </div>
+
+    <% } %>
+
+</div>
