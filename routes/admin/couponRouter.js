@@ -4,8 +4,10 @@ const { isLoggedIn ,isAdmin } = require('../../middlewares/auth');
 
 const {
 
+  getAdminCouponsPage,
+  getAdminCreateCouponPage,
+  getAdminEditCouponPage,
   createCoupon,
-  getAllCoupons,
   updateCoupon,
   deleteCoupon
 
@@ -13,9 +15,14 @@ const {
 
 router.use( isLoggedIn, isAdmin );
 
+router.get('/', getAdminCouponsPage);
+
+router.get('/new', getAdminCreateCouponPage);
 router.post('/', createCoupon);
-router.get('/', getAllCoupons);
-router.put('/:id', updateCoupon);
+
+router.get('/:id/edit', getAdminEditCouponPage);
+router.post('/:id', updateCoupon);
+
 router.delete('/:id', deleteCoupon);
 
 module.exports = router;

@@ -1,0 +1,289 @@
+<div class="admin-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <div>
+            <h1>Coupons</h1>
+            <p>Manage discount coupons</p>
+        </div>
+
+        <a
+            href="/admin/coupons/new"
+            class="btn btn-primary">
+            Add Coupon
+        </a>
+
+    </div>
+
+
+    <!-- Coupons Table -->
+    <div class="admin-card">
+
+        <div class="table-responsive">
+
+            <table class="admin-table">
+
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Discount</th>
+                        <th>Minimum Order</th>
+                        <th>Validity</th>
+                        <th>Usage</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <% if (coupons.length === 0) { %>
+
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                No coupons found.
+                            </td>
+                        </tr>
+
+                    <% } else { %>
+
+                        <% coupons.forEach(coupon => { %>
+
+                            <tr>
+
+                                <!-- Code -->
+                                <td>
+                                    <strong>
+                                        <%= coupon.code %>
+                                    </strong>
+                                </td>
+
+
+                                <!-- Discount -->
+                                <td>
+
+                                    <% if (coupon.discountType === 'percentage') { %>
+
+                                        <%= coupon.discountValue %>%
+
+                                    <% } else { %>
+
+                                        ₹<%= coupon.discountValue %>
+
+                                    <% } %>
+
+                                </td>
+
+
+                                <!-- Minimum Order -->
+                                <td>
+                                    ₹<%= coupon.minimumOrderAmount %>
+                                </td>
+
+
+                                <!-- Validity -->
+                                <td>
+
+                                    <%= new Date(coupon.startDate)
+                                        .toLocaleDateString('en-IN') %>
+
+                                    -
+
+                                    <%= new Date(coupon.expiryDate)
+                                        .toLocaleDateString('en-IN') %>
+
+                                </td>
+
+
+                                <!-- Usage -->
+                                <td>
+
+                                    <%= coupon.usedCount %>
+
+                                    /
+
+                                    <%= coupon.usageLimit ?? '∞' %>
+
+                                </td>
+
+
+                                <!-- Status -->
+                                <td>
+
+                                    <% const now = new Date(); %>
+
+                                    <% if (
+                                        coupon.isActive &&
+                                        new Date(coupon.startDate) <= now &&
+                                        new Date(coupon.expiryDate) >= now
+                                    ) { %>
+
+                                        <span class="status-badge status-active">
+                                            Active
+                                        </span>
+
+                                    <% } else if (
+                                        new Date(coupon.expiryDate) < now
+                                    ) { %>
+
+                                        <span class="status-badge status-expired">
+                                            Expired
+                                        </span>
+
+                                    <% } else if (!coupon.isActive) { %>
+
+                                        <span class="status-badge status-blocked">
+                                            Inactive
+                                        </span>
+
+                                    <% } else { %>
+
+                                        <span class="status-badge">
+                                            Upcoming
+                                        </span>
+
+                                    <% } %>
+
+                                </td>
+
+
+                                <!-- Actions -->
+                                <td>
+
+                                    <div class="table-actions">
+
+                                        <a
+                                            href="/admin/coupons/<%= coupon._id %>/edit"
+                                            class="btn-view-order">
+                                            Edit
+                                        </a>
+
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-danger delete-coupon-btn"
+                                            data-id="<%= coupon._id %>">
+                                            Delete
+                                        </button>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        <% }) %>
+
+                    <% } %>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Pagination -->
+        <% if (pagination.totalPages > 1) { %>
+
+            <div class="admin-pagination">
+
+                <% if (pagination.hasPrev) { %>
+
+                    <a href="/admin/coupons?page=<%= pagination.page - 1 %>">
+                        Previous
+                    </a>
+
+                <% } %>
+
+
+                <span>
+                    Page <%= pagination.page %>
+                    of <%= pagination.totalPages %>
+                </span>
+
+
+                <% if (pagination.hasNext) { %>
+
+                    <a href="/admin/coupons?page=<%= pagination.page + 1 %>">
+                        Next
+                    </a>
+
+                <% } %>
+
+            </div>
+
+        <% } %>
+
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const deleteButtons = document.querySelectorAll('.delete-coupon-btn');
+
+
+    deleteButtons.forEach(function (button) {
+
+        button.addEventListener('click', async function () {
+
+            const couponId = button.dataset.id;
+
+
+            const confirmed = confirm(
+                'Are you sure you want to delete this coupon?'
+            );
+
+
+            if (!confirmed) {
+                return;
+            }
+
+
+            try {
+
+                const response = await fetch(
+                    `/admin/coupons/${couponId}`,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+
+
+                const data = await response.json();
+
+
+                if (response.ok) {
+
+                    window.location.reload();
+
+                } else {
+
+                    alert(
+                        data.message || 'Unable to delete coupon.'
+                    );
+
+                }
+
+            } catch (err) {
+
+                console.error('Delete Coupon Error:', err);
+
+                alert('Something went wrong while deleting the coupon.');
+
+            }
+
+        });
+
+    });
+
+});
+
+</script>

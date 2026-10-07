@@ -1,0 +1,532 @@
+<%
+    const formatDateTimeLocal = (date) => {
+        if (!date) return '';
+
+        const d = new Date(date);
+
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+
+        return `${year}-${month}-${day}T${hours}:${minutes}`;
+    };
+%>
+
+<div class="admin-page">
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+        <h1>
+            <%= isEdit ? 'Edit Coupon' : 'Add New Coupon' %>
+        </h1>
+
+        <p>
+            <%= isEdit
+                ? 'Update the coupon details.'
+                : 'Create a discount coupon for your customers.'
+            %>
+        </p>
+
+        <a
+            href="/admin/coupons"
+            class="btn btn-secondary">
+            Back to Coupons
+        </a>
+
+    </div>
+
+
+    <form
+        action="<%= isEdit
+            ? `/admin/coupons/${coupon._id}`
+            : '/admin/coupons'
+        %>"
+        method="POST"
+        class="admin-form">
+
+
+        <!-- ============================= -->
+        <!-- BASIC INFORMATION              -->
+        <!-- ============================= -->
+
+        <div class="admin-card">
+
+            <div class="card-header">
+                <h2>Basic Information</h2>
+            </div>
+
+
+            <div class="form-grid">
+
+                <!-- Code -->
+                <div class="form-group">
+
+                    <label for="code">
+                        Coupon Code
+                    </label>
+
+                    <input
+                        type="text"
+                        id="code"
+                        name="code"
+                        placeholder="e.g. SAVE10"
+                        value="<%= isEdit ? coupon.code : '' %>"
+                        required>
+
+                </div>
+
+
+                <!-- Description -->
+                <div class="form-group form-full">
+
+                    <label for="description">
+                        Description
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="3"
+                        placeholder="Describe what this coupon offers..."
+                        required><%= isEdit ? coupon.description : '' %></textarea>
+
+                </div>
+
+
+                <!-- Discount Type -->
+                <div class="form-group"> 
+                    
+                    <label for="discountType"> 
+                        Discount Type 
+                    </label>
+
+                    <select 
+                            id="discountType" 
+                            name="discountType" 
+                            required> 
+
+                        <option value=""> 
+                            Select discount type 
+                        </option> 
+                        
+                        <option
+                            value="percentage"
+                            <%= isEdit && coupon.discountType === 'percentage' ? 'selected' : '' %>>
+                            Percentage
+                        </option>
+                        
+                        <option
+                            value="fixed"
+                            <%= isEdit && coupon.discountType === 'fixed' ? 'selected' : '' %>>
+                            Fixed Amount
+                        </option>
+
+                    </select>
+                </div>
+
+
+                <!-- Discount Value -->
+                <div class="form-group">
+
+                    <label for="discountValue">
+                        Discount Value
+                    </label>
+
+                    <input
+                        type="number"
+                        id="discountValue"
+                        name="discountValue"
+                        min="0"
+                        step="0.01"
+                        value="<%= isEdit ? coupon.discountValue : '' %>"
+                        required>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ============================= -->
+        <!-- CONDITIONS                     -->
+        <!-- ============================= -->
+
+        <div class="admin-card">
+
+            <div class="card-header">
+                <h2>Conditions</h2>
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- Minimum Order -->
+                <div class="form-group">
+
+                    <label for="minimumOrderAmount">
+                        Minimum Order Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="minimumOrderAmount"
+                        name="minimumOrderAmount"
+                        min="0"
+                        step="0.01"
+                        value="<%= isEdit ? coupon.minimumOrderAmount : 0 %>">
+
+                </div>
+
+
+                <!-- Maximum Discount -->
+                <div class="form-group">
+
+                    <label for="maximumDiscountAmount">
+                        Maximum Discount Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="maximumDiscountAmount"
+                        name="maximumDiscountAmount"
+                        min="0"
+                        step="0.01"
+                        placeholder="Leave empty for no limit"
+                        value="<%= isEdit && coupon.maximumDiscountAmount != null
+                        ? coupon.maximumDiscountAmount
+                        : '' %>">
+
+                </div>
+
+
+                <!-- Categories -->
+                <div class="form-group form-full">
+
+                    <label>
+                        Applicable Categories
+                    </label>
+
+                    <div class="checkbox-group">
+
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="applicableCategories"
+                                value="Men"
+                                <%= isEdit && coupon.applicableCategories.includes('Men')
+                                    ? 'checked'
+                                    : '' %>>
+                            Men
+                        </label>
+
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="applicableCategories"
+                                value="Women"
+                                <%= isEdit && coupon.applicableCategories.includes('Women')
+                                    ? 'checked'
+                                    : '' %>>
+                            Women
+                        </label>
+
+                        <label>
+                            <input
+                                type="checkbox"
+                                name="applicableCategories"
+                                value="unisex"
+                                <%= isEdit && coupon.applicableCategories.includes('unisex')
+                                    ? 'checked'
+                                    : '' %>>
+                            Unisex
+                        </label>
+
+                    </div>
+
+                    <small>
+                        Leave all unchecked to apply to every category.
+                    </small>
+
+                </div>
+
+
+                <!-- Applicable Products -->
+                <div class="form-group form-full">
+
+                    <label for="applicableProducts">
+                        Applicable Products
+                    </label>
+
+                    <select
+                        id="applicableProducts"
+                        name="applicableProducts"
+                        multiple>
+
+                        <% products.forEach(product => { %>
+
+                            <option
+                                value="<%= product._id %>"
+                                <%= isEdit &&
+                                    coupon.applicableProducts.some(
+                                        id => id.toString() === product._id.toString()
+                                    )
+                                    ? 'selected'
+                                    : '' %>>
+                                <%= product.productName %>
+                            </option>
+
+                        <% }) %>
+
+                    </select>
+
+                    <small>
+                        Leave empty to apply to all products.
+                    </small>
+
+                </div>
+
+
+                <!-- Excluded Products -->
+                <div class="form-group form-full">
+
+                    <label for="excludedProducts">
+                        Excluded Products
+                    </label>
+
+                    <select
+                        id="excludedProducts"
+                        name="excludedProducts"
+                        multiple>
+
+                        <% products.forEach(product => { %>
+
+                            <option
+                                value="<%= product._id %>"
+                                <%= isEdit &&
+                                    coupon.excludedProducts.some(
+                                        id => id.toString() === product._id.toString()
+                                    )
+                                    ? 'selected'
+                                    : '' %>>
+                                <%= product.productName %>
+                            </option>
+
+                        <% }) %>
+
+                    </select>
+
+                    <small>
+                        Selected products will not receive this coupon.
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ============================= -->
+        <!-- VALIDITY & USAGE               -->
+        <!-- ============================= -->
+
+        <div class="admin-card">
+
+            <div class="card-header">
+                <h2>Validity & Usage</h2>
+            </div>
+
+
+            <div class="form-grid">
+
+
+                <!-- Start Date -->
+                <div class="form-group">
+
+                    <label for="startDate">
+                        Start Date
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="startDate"
+                        name="startDate"
+                        value="<%= isEdit ? formatDateTimeLocal(coupon.startDate) : '' %>"
+                        required>
+
+                </div>
+
+
+                <!-- Expiry Date -->
+                <div class="form-group">
+
+                    <label for="expiryDate">
+                        Expiry Date
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="expiryDate"
+                        name="expiryDate"
+                        value="<%= isEdit ? formatDateTimeLocal(coupon.expiryDate) : '' %>"
+                        required>
+
+                </div>
+
+
+                <!-- Usage Limit -->
+                <div class="form-group">
+
+                    <label for="usageLimit">
+                        Total Usage Limit
+                    </label>
+
+                    <input
+                        type="number"
+                        id="usageLimit"
+                        name="usageLimit"
+                        min="1"
+                        value="<%= isEdit && coupon.usageLimit != null
+                            ? coupon.usageLimit
+                            : '' %>">
+
+                </div>
+
+
+                <!-- Per User Limit -->
+                <div class="form-group">
+
+                    <label for="perUserLimit">
+                        Per User Limit
+                    </label>
+
+                    <input
+                        type="number"
+                        id="perUserLimit"
+                        name="perUserLimit"
+                        min="1"
+                        value="<%= isEdit ? coupon.perUserLimit : 1 %>">
+
+                </div>
+
+
+                <!-- Active -->
+                <div class="form-group">
+
+                    <label class="checkbox-label">
+
+                        <input
+                            type="checkbox"
+                            name="isActive"
+                            value="true"
+                            <%= !isEdit || coupon.isActive ? 'checked' : '' %>>
+
+                        Active Coupon
+
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ============================= -->
+        <!-- USER ELIGIBILITY               -->
+        <!-- ============================= -->
+
+        <div class="admin-card">
+
+            <div class="card-header">
+                <h2>Customer Eligibility</h2>
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Who can use this coupon?
+                </label>
+
+
+                <div class="radio-group">
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="userEligibility"
+                            value="all"
+                            <%= !isEdit || coupon.userEligibility.includes('all')
+                                ? 'checked'
+                                : '' %>>
+
+                        All Users
+                    </label>
+
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="userEligibility"
+                            value="new"
+                            <%= isEdit && coupon.userEligibility.includes('new')
+                                ? 'checked'
+                                : '' %>>
+
+                        New Users
+                    </label>
+
+
+                    <label>
+                        <input
+                            type="radio"
+                            name="userEligibility"
+                            value="existing"
+                            <%= isEdit && coupon.userEligibility.includes('existing')
+                                ? 'checked'
+                                : '' %>>
+
+                        Existing Users
+                    </label>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ============================= -->
+        <!-- FORM ACTIONS                   -->
+        <!-- ============================= -->
+
+        <div class="form-actions">
+
+            <a
+                href="/admin/coupons"
+                class="btn btn-secondary">
+                Cancel
+            </a>
+
+            <button
+                type="submit"
+                class="btn btn-primary">
+                <%= isEdit ? 'Update Coupon' : 'Create Coupon' %>
+            </button>
+
+        </div>
+
+
+    </form>
+
+</div>
