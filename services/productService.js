@@ -151,7 +151,7 @@ const addProductReview = async (userId, productId, rating, comment) => {
 
 const getProductReviews = async (productId) => {
   
-  const reviews = await Review.find({ productId })
+  const reviews = await Review.find({ productId, status: 'published' })
     .populate('userId', 'name')
     .sort({ createdAt: -1 });
 

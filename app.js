@@ -39,6 +39,7 @@ const adminOrderRouter = require('./routes/admin/adminOrderRouter');
 const wishlist = require('./routes/User/wishlistRouter');
 const customerRouter = require('./routes/admin/customerRouter');
 const adminCouponRouter = require('./routes/admin/couponRouter');
+const reviewRouter = require('./routes/admin/reviewRouter');
 const userCouponRouter = require('./routes/User/couponRouter');
 const checkoutRouter = require('./routes/checkoutRouter');
 const attachUser = require('./middlewares/attachUser');
@@ -65,6 +66,7 @@ app.use('/admin/products', adminProductRouter);
 app.use('/admin/orders', adminOrderRouter);
 app.use('/admin', customerRouter);
 app.use('/admin/coupons', adminCouponRouter);
+app.use('/admin/reviews', reviewRouter);
 
 // 404 handler 
 app.use((req, res) => {

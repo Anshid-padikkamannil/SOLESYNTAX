@@ -1,0 +1,215 @@
+<div class="container-fluid">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-1">Reviews</h2>
+            <p class="text-muted mb-0">
+                Manage customer reviews and ratings
+            </p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+
+            <% if (reviews.length === 0) { %>
+
+                <div class="text-center py-5">
+                    <h5>No reviews found</h5>
+                    <p class="text-muted">
+                        Customer reviews will appear here.
+                    </p>
+                </div>
+
+            <% } else { %>
+
+                <div class="table-responsive">
+                    <table class="table align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Product</th>
+                                <th>Rating</th>
+                                <th>Review</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <% reviews.forEach(function(review) { %>
+
+                                <tr>
+
+                                    <!-- Customer -->
+                                    <td>
+                                        <div class="fw-semibold">
+                                            <%= review.userId ? review.userId.name : 'Unknown User' %>
+                                        </div>
+
+                                        <small class="text-muted">
+                                            <%= review.userId ? review.userId.email : '' %>
+                                        </small>
+                                    </td>
+
+                                    <!-- Product -->
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+
+                                            <% if (
+                                                review.productId &&
+                                                review.productId.images &&
+                                                review.productId.images.length > 0
+                                            ) { %>
+
+                                                <img
+                                                    src="<%= review.productId.images[0] %>"
+                                                    alt="<%= review.productId.productName %>"
+                                                    width="50"
+                                                    height="50"
+                                                    style="object-fit: cover; border-radius: 6px;"
+                                                >
+
+                                            <% } %>
+
+                                            <span>
+                                                <%= review.productId
+                                                    ? review.productId.productName
+                                                    : 'Product deleted'
+                                                %>
+                                            </span>
+
+                                        </div>
+                                    </td>
+
+                                    <!-- Rating -->
+                                    <td>
+                                        <span class="fw-semibold">
+                                            <%= review.rating %>/5
+                                        </span>
+                                    </td>
+
+                                    <!-- Review -->
+                                    <td style="max-width: 300px;">
+                                        <%= review.comment %>
+                                    </td>
+
+                                    <td>
+                                      <% if (review.status === 'hidden') { %>
+                                          <span class="badge bg-secondary">Hidden</span>
+                                      <% } else { %>
+                                          <span class="badge bg-success">Published</span>
+                                      <% } %>
+                                  </td>
+
+                                    <!-- Date -->
+                                    <td>
+                                        <%= new Date(review.createdAt).toLocaleDateString() %>
+                                    </td>
+
+                                    <td>
+                                        <% if (review.status === 'hidden') { %>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-success review-status-btn"
+                                                data-id="<%= review._id %>"
+                                                data-status="published">
+                                                Restore
+                                            </button>
+
+                                        <% } else { %>
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-sm btn-warning review-status-btn"
+                                                data-id="<%= review._id %>"
+                                                data-status="hidden">
+                                                Hide
+                                            </button>
+
+                                        <% } %>
+                                    </td>
+
+                                </tr>
+
+                            <% }); %>
+
+                        </tbody>
+
+                    </table>
+                </div>
+
+            <% } %>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const statusButtons = document.querySelectorAll('.review-status-btn');
+
+    statusButtons.forEach(function (button) {
+
+        button.addEventListener('click', async function () {
+
+            const reviewId = button.dataset.id;
+            const newStatus = button.dataset.status;
+
+            const actionText = newStatus === 'hidden'
+                ? 'hide'
+                : 'restore';
+
+            const confirmed = confirm(
+                `Are you sure you want to ${actionText} this review?`
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            try {
+
+                const response = await fetch(
+                    `/admin/reviews/${reviewId}/status`,
+                    {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            status: newStatus
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert(
+                        data.message || 'Unable to update review status.'
+                    );
+                }
+
+            } catch (err) {
+
+                console.error('Review Status Error:', err);
+
+                alert(
+                    'Something went wrong while updating the review.'
+                );
+            }
+        });
+
+    });
+
+});
+</script>
