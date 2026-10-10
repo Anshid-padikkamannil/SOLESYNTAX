@@ -20,6 +20,10 @@ app.use(passport.initialize());
 app.set("view engine", "ejs");
 app.set("views", "./views");
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  '/vendor/chart.js',
+  express.static('node_modules/chart.js/dist')
+);
 
 // express-ejs-layouts
 const expressLayouts = require('express-ejs-layouts');
@@ -42,6 +46,7 @@ const adminCouponRouter = require('./routes/admin/couponRouter');
 const reviewRouter = require('./routes/admin/reviewRouter');
 const userCouponRouter = require('./routes/User/couponRouter');
 const checkoutRouter = require('./routes/checkoutRouter');
+const reportRouter = require('./routes/admin/reportRouter');
 const attachUser = require('./middlewares/attachUser');
 const { title } = require('process');
 
@@ -67,6 +72,7 @@ app.use('/admin/orders', adminOrderRouter);
 app.use('/admin', customerRouter);
 app.use('/admin/coupons', adminCouponRouter);
 app.use('/admin/reviews', reviewRouter);
+app.use('/admin/reports', reportRouter);
 
 // 404 handler 
 app.use((req, res) => {
