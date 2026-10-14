@@ -67,6 +67,14 @@ const userSchema = new Schema({
     type: Date,
     default: null
   },
+  googleProfilePicture: {
+    type: String,
+    default: null
+  },
+  profilePicture: {
+    type: String,
+    default: null
+  },
 }, {timestamps: true});
 
 module.exports = mongoose.model('User', userSchema);

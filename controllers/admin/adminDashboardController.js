@@ -47,7 +47,7 @@ const getAdminDashboard = async (req, res) => {
     res.render('admin/dashboard', {
       title: 'Admin Dashboard',
       currentPage: "dashboard",
-      user: req.user,
+      user: res.locals.user,
       totalCustomers,
       totalProducts,
       totalOrders,

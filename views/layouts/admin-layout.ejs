@@ -56,13 +56,26 @@
       <a href="/admin/reports" class="<%= currentPage === 'reports' ? 'active' : '' %>">
         <i class="fas fa-chart-line"></i> Reports
       </a>
+      <a href="/admin/profile" class="<%= currentPage === 'profile' ? 'active' : '' %>">
+        <i class="fas fa-user"></i> Profile
+      </a>
     </nav>
 
     <!-- Sidebar Footer (User Info) -->
     <div class="admin-sidebar-footer">
       <div class="avatar">
-        <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
-      </div>
+          <% let avatarUrl = user?.profilePicture || user?.googleProfilePicture; %>
+
+          <% if (avatarUrl) { %>
+            <img
+              src="<%= avatarUrl %>"
+              alt="Admin profile"
+              class="avatar-image"
+            >
+          <% } else { %>
+            <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+          <% } %>
+        </div>
       <div class="info">
         <div class="name"><%= user?.name || 'Admin' %></div>
         <div class="email"><%= user?.email || 'admin@solesyntax.com' %></div>
@@ -87,13 +100,25 @@
       </div>
 
       <!-- User dropdown -->
-      <div class="topbar-user">
-        <div class="avatar">
-          <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+      <a href="/admin/profile">
+        <div class="topbar-user">
+          <div class="avatar">
+            <%  avatarUrl = user?.profilePicture || user?.googleProfilePicture; %>
+
+            <% if (avatarUrl) { %>
+              <img
+                src="<%= avatarUrl %>"
+                alt="Admin profile"
+                class="avatar-image"
+              >
+            <% } else { %>
+              <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+            <% } %>
+          </div>
+          <span class="name"><%= user?.name || 'Admin' %></span>
+          <!-- <i class="fas fa-chevron-down chevron"></i> -->
         </div>
-        <span class="name"><%= user?.name || 'Admin' %></span>
-        <i class="fas fa-chevron-down chevron"></i>
-      </div>
+      </a>  
 
     </header>
 

@@ -8,6 +8,28 @@ const {
   getAdminDashboard
 } = require('../../controllers/admin/adminDashboardController');
 
-router.get('/', isLoggedIn, isAdmin, getAdminDashboard);
+const {
+  getAdminProfile,
+  updateAdminProfile,
+  changeAdminPassword,
+  uploadAdminProfilePicture
+} = require('../../controllers/admin/adminProfileController');
+
+const upload = require('../../config/multer');
+
+router.use(isLoggedIn, isAdmin)
+
+router.get('/', getAdminDashboard);
+
+// Admin profile page
+router.get('/profile', getAdminProfile);
+router.post('/profile/update', updateAdminProfile);
+
+router.post('/profile/change-password',changeAdminPassword);
+
+router.post('/profile/picture',
+  upload.uploadProfilePicture.single('profilePicture'),
+  uploadAdminProfilePicture
+);
 
 module.exports = router;

@@ -66,6 +66,10 @@ router.get('/auth/google/callback', (req, res, next) => {
 
     generateTokenAndSetCookie(req.user, res);
 
+    if (req.user.role === 'admin') {
+      return res.redirect('/admin');
+    }
+
     res.redirect('/');  
   }
 );

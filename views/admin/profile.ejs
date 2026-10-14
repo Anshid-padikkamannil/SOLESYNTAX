@@ -1,0 +1,214 @@
+<div class="container-fluid py-4">
+
+  <!-- Page heading -->
+  <div class="mb-4">
+    <h2 class="fw-bold">Admin Profile</h2>
+    <p class="text-muted">View and manage your account information.</p>
+  </div>
+
+  <!-- Profile card -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+
+      <div class="d-flex align-items-center gap-4 mb-4">
+
+        <!-- Profile picture -->
+        <div class="profile-avatar">
+          <% let avatarUrl = user?.profilePicture || user?.googleProfilePicture; %>
+
+          <% if (avatarUrl) { %>
+            <img
+              src="<%= avatarUrl %>"
+              alt="Admin profile picture"
+              class="profile-avatar-image"
+            >
+          <% } else { %>
+            <span>
+              <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+            </span>
+          <% } %>
+        </div>
+
+        
+        <form
+          action="/admin/profile/picture"
+          method="POST"
+          enctype="multipart/form-data"
+          class="mt-3"
+        >
+          <label for="profilePicture" class="form-label">
+            Change Profile Picture
+          </label>
+
+          <input
+            type="file"
+            id="profilePicture"
+            name="profilePicture"
+            class="form-control"
+            accept="image/jpeg,image/png,image/webp"
+            required
+          >
+
+          <small class="text-muted d-block mt-2">
+            Allowed formats: JPG, PNG, WEBP. Maximum size: 2 MB.
+          </small>
+
+          <button type="submit" class="btn btn-primary mt-3">
+            Upload Picture
+          </button>
+        </form>
+
+
+        <div>
+          <h4 class="mb-1"><%= user?.name || 'Admin' %></h4>
+          <p class="text-muted mb-0">Administrator</p>
+        </div>
+
+      </div>
+
+      <hr>
+
+      <!-- Account information -->
+      <form action="/admin/profile/update" method="POST">
+
+        <div class="row g-4 mt-2">
+
+          <div class="col-md-6">
+            <label for="name" class="form-label text-muted">Full Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-control"
+              value="<%= user?.name || '' %>"
+              required
+              minlength="2"
+              maxlength="50"
+            >
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label text-muted">Email Address</label>
+            <p class="fw-semibold">
+              <%= user?.email || 'Not available' %>
+            </p>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label text-muted">Account Type</label>
+            <p class="fw-semibold">
+              <%= user?.role || 'admin' %>
+            </p>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label text-muted">Login Method</label>
+            <p class="fw-semibold">
+              <%= user?.authProvider === 'google' ? 'Google' : 'Email and Password' %>
+            </p>
+          </div>
+
+        </div>
+
+        <div class="mt-4">
+          <button type="submit" class="btn btn-primary">
+            Save Changes
+          </button>
+        </div>
+
+      </form>
+      
+      <!-- Change Password Section -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <h4 class="card-title mb-3">Change Password</h4>
+
+          <p class="text-muted">
+            Enter your current password before choosing a new one.
+          </p>
+
+          <form action="/admin/profile/change-password" method="POST">
+
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label">
+                Current Password
+              </label>
+              <input
+                type="password"
+                id="currentPassword"
+                name="currentPassword"
+                class="form-control"
+                autocomplete="current-password"
+                required
+              >
+            </div>
+
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">
+                New Password
+              </label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                class="form-control"
+                minlength="8"
+                autocomplete="new-password"
+                required
+              >
+              <small class="text-muted">
+                Use at least 8 characters.
+              </small>
+            </div>
+
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">
+                Confirm New Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                class="form-control"
+                minlength="8"
+                autocomplete="new-password"
+                required
+              >
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              Change Password
+            </button>
+
+          </form>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+
+</div>
+
+<style>
+  .profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 36px;
+    font-weight: 600;
+  }
+
+  .profile-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+</style>

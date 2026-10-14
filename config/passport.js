@@ -13,13 +13,20 @@ passport.use(
 
     async (accessToken, refreshToken, profile, done) => {
       try {
-        console.log('Google Profile:', profile);;
+        console.log('Google Profile:', profile);
+        const profilePictureUrl = profile.photos?.[0]?.value || null;
 
         const existingUser = await User.findOne({
           googleId: profile.id
         });
 
         if (existingUser) {
+          
+          if (!existingUser.googleProfilePicture && profilePictureUrl) {
+            existingUser.googleProfilePicture = profilePictureUrl;
+            await existingUser.save();
+          }
+
           return done(null, existingUser);
         }
 
@@ -43,7 +50,8 @@ passport.use(
 
         const newUser = await User.create({
           name: profile.displayName,
-          email: googleEmail.value,
+          email: googleEmail.value.toLowerCase(),
+          googleProfilePicture: profilePictureUrl,
           googleId: profile.id,
           authProvider: 'google',
           isVerified: true
