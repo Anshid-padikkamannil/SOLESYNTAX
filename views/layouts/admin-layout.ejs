@@ -20,7 +20,7 @@
 <div class="admin-wrapper">
 
   <!-- ===== SIDEBAR ===== -->
-  <aside class="admin-sidebar">
+  <aside class="admin-sidebar" id="adminSidebar">
 
     <!-- Logo -->
     <div class="admin-logo">
@@ -85,6 +85,8 @@
       </a>
     </div>
 
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
   </aside>
 
   <!-- ===== MAIN CONTAINER ===== -->
@@ -92,6 +94,17 @@
 
     <!-- ===== TOPBAR ===== -->
     <header class="admin-topbar">
+
+      <button
+        type="button"
+        class="sidebar-toggle"
+        id="sidebarToggle"
+        aria-label="Toggle admin navigation"
+        aria-controls="adminSidebar"
+        aria-expanded="false"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
 
       <!-- Notifications -->
       <div class="topbar-notif" title="Notifications">
@@ -144,6 +157,55 @@
   </div>
 
 </div>
+
+<script>
+  const sidebar = document.getElementById('adminSidebar');
+  const sidebarToggle = document.getElementById('sidebarToggle');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+  function openSidebar() {
+    sidebar.classList.add('show');
+    sidebarOverlay.classList.add('show');
+    sidebarToggle.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('show');
+    sidebarOverlay.classList.remove('show');
+    sidebarToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  sidebarToggle?.addEventListener('click', () => {
+    sidebar.classList.contains('show')
+      ? closeSidebar()
+      : openSidebar();
+  });
+
+  // Close when clicking the overlay.
+  sidebarOverlay?.addEventListener('click', closeSidebar);
+
+  // Close when clicking anywhere outside the sidebar and toggle button.
+  document.addEventListener('click', (event) => {
+    if (
+      window.innerWidth <= 991 &&
+      sidebar.classList.contains('show') &&
+      !sidebar.contains(event.target) &&
+      !sidebarToggle.contains(event.target)
+    ) {
+      closeSidebar();
+    }
+  });
+
+  // Close when pressing Escape.
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeSidebar();
+  });
+
+  // Reset mobile menu state on desktop.
+  window.addEventListener('resize', () => {
+    if (window.innerWidth > 991) closeSidebar();
+  });
+</script>
 
 </body>
 </html>
