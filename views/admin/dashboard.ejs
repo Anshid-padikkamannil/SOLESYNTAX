@@ -117,6 +117,10 @@
   }
   .stat-card.warning .stat-icon { color: #d68700; }
 
+  .stat-trend.neutral {
+    color: #6c757d;
+  }
+
   /* ---------- Revenue Card ---------- */
   .revenue-card {
     background: linear-gradient(135deg, #1a1a2e 0%, #252547 100%);
@@ -203,6 +207,18 @@
   }
   .revenue-chart svg { width: 100%; height: 100%; }
 
+  .revenue-trend.up {
+      color: #28a745;
+    }
+
+    .revenue-trend.down {
+      color: #dc3545;
+    }
+
+    .revenue-trend.neutral {
+      color: #6c757d;
+    }
+
   /* ---------- Two-Column Row ---------- */
   .dashboard-row {
     display: grid;
@@ -283,6 +299,19 @@
   .admin-table tbody tr:last-child td { border-bottom: none; }
   .admin-table tbody tr { transition: background 0.15s ease; }
   .admin-table tbody tr:hover { background: #f0f9f7; }
+
+  .clickable-order-row {
+    cursor: pointer;
+  }
+
+  .clickable-order-row:hover {
+    background: #f0f9f7;
+  }
+
+  .clickable-order-row:focus-visible {
+    outline: 2px solid #66a59b;
+    outline-offset: -2px;
+  }
 
   .cell-primary {
     font-weight: 600;
@@ -445,6 +474,12 @@
     .revenue-chart { max-width: 100%; }
   }
 
+  @media (max-width: 991px) and (min-width: 768px) {
+    .stat-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
   @media (max-width: 768px) {
     .page-header h1 { font-size: 26px; }
     .stat-card .stat-value { font-size: 28px; }
@@ -472,46 +507,73 @@
 <!--  STAT CARDS                                                  -->
 <!-- ============================================================ -->
 <div class="stat-grid">
-
-  <div class="stat-card primary">
-    <div class="stat-icon"><i class="fas fa-users"></i></div>
-    <div class="stat-label">Total Customers</div>
-    <div class="stat-value"><%= totalCustomers %></div>
-    <div class="stat-trend up">
-      <i class="fas fa-arrow-up"></i> 12%
-      <span>from last month</span>
+  <a href="/admin/customers">
+    <div class="stat-card primary">
+      <div class="stat-icon"><i class="fas fa-users"></i></div>
+      <div class="stat-label">Total Customers</div>
+      <div class="stat-value"><%= totalCustomers %></div>
+      <div class="stat-trend <%= customerChange === null ? '' : customerChange >= 0 ? 'up' : 'down' %>">
+        <% if (customerChange === null) { %>
+          <span>No previous-month baseline</span>
+        <% } else { %>
+          <i class="fas <%= customerChange > 0 ? 'fa-arrow-up' : customerChange < 0 ? 'fa-arrow-down' : 'fa-minus' %>"></i>
+          <%= Math.abs(customerChange) %>%
+          <span>from last month</span>
+        <% } %>
+      </div>
     </div>
-  </div>
+  </a>
 
-  <div class="stat-card success">
-    <div class="stat-icon"><i class="fas fa-box"></i></div>
-    <div class="stat-label">Total Products</div>
-    <div class="stat-value"><%= totalProducts %></div>
-    <div class="stat-trend up">
-      <i class="fas fa-arrow-up"></i> 8%
-      <span>from last month</span>
+  <a href="/admin/products">
+    <div class="stat-card success">
+      <div class="stat-icon"><i class="fas fa-box"></i></div>
+      <div class="stat-label">Total Products</div>
+      <div class="stat-value"><%= totalProducts %></div>
+      <div class="stat-trend <%= productChange === null ? '' : productChange > 0 ? 'up' : productChange < 0 ? 'down' : 'neutral' %>">
+        <% if (productChange === null) { %>
+          <span>No previous-month baseline</span>
+        <% } else { %>
+          <i class="fas <%= productChange > 0 ? 'fa-arrow-up' : productChange < 0 ? 'fa-arrow-down' : 'fa-minus' %>"></i>
+          <%= Math.abs(productChange) %>%
+          <span>from last month</span>
+        <% } %>
+      </div>
     </div>
-  </div>
+  </a>
 
-  <div class="stat-card info">
-    <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
-    <div class="stat-label">Total Orders</div>
-    <div class="stat-value"><%= totalOrders %></div>
-    <div class="stat-trend up">
-      <i class="fas fa-arrow-up"></i> 15%
-      <span>from last month</span>
+  <a href="/admin/orders">
+    <div class="stat-card info">
+      <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+      <div class="stat-label">Total Orders</div>
+      <div class="stat-value"><%= totalOrders %></div>
+      <div class="stat-trend <%= orderChange === null ? '' : orderChange > 0 ? 'up' : orderChange < 0 ? 'down' : 'neutral' %>">
+        <% if (orderChange === null) { %>
+          <span>No previous-month baseline</span>
+        <% } else { %>
+          <i class="fas <%= orderChange > 0 ? 'fa-arrow-up' : orderChange < 0 ? 'fa-arrow-down' : 'fa-minus' %>"></i>
+          <%= Math.abs(orderChange) %>%
+          <span>from last month</span>
+        <% } %>
+      </div>
     </div>
-  </div>
+  </a>
 
-  <div class="stat-card warning">
-    <div class="stat-icon"><i class="fas fa-clock"></i></div>
-    <div class="stat-label">Pending Orders</div>
-    <div class="stat-value"><%= pendingOrders %></div>
-    <div class="stat-trend down">
-      <i class="fas fa-arrow-down"></i> 20%
-      <span>from last month</span>
+  <a href="/admin/orders">
+    <div class="stat-card warning">
+      <div class="stat-icon"><i class="fas fa-clock"></i></div>
+      <div class="stat-label">Pending Orders</div>
+      <div class="stat-value"><%= pendingOrders %></div>
+      <div class="stat-trend <%= pendingOrderChange === null ? '' : pendingOrderChange > 0 ? 'down' : pendingOrderChange < 0 ? 'up' : 'neutral' %>">
+        <% if (pendingOrderChange === null) { %>
+          <span>No previous-month baseline</span>
+        <% } else { %>
+          <i class="fas <%= pendingOrderChange > 0 ? 'fa-arrow-up' : pendingOrderChange < 0 ? 'fa-arrow-down' : 'fa-minus' %>"></i>
+          <%= Math.abs(pendingOrderChange) %>%
+          <span>from last month</span>
+        <% } %>
+      </div>
     </div>
-  </div>
+  </a>
 
 </div>
 
@@ -527,9 +589,14 @@
     <div class="revenue-info">
       <div class="label">Total Revenue</div>
       <div class="value">₹<%= totalRevenue.toLocaleString('en-IN', { maximumFractionDigits: 0 }) %></div>
-      <div class="revenue-trend">
-        <i class="fas fa-arrow-up"></i> 18%
-        <span>from last month</span>
+      <div class="revenue-trend <%= revenueChange === null ? '' : revenueChange > 0 ? 'up' : revenueChange < 0 ? 'down' : 'neutral' %>">
+        <% if (revenueChange === null) { %>
+          <span>No previous-month baseline</span>
+        <% } else { %>
+          <i class="fas <%= revenueChange > 0 ? 'fa-arrow-up' : revenueChange < 0 ? 'fa-arrow-down' : 'fa-minus' %>"></i>
+          <%= Math.abs(revenueChange) %>%
+          <span>from last month</span>
+        <% } %>
       </div>
     </div>
   </div>
@@ -587,7 +654,13 @@
           <% recentOrders.forEach(order => {
             const statusClass = (order.status || 'Pending').toLowerCase().replace(/\s+/g, '-');
           %>
-            <tr>
+            <tr
+              class="clickable-order-row"
+              data-href="/admin/orders/<%= order._id %>"
+              tabindex="0"
+              role="link"
+              aria-label="View order <%= String(order._id).slice(-6).toUpperCase() %>"
+            >
               <td>
                 <span class="cell-primary">
                   #<%= String(order._id).slice(-6).toUpperCase() %>
@@ -644,20 +717,40 @@
         const badgeClass = isCritical ? 'critical' : 'low';
         const badgeText = isCritical ? 'Critical' : 'Low';
       %>
-        <div class="low-stock-item">
-          <img
-            src="<%= product.images && product.images[0] ? product.images[0] : '/images/default.jpg' %>"
-            alt="<%= product.productName %>"
-            class="stock-thumb"
-          >
-          <div class="stock-info">
-            <div class="name"><%= product.productName %></div>
-            <div class="qty"><%= stockNum %> left</div>
+       <a href="/admin/products/edit-product/<%= product._id %>">
+          <div class="low-stock-item">
+            <img
+              src="<%= product.images && product.images[0] ? product.images[0] : '/images/default.jpg' %>"
+              alt="<%= product.productName %>"
+              class="stock-thumb"
+            >
+            <div class="stock-info">
+              <div class="name"><%= product.productName %></div>
+              <div class="qty"><%= stockNum %> left</div>
+            </div>
+            <span class="stock-badge <%= badgeClass %>"><%= badgeText %></span>
           </div>
-          <span class="stock-badge <%= badgeClass %>"><%= badgeText %></span>
-        </div>
+        </a>
       <% }) %>
     <% } %>
   </div>
 
 </div>
+
+<script>
+  document.querySelectorAll('.clickable-order-row').forEach(row => {
+    row.addEventListener('click', event => {
+      // Allow text selection without navigating.
+      if (window.getSelection().toString()) return;
+
+      window.location.href = row.dataset.href;
+    });
+
+    row.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        window.location.href = row.dataset.href;
+      }
+    });
+  });
+</script>
