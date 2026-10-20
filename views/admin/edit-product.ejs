@@ -1,404 +1,857 @@
-<form id="editProductForm">
+<style>
+  /* =========================================
+     EDIT PRODUCT PAGE
+  ========================================= */
 
-    <div class="form-group">
-        <label for="productName">Product Name</label>
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-dark);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 16px;
+    transition: color 0.2s ease;
+  }
+  .back-link:hover { color: var(--secondary); }
+  .back-link i { font-size: 11px; }
 
-        <input
-            type="text"
-            id="productName"
-            name="productName"
-            value="<%= product.productName %>"
-            required
-        >
-    </div>
+  .page-header {
+    margin-bottom: 26px;
+  }
+  .page-header h1 {
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0 0 6px;
+    letter-spacing: -0.4px;
+  }
+  .page-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  /* ============ LAYOUT ============ */
+  .form-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ============ FORM CARD ============ */
+  .form-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eef1f4;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-body {
+    padding: 28px;
+    flex: 1;
+  }
+
+  .form-footer {
+    padding: 20px 28px;
+    border-top: 1px solid #eef1f4;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: #fafbfc;
+    border-radius: 0 0 14px 14px;
+  }
+
+  /* ============ FORM ELEMENTS ============ */
+  .form-group {
+    margin-bottom: 22px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+
+  .required {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #e6ebf0;
+    background: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 4px rgba(136, 200, 188, 0.18);
+  }
+
+  .form-control::placeholder { color: #adb5bd; }
+  textarea.form-control { resize: vertical; min-height: 110px; }
+
+  select.form-control {
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3e%3cpath d='M1 1l5 5 5-5' stroke='%238892a0' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px;
+    padding-right: 40px;
+  }
+
+  /* ============ SIZES ============ */
+  .size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .size-checkbox {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .size-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .size-checkbox span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    border: 1.5px solid #e6ebf0;
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+  }
+
+  .size-checkbox input:checked + span {
+    background: var(--primary);
+    border-color: var(--primary-dark);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(136, 200, 188, 0.3);
+  }
+
+  .size-checkbox:hover span { border-color: var(--primary-dark); }
+
+  /* ============ CURRENT IMAGES ============ */
+  .current-images-label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  
+  .current-images-label small {
+    font-size: 12px;
+    color: #8892a0;
+    font-weight: 400;
+  }
+
+  .image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .image-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    border: 1px solid #eef1f4;
+    background: #f8fafb;
+    overflow: hidden;
+  }
+
+  .image-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .image-item img:hover { transform: scale(1.05); }
+
+  .delete-image-btn {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #eef1f4;
+    color: #e63946;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  .delete-image-btn:hover {
+    background: #e63946;
+    color: #ffffff;
+    border-color: #e63946;
+  }
+
+  /* ============ UPLOAD AREA ============ */
+  .upload-area {
+    border: 2px dashed #d8dde3;
+    border-radius: 12px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fafbfc;
+  }
+
+  .upload-area:hover, .upload-area.dragover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  .upload-area i.fa-cloud-upload-alt {
+    font-size: 36px;
+    color: #8892a0;
+    margin-bottom: 12px;
+    display: block;
+    transition: color 0.2s ease;
+  }
+
+  .upload-area:hover i.fa-cloud-upload-alt { color: var(--primary-dark); }
+
+  .upload-area p {
+    margin: 0 0 6px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .upload-area strong { color: var(--secondary); }
+  .upload-area small { font-size: 12px; color: #adb5bd; }
+
+  /* ============ SIDE PANEL ============ */
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 20px;
+  }
+
+  .side-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eef1f4;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+    padding: 24px;
+  }
+
+  .side-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0 0 18px;
+  }
+  .side-card-title i { color: var(--secondary); font-size: 16px; }
+
+  /* ============ PREVIEW BOX ============ */
+  .preview-box {
+    background: #f8fafb;
+    border: 1px solid #eef1f4;
+    border-radius: 12px;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .preview-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+  }
+
+  .preview-box .preview-icon {
+    font-size: 42px;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+  }
+
+  .preview-box p {
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057;
+    margin: 0;
+  }
+
+  /* ============ GUIDELINES ============ */
+  .guidelines-card {
+    background: #f0f9f7;
+    border-color: #d4ede7;
+  }
+
+  .guidelines-card .side-card-title {
+    color: var(--primary-dark);
+    margin-bottom: 12px;
+  }
+
+  .guidelines-card .side-card-title i { color: var(--primary-dark); }
+
+  .guidelines-card ul {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .guidelines-card li {
+    font-size: 13px;
+    color: #495057;
+    line-height: 1.5;
+  }
+
+  /* ============ BUTTONS ============ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.25s ease;
+    text-decoration: none;
+  }
+
+  .btn-cancel {
+    background: #ffffff;
+    border-color: #e6ebf0;
+    color: #6c757d;
+  }
+  .btn-cancel:hover { background: #f8f9fa; color: var(--dark); }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-color: var(--primary-dark);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(136, 200, 188, 0.3);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(70, 105, 143, 0.35);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1100px) {
+    .form-layout { grid-template-columns: 1fr; }
+    .side-panel { position: static; }
+  }
+  @media (max-width: 600px) {
+    .form-row { grid-template-columns: 1fr; }
+    .form-body { padding: 20px; }
+    .form-footer { padding: 16px 20px; flex-direction: column; }
+    .form-footer .btn { width: 100%; }
+  }
+</style>
 
 
-    <div class="form-group">
-        <label for="description">Description</label>
+<!-- ============================================================ -->
+<!--  PAGE CONTENT                                                -->
+<!-- ============================================================ -->
+<div class="admin-page">
 
-        <textarea
-            id="description"
-            name="description"
-            required
-        ><%= product.description %></textarea>
-    </div>
+  <a href="/admin/products" class="back-link">
+    <i class="fas fa-arrow-left"></i> Back to Products
+  </a>
 
+  <div class="page-header">
+    <h1>Edit Product</h1>
+    <p>Update the product details and images.</p>
+  </div>
 
-    <div class="form-group">
-        <label for="category">Category</label>
+  <form id="editProductForm">
+    <div class="form-layout">
 
-        <select
-            id="category"
-            name="category"
-            required
-        >
-            <option
-                value="Men"
-                <%= product.category === 'Men' ? 'selected' : '' %>
-            >
-                Men
-            </option>
+      <!-- ===== LEFT COLUMN: FORM ===== -->
+      <div class="form-card">
+        <div class="form-body">
 
-            <option
-                value="Women"
-                <%= product.category === 'Women' ? 'selected' : '' %>
-            >
-                Women
-            </option>
+          <!-- Product Name & Brand -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Product Name <span class="required">*</span></label>
+              <input
+                type="text"
+                id="productName"
+                name="productName"
+                class="form-control"
+                value="<%= product.productName %>"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label>Brand <span class="required">*</span></label>
+              <input
+                type="text"
+                id="brand"
+                name="brand"
+                class="form-control"
+                value="<%= product.brand %>"
+                required
+              >
+            </div>
+          </div>
 
-            <option
-                value="unisex"
-                <%= product.category === 'unisex' ? 'selected' : '' %>
-            >
-                Unisex
-            </option>
-        </select>
-    </div>
-
-
-    <div class="form-group">
-        <label for="brand">Brand</label>
-
-        <input
-            type="text"
-            id="brand"
-            name="brand"
-            value="<%= product.brand %>"
-            required
-        >
-    </div>
-
-
-    <div class="form-group">
-        <label for="shoeType">Shoe Type</label>
-
-        <select
-            id="shoeType"
-            name="shoeType"
-            required
-        >
-            <% const shoeTypes = [
-                'Running',
-                'Casual',
-                'Sneakers',
-                'Basketball',
-                'Training',
-                'Formal'
-            ]; %>
-
-            <% shoeTypes.forEach(type => { %>
-
-                <option
-                    value="<%= type %>"
-                    <%= product.shoeType === type ? 'selected' : '' %>
-                >
+          <!-- Category & Shoe Type -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Category <span class="required">*</span></label>
+              <select id="category" name="category" class="form-control" required>
+                <option value="Men" <%= product.category === 'Men' ? 'selected' : '' %>>Men</option>
+                <option value="Women" <%= product.category === 'Women' ? 'selected' : '' %>>Women</option>
+                <option value="Unisex" <%= product.category === 'unisex' ? 'selected' : '' %>>Unisex</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Shoe Type <span class="required">*</span></label>
+              <select id="shoeType" name="shoeType" class="form-control" required>
+                <% const shoeTypes = ['Running', 'Casual', 'Sneakers', 'Basketball', 'Training', 'Formal']; %>
+                <% shoeTypes.forEach(type => { %>
+                  <option value="<%= type %>" <%= product.shoeType === type ? 'selected' : '' %>>
                     <%= type %>
-                </option>
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+          </div>
 
-            <% }) %>
+          <!-- Price & Stock -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Price <span class="required">*</span></label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                class="form-control"
+                value="<%= product.price %>"
+                min="0"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label>Stock <span class="required">*</span></label>
+              <input
+                type="number"
+                id="stock"
+                name="stock"
+                class="form-control"
+                value="<%= product.stock %>"
+                min="0"
+                required
+              >
+            </div>
+          </div>
 
-        </select>
-    </div>
+          <!-- Description -->
+          <div class="form-group">
+            <label>Description <span class="required">*</span></label>
+            <textarea
+              id="description"
+              name="description"
+              class="form-control"
+              rows="4"
+              required
+            ><%= product.description %></textarea>
+          </div>
 
-
-    <div class="form-group">
-        <label for="price">Price</label>
-
-        <input
-            type="number"
-            id="price"
-            name="price"
-            value="<%= product.price %>"
-            min="0"
-            required
-        >
-    </div>
-
-
-    <div class="form-group">
-        <label for="stock">Stock</label>
-
-        <input
-            type="number"
-            id="stock"
-            name="stock"
-            value="<%= product.stock %>"
-            min="0"
-            required
-        >
-    </div>
-
-
-    <div class="form-group">
-
-        <label>Available Sizes (UK / India)</label>
-
-        <% [6, 7, 8, 9, 10, 11, 12, 13].forEach(size => { %>
-
-            <label>
-                <input
+          <!-- Sizes -->
+          <div class="form-group">
+            <label>Available Sizes (UK / India) <span class="required">*</span></label>
+            <div class="size-options">
+              <% [6, 7, 8, 9, 10, 11, 12, 13].forEach(size => { %>
+                <label class="size-checkbox">
+                  <input
                     type="checkbox"
                     name="sizes"
                     value="<%= size %>"
-                    <%= product.sizes.includes(size) ? 'checked' : '' %>
-                >
+                    <%= product.sizes && product.sizes.includes(size) ? 'checked' : '' %>
+                  >
+                  <span><%= size %></span>
+                </label>
+              <% }) %>
+            </div>
+          </div>
 
-                <%= size %>
-            </label>
-
-        <% }) %>
-
-    </div>
-
-    <div class="form-group">
-
-        <label>Current Product Images</label>
-
-        <div class="product-images">
-
-            <% if (product.images && product.images.length > 0) { %>
-
+          <!-- Current Images -->
+          <div class="form-group">
+            <div class="current-images-label">
+              <label style="margin-bottom: 0;">Current Images</label>
+              <small>These are the existing product images. You can remove any image or add new ones.</small>
+            </div>
+            
+            <div class="image-grid" id="currentImageGrid">
+              <% if (product.images && product.images.length > 0) { %>
                 <% product.images.forEach((image, index) => { %>
-
-                    <div class="product-image-item">
-
-                        <img
-                            src="<%= image %>"
-                            alt="<%= product.productName %>"
-                            width="150"
-                        >
-
-                        <button
-                            type="button"
-                            class="delete-image-btn"
-                            data-image="<%= image %>"
-                        >
-                            Delete
-                        </button>
-
-                    </div>
-
+                  <div class="image-item">
+                    <img 
+                      src="<%= image %>" 
+                      alt="<%= product.productName %>" 
+                      onclick="setMainPreview(this.src)"
+                    >
+                    <button
+                      type="button"
+                      class="delete-image-btn delete-image-trigger"
+                      data-image="<%= image %>"
+                      title="Remove Image"
+                    >
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
                 <% }) %>
+              <% } else { %>
+                <p style="color: #8892a0; font-size: 14px; margin: 0;">No product images available.</p>
+              <% } %>
+            </div>
+          </div>
 
-            <% } else { %>
-
-                <p>No product images available.</p>
-
-            <% } %>
+          <!-- Add More Images (Drag & Drop) -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Add More Images</label>
+            <div class="upload-area" id="uploadArea">
+              <input
+                type="file"
+                id="newImages"
+                name="images"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                multiple
+                hidden
+              >
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p><strong>Choose files</strong> or drag and drop here</p>
+              <small>You can add up to 5 images in total (JPG, PNG, WEBP).</small>
+            </div>
+          </div>
 
         </div>
 
+        <!-- Footer -->
+        <div class="form-footer">
+          <a href="/admin/products" class="btn btn-cancel">Cancel</a>
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <i class="fas fa-sync-alt"></i> Update Product
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== RIGHT COLUMN: SIDE PANEL ===== -->
+      <div class="side-panel">
+
+        <!-- Product Preview -->
+        <div class="side-card">
+          <h5 class="side-card-title">
+            <i class="far fa-image"></i> Product Preview
+          </h5>
+          <div class="preview-box" id="mainPreviewBox">
+            <% if (product.images && product.images.length > 0) { %>
+              <img src="<%= product.images[0] %>" alt="<%= product.productName %>" id="mainPreviewImg">
+            <% } else { %>
+              <div style="text-align: center;">
+                <i class="far fa-image preview-icon"></i>
+                <p>No image available</p>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Guidelines -->
+        <div class="side-card guidelines-card">
+          <h5 class="side-card-title">
+            <i class="fas fa-info-circle"></i> Image Guidelines
+          </h5>
+          <ul>
+            <li>Supported formats: JPG, PNG, WEBP</li>
+            <li>Maximum 5 images per product</li>
+            <li>Recommended size: 800 × 800px or larger</li>
+            <li>Keep file size under 5MB each</li>
+          </ul>
+        </div>
+
+      </div>
+
     </div>
+  </form>
 
-    <div class="form-group">
-
-        <label for="newImages">Add More Images</label>
-
-        <input
-            type="file"
-            id="newImages"
-            name="images"
-            class="form-control"
-            accept="image/jpeg,image/jpg,image/png,image/webp"
-            multiple
-        >
-
-        <small class="form-text text-muted">
-            You can add up to 5 images in total.
-        </small>
-
-    </div>
+</div>
 
 
-    <button
-        type="submit"
-        class="btn btn-primary"
-    >
-        Update Product
-    </button>
-
-</form>
+<!-- ============================================================ -->
+<!--  SCRIPTS                                                     -->
+<!-- ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-document.getElementById('editProductForm').addEventListener('submit', async function (e) {
+(function () {
+  'use strict';
 
-    e.preventDefault();
+  const form = document.getElementById('editProductForm');
+  const uploadArea = document.getElementById('uploadArea');
+  const fileInput = document.getElementById('newImages');
+  const mainPreviewImg = document.getElementById('mainPreviewImg');
+  const mainPreviewBox = document.getElementById('mainPreviewBox');
+  const currentImageGrid = document.getElementById('currentImageGrid');
 
-    const form = e.target;
+  // ==============================================
+  //  1. PREVIEW LOGIC
+  // ==============================================
 
-    const formData = new FormData();
+  // Function called when clicking an existing image
+  window.setMainPreview = function(src) {
+    if (mainPreviewImg) {
+      mainPreviewImg.src = src;
+    } else {
+      mainPreviewBox.innerHTML = `<img src="${src}" id="mainPreviewImg" style="width:100%;height:100%;object-fit:contain;">`;
+    }
+  };
 
-    formData.append(
-        'productName',
-        form.productName.value.trim()
-    );
+  // Update preview when new files are selected
+  function updatePreviewFromFiles() {
+    const files = Array.from(fileInput.files);
+    if (files.length > 0) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        window.setMainPreview(e.target.result);
+      };
+      reader.readAsDataURL(files[0]);
+    }
+  }
 
-    formData.append(
-        'description',
-        form.description.value.trim()
-    );
+  // ==============================================
+  //  2. DRAG & DROP SETUP
+  // ==============================================
+  uploadArea.addEventListener('click', () => fileInput.click());
 
-    formData.append(
-        'category',
-        form.category.value
-    );
-
-    formData.append(
-        'brand',
-        form.brand.value.trim()
-    );
-
-    formData.append(
-        'shoeType',
-        form.shoeType.value
-    );
-
-    formData.append(
-        'price',
-        Number(form.price.value)
-    );
-
-    formData.append(
-        'stock',
-        Number(form.stock.value)
-    );
-
-
-    // Sizes
-    const selectedSizes = form.querySelectorAll(
-        'input[name="sizes"]:checked'
-    );
-
-    selectedSizes.forEach(input => {
-        formData.append('sizes', input.value);
+  ['dragenter', 'dragover'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
     });
+  });
 
-
-    // New images
-    const imageInput = document.getElementById('newImages');
-
-    Array.from(imageInput.files).forEach(file => {
-        formData.append('images', file);
+  ['dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
     });
+  });
 
+  uploadArea.addEventListener('drop', (e) => {
+    const files = e.dataTransfer.files;
+    if (files.length) {
+      fileInput.files = files;
+      updatePreviewFromFiles();
+    }
+  });
 
-    try {
+  fileInput.addEventListener('change', updatePreviewFromFiles);
 
-        const response = await fetch(
-            `/admin/products/update-product/<%= product._id %>`,
-            {
-                method: 'PUT',
-                credentials: 'include',
-                body: formData
-            }
-        );
+  // ==============================================
+  //  3. DELETE IMAGE (AJAX)
+  // ==============================================
+  document.querySelectorAll('.delete-image-trigger').forEach(btn => {
+    btn.addEventListener('click', async function () {
+      const image = this.dataset.image;
+      const imageItem = this.closest('.image-item');
+
+      const confirmResult = await Swal.fire({
+        icon: 'warning',
+        title: 'Delete Image?',
+        text: "Are you sure you want to remove this image?",
+        showCancelButton: true,
+        confirmButtonColor: '#e63946',
+        cancelButtonColor: '#8892a0',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true
+      });
+
+      if (!confirmResult.isConfirmed) return;
+
+      try {
+        const response = await fetch(`/admin/products/<%= product._id %>/images`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image })
+        });
 
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(
-                data.message || 'Failed to update product'
-            );
+          throw new Error(data.message || 'Failed to delete image');
         }
 
-        alert('Product updated successfully');
+        // Success: remove from UI
+        imageItem.style.opacity = '0';
+        setTimeout(() => imageItem.remove(), 300);
 
-        window.location.href = '/admin/products';
+        // If we deleted the main preview image, fallback to the next available image
+        if (mainPreviewImg && mainPreviewImg.src === image) {
+          const nextImg = currentImageGrid.querySelector('img:not([src="'+image+'"])');
+          if (nextImg) {
+            window.setMainPreview(nextImg.src);
+          } else {
+            mainPreviewBox.innerHTML = `
+              <div style="text-align: center;">
+                <i class="far fa-image preview-icon"></i>
+                <p>No image available</p>
+              </div>`;
+          }
+        }
 
-    } catch (err) {
+      } catch (err) {
+        console.error('DELETE IMAGE ERROR:', err);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: err.message,
+          confirmButtonColor: '#88c8bc'
+        });
+      }
+    });
+  });
 
-        console.error('UPDATE PRODUCT ERROR:', err);
+  // ==============================================
+  //  4. FORM SUBMISSION
+  // ==============================================
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
 
-        alert(err.message);
-
+    // ---- Validation ----
+    const selectedSizes = form.querySelectorAll('input[name="sizes"]:checked');
+    if (selectedSizes.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Missing Sizes',
+        text: 'Please select at least one available size.',
+        confirmButtonColor: '#88c8bc'
+      });
+      return;
     }
 
-});
+    // ---- Build FormData ----
+    const formData = new FormData();
+    formData.append('productName', form.productName.value.trim());
+    formData.append('description', form.description.value.trim());
+    formData.append('category', form.category.value);
+    formData.append('brand', form.brand.value.trim());
+    formData.append('shoeType', form.shoeType.value);
+    formData.append('price', Number(form.price.value));
+    formData.append('stock', Number(form.stock.value));
 
-document.querySelectorAll('.delete-image-btn').forEach(button => {
+    selectedSizes.forEach(input => formData.append('sizes', input.value));
 
-    button.addEventListener('click', async function () {
-
-        const image = this.dataset.image;
-
-        const confirmed = confirm(
-            'Are you sure you want to delete this image?'
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-
-            const response = await fetch(
-                '/admin/products/<%= product._id %>/images',
-                {
-                    method: 'DELETE',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        image
-                    })
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.message || 'Failed to delete image'
-                );
-            }
-
-            // Remove the image card from the page
-            this.closest('.product-image-item').remove();
-
-        } catch (err) {
-
-            console.error('DELETE IMAGE ERROR:', err);
-
-            alert(err.message);
-
-        }
-
+    // Append new images if any
+    Array.from(fileInput.files).forEach(file => {
+      formData.append('images', file);
     });
 
-});
+    // ---- Show Loading Modal ----
+    Swal.fire({
+      title: 'Updating Product...',
+      text: 'Please wait while we save your changes.',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => Swal.showLoading()
+    });
+
+    try {
+      const response = await fetch(`/admin/products/update-product/<%= product._id %>`, {
+        method: 'PUT',
+        credentials: 'include',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to update product');
+      }
+
+      // ---- Success ----
+      await Swal.fire({
+        icon: 'success',
+        title: 'Updated!',
+        text: 'Product has been updated successfully.',
+        confirmButtonColor: '#88c8bc',
+        timer: 1800,
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
+
+      window.location.href = '/admin/products';
+
+    } catch (err) {
+      console.error('UPDATE PRODUCT ERROR:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Update Failed',
+        text: err.message || 'Something went wrong. Please try again.',
+        confirmButtonColor: '#88c8bc'
+      });
+    }
+  });
+
+})();
 </script>
-
-<style>
-  .product-images {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 15px;
-}
-
-.product-image-item {
-    position: relative;
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 8px;
-}
-
-.product-image-item img {
-    width: 150px;
-    height: 150px;
-    object-fit: contain;
-    display: block;
-    margin-bottom: 10px;
-}
-
-.delete-image-btn {
-    width: 100%;
-    border: none;
-    background: #dc3545;
-    color: white;
-    padding: 7px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-</style>

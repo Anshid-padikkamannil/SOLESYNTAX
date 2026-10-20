@@ -116,7 +116,7 @@
     background-size: 12px;
   }
 
-  /* ===== NEW: Button group ===== */
+  /* ===== Button group ===== */
   .filter-buttons {
     display: flex;
     align-items: center;
@@ -147,7 +147,7 @@
     box-shadow: 0 4px 14px rgba(70, 105, 143, 0.3);
   }
 
-  /* ===== NEW: Clear filter button ===== */
+  /* ===== Clear filter button ===== */
   .clear-filter-btn {
     display: inline-flex;
     align-items: center;
@@ -410,6 +410,7 @@
     justify-content: center;
     gap: 6px;
     min-height: 36px;
+    min-width: 36px;
     padding: 8px 14px;
     border: 1px solid #e6ebf0;
     border-radius: 8px;
@@ -438,6 +439,23 @@
   }
 
   .pagination-btn i { font-size: 10px; }
+
+  /* ===== NEW: Page numbers group ===== */
+  .page-numbers {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ===== NEW: Active page (brand teal) ===== */
+  .pagination-btn.active {
+    background: var(--primary);
+    border-color: var(--primary-dark);
+    color: #ffffff;
+    font-weight: 700;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(136, 200, 188, 0.3);
+  }
 
   /* ============ RESPONSIVE ============ */
   @media (max-width: 1100px) {
@@ -486,6 +504,11 @@
       text-align: center;
     }
     .pagination-controls { justify-content: center; }
+
+    /* Hide page numbers on tiny screens to save space */
+    .page-numbers {
+      display: none;
+    }
   }
 </style>
 
@@ -545,9 +568,7 @@
       <option value="out-of-stock" <%= stockStatus === 'out-of-stock' ? 'selected' : '' %>>Out of Stock</option>
     </select>
 
-    <!-- ===== NEW: Button group (Apply + Clear) ===== -->
     <div class="filter-buttons">
-
       <button type="submit" class="filter-submit-btn">
         <i class="fas fa-filter" style="margin-right:6px;"></i> Apply
       </button>
@@ -555,7 +576,6 @@
       <a href="/admin/products" class="clear-filter-btn" title="Clear all filters">
         <i class="fas fa-times"></i> Clear
       </a>
-
     </div>
 
   </form>
@@ -679,6 +699,18 @@
 
       const fromItem = ((pagination.page - 1) * pagination.limit) + 1;
       const toItem   = Math.min(pagination.page * pagination.limit, pagination.total);
+
+      // ===== Page numbers calc =====
+      const totalPages = pagination.totalPages;
+      const currentPage = pagination.page;
+      const maxVisible = 5;
+
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+      if (endPage - startPage + 1 < maxVisible) {
+        startPage = Math.max(1, endPage - maxVisible + 1);
+      }
     %>
 
     <div class="products-pagination">
@@ -691,6 +723,7 @@
 
       <div class="pagination-controls">
 
+        <!-- Previous Button -->
         <% if (pagination.hasPrev) { %>
           <a class="pagination-btn" href="/admin/products?<%= qs(pagination.page - 1) %>">
             <i class="fas fa-chevron-left"></i> Previous
@@ -701,6 +734,18 @@
           </span>
         <% } %>
 
+        <!-- Page Numbers -->
+        <div class="page-numbers">
+          <% for (let i = startPage; i <= endPage; i++) { %>
+            <% if (i === currentPage) { %>
+              <span class="pagination-btn active"><%= i %></span>
+            <% } else { %>
+              <a class="pagination-btn" href="/admin/products?<%= qs(i) %>"><%= i %></a>
+            <% } %>
+          <% } %>
+        </div>
+
+        <!-- Next Button -->
         <% if (pagination.hasNext) { %>
           <a class="pagination-btn" href="/admin/products?<%= qs(pagination.page + 1) %>">
             Next <i class="fas fa-chevron-right"></i>
@@ -811,7 +856,7 @@
           showConfirmButton: false
         });
 
-        // Remove the row from UI (smooth exit)
+        // Remove row from UI
         const row = btn.closest('tr');
         if (row) {
           row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';

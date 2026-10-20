@@ -1,287 +1,773 @@
+<style>
+  /* =========================================
+     ADD PRODUCT PAGE
+  ========================================= */
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-dark);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-bottom: 16px;
+    transition: color 0.2s ease;
+  }
+  .back-link:hover { color: var(--secondary); }
+  .back-link i { font-size: 11px; }
+
+  .page-header {
+    margin-bottom: 26px;
+  }
+  .page-header h1 {
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--dark);
+    margin: 0 0 6px;
+    letter-spacing: -0.4px;
+  }
+  .page-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  /* ============ LAYOUT ============ */
+  .form-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ============ FORM CARD ============ */
+  .form-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eef1f4;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-body {
+    padding: 28px;
+    flex: 1;
+  }
+
+  .form-footer {
+    padding: 20px 28px;
+    border-top: 1px solid #eef1f4;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: #fafbfc;
+    border-radius: 0 0 14px 14px;
+  }
+
+  /* ============ FORM ELEMENTS ============ */
+  .form-group {
+    margin-bottom: 22px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+
+  .required {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 11px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #e6ebf0;
+    background: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: all 0.2s ease;
+  }
+
+  .form-control:focus {
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 4px rgba(136, 200, 188, 0.18);
+  }
+
+  .form-control::placeholder {
+    color: #adb5bd;
+  }
+
+  textarea.form-control {
+    resize: vertical;
+    min-height: 110px;
+  }
+
+  select.form-control {
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3e%3cpath d='M1 1l5 5 5-5' stroke='%238892a0' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 12px;
+    padding-right: 40px;
+  }
+
+  /* ============ SIZES ============ */
+  .size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .size-checkbox {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .size-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .size-checkbox span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    border: 1.5px solid #e6ebf0;
+    background: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+  }
+
+  .size-checkbox input:checked + span {
+    background: var(--primary);
+    border-color: var(--primary-dark);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(136, 200, 188, 0.3);
+  }
+
+  .size-checkbox:hover span {
+    border-color: var(--primary-dark);
+  }
+
+  /* ============ UPLOAD AREA ============ */
+  .upload-area {
+    border: 2px dashed #d8dde3;
+    border-radius: 12px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #fafbfc;
+  }
+
+  .upload-area:hover,
+  .upload-area.dragover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  .upload-area i.fa-cloud-upload-alt {
+    font-size: 36px;
+    color: #8892a0;
+    margin-bottom: 12px;
+    display: block;
+    transition: color 0.2s ease;
+  }
+
+  .upload-area:hover i.fa-cloud-upload-alt {
+    color: var(--primary-dark);
+  }
+
+  .upload-area p {
+    margin: 0 0 6px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .upload-area strong {
+    color: var(--secondary);
+  }
+
+  .upload-area small {
+    font-size: 12px;
+    color: #adb5bd;
+  }
+
+  /* ============ SIDE PANEL ============ */
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 20px;
+  }
+
+  .side-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eef1f4;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+    padding: 24px;
+  }
+
+  .side-card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dark);
+    margin: 0 0 18px;
+  }
+
+  .side-card-title i {
+    color: var(--secondary);
+    font-size: 16px;
+  }
+
+  /* ============ PREVIEW BOX ============ */
+  .preview-box {
+    background: #f8fafb;
+    border: 1px solid #eef1f4;
+    border-radius: 12px;
+    min-height: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    gap: 8px;
+    transition: all 0.2s ease;
+    overflow: hidden;
+  }
+
+  .preview-box.has-images {
+    padding: 12px;
+    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+  }
+
+  .preview-box .preview-icon {
+    font-size: 42px;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+  }
+
+  .preview-box p {
+    font-size: 14px;
+    font-weight: 500;
+    color: #495057;
+    margin: 0;
+  }
+
+  .preview-box small {
+    font-size: 12px;
+    color: #8892a0;
+  }
+
+  .preview-thumb {
+    width: calc(33.333% - 7px);
+    aspect-ratio: 1;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid #eef1f4;
+    background: #fff;
+  }
+
+  /* ============ GUIDELINES ============ */
+  .guidelines-card {
+    background: #f0f9f7;
+    border-color: #d4ede7;
+  }
+
+  .guidelines-card .side-card-title {
+    color: var(--primary-dark);
+    margin-bottom: 12px;
+  }
+
+  .guidelines-card .side-card-title i {
+    color: var(--primary-dark);
+  }
+
+  .guidelines-card ul {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .guidelines-card li {
+    font-size: 13px;
+    color: #495057;
+    line-height: 1.5;
+  }
+
+  /* ============ BUTTONS ============ */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.25s ease;
+    text-decoration: none;
+  }
+
+  .btn-cancel {
+    background: #ffffff;
+    border-color: #e6ebf0;
+    color: #6c757d;
+  }
+  .btn-cancel:hover {
+    background: #f8f9fa;
+    color: var(--dark);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    border-color: var(--primary-dark);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(136, 200, 188, 0.3);
+  }
+  .btn-primary:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(70, 105, 143, 0.35);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1100px) {
+    .form-layout {
+      grid-template-columns: 1fr;
+    }
+    .side-panel {
+      position: static;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+    .form-body {
+      padding: 20px;
+    }
+    .form-footer {
+      padding: 16px 20px;
+      flex-direction: column;
+    }
+    .form-footer .btn {
+      width: 100%;
+    }
+  }
+</style>
+
+
+<!-- ============================================================ -->
+<!--  PAGE CONTENT                                                -->
+<!-- ============================================================ -->
 <div class="admin-page">
 
-    <div class="page-header">
-        <div>
-            <h1>Add Product</h1>
-            <p>Add a new product to your store</p>
-        </div>
+  <a href="/admin/products" class="back-link">
+    <i class="fas fa-arrow-left"></i> Back to Products
+  </a>
 
-        <a href="/admin/products" class="btn btn-secondary">
-            Back to Products
-        </a>
-    </div>
+  <div class="page-header">
+    <h1>Add New Product</h1>
+    <p>Fill in the details below to add a new product to your store.</p>
+  </div>
 
-    <div class="card">
-        <div class="card-body">
+  <form id="addProductForm">
+    <div class="form-layout">
 
-            <form id="addProductForm">
+      <!-- ===== LEFT COLUMN: FORM ===== -->
+      <div class="form-card">
+        <div class="form-body">
 
-                <!-- Product Name -->
-                <div class="form-group">
-                    <label for="productName">Product Name</label>
+          <!-- Product Name -->
+          <div class="form-group">
+            <label>Product Name <span class="required">*</span></label>
+            <input
+              type="text"
+              id="productName"
+              name="productName"
+              class="form-control"
+              placeholder="Enter product name"
+              required
+            >
+          </div>
 
-                    <input
-                        type="text"
-                        id="productName"
-                        name="productName"
-                        class="form-control"
-                        required
-                    >
-                </div>
+          <!-- Brand & Category -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Brand <span class="required">*</span></label>
+              <input
+                type="text"
+                id="brand"
+                name="brand"
+                class="form-control"
+                placeholder="Enter brand name"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label>Category <span class="required">*</span></label>
+              <select id="category" name="category" class="form-control" required>
+                <option value="">Select category</option>
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Unisex">Unisex</option>
+              </select>
+            </div>
+          </div>
 
+          <!-- Shoe Type & Price -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>Shoe Type <span class="required">*</span></label>
+              <select id="shoeType" name="shoeType" class="form-control" required>
+                <option value="">Select shoe type</option>
+                <option value="Running">Running</option>
+                <option value="Casual">Casual</option>
+                <option value="Sneakers">Sneakers</option>
+                <option value="Basketball">Basketball</option>
+                <option value="Training">Training</option>
+                <option value="Formal">Formal</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Price <span class="required">*</span></label>
+              <input
+                type="number"
+                id="price"
+                name="price"
+                class="form-control"
+                placeholder="Enter price"
+                min="0"
+                required
+              >
+            </div>
+          </div>
 
-                <!-- Description -->
-                <div class="form-group">
-                    <label for="description">Description</label>
+          <!-- Stock -->
+          <div class="form-group">
+            <label>Stock <span class="required">*</span></label>
+            <input
+              type="number"
+              id="stock"
+              name="stock"
+              class="form-control"
+              placeholder="Enter stock quantity"
+              min="0"
+              required
+            >
+          </div>
 
-                    <textarea
-                        id="description"
-                        name="description"
-                        class="form-control"
-                        rows="4"
-                        required
-                    ></textarea>
-                </div>
+          <!-- Description -->
+          <div class="form-group">
+            <label>Description <span class="required">*</span></label>
+            <textarea
+              id="description"
+              name="description"
+              class="form-control"
+              rows="4"
+              placeholder="Enter product description..."
+              required
+            ></textarea>
+          </div>
 
+          <!-- Sizes -->
+          <div class="form-group">
+            <label>Available Sizes (UK / India) <span class="required">*</span></label>
+            <div class="size-options">
+              <% [6, 7, 8, 9, 10, 11, 12, 13].forEach(size => { %>
+                <label class="size-checkbox">
+                  <input type="checkbox" name="sizes" value="<%= size %>">
+                  <span><%= size %></span>
+                </label>
+              <% }) %>
+            </div>
+          </div>
 
-                <!-- Category -->
-                <div class="form-group">
-                    <label for="category">Category</label>
-
-                    <select
-                        id="category"
-                        name="category"
-                        class="form-control"
-                        required
-                    >
-                        <option value="">Select category</option>
-                        <option value="Men">Men</option>
-                        <option value="Women">Women</option>
-                        <option value="unisex">Unisex</option>
-                    </select>
-                </div>
-
-
-                <!-- Brand -->
-                <div class="form-group">
-                    <label for="brand">Brand</label>
-
-                    <input
-                        type="text"
-                        id="brand"
-                        name="brand"
-                        class="form-control"
-                        required
-                    >
-                </div>
-
-
-                <!-- Shoe Type -->
-                <div class="form-group">
-                    <label for="shoeType">Shoe Type</label>
-
-                    <select
-                        id="shoeType"
-                        name="shoeType"
-                        class="form-control"
-                        required
-                    >
-                        <option value="">Select shoe type</option>
-                        <option value="Running">Running</option>
-                        <option value="Casual">Casual</option>
-                        <option value="Sneakers">Sneakers</option>
-                        <option value="Basketball">Basketball</option>
-                        <option value="Training">Training</option>
-                        <option value="Formal">Formal</option>
-                    </select>
-                </div>
-
-
-                <!-- Price -->
-                <div class="form-group">
-                    <label for="price">Price</label>
-
-                    <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        class="form-control"
-                        min="0"
-                        required
-                    >
-                </div>
-
-
-                <!-- Stock -->
-                <div class="form-group">
-                    <label for="stock">Stock</label>
-
-                    <input
-                        type="number"
-                        id="stock"
-                        name="stock"
-                        class="form-control"
-                        min="0"
-                        required
-                    >
-                </div>
-
-                <!-- Product Images -->
-                <div class="form-group">
-
-                    <label for="images">Product Images</label>
-
-                    <input
-                        type="file"
-                        id="images"
-                        name="images"
-                        class="form-control"
-                        accept="image/jpeg,image/jpg,image/png,image/webp"
-                        multiple
-                    >
-
-                    <small class="form-text text-muted">
-                        You can upload up to 5 images. Maximum 5MB per image.
-                    </small>
-
-                </div>
-
-
-                <!-- Sizes -->
-                <div class="form-group">
-
-                    <label>Available Sizes (UK / India)</label>
-
-                    <div>
-
-                        <% [6, 7, 8, 9, 10, 11, 12, 13].forEach(size => { %>
-
-                            <label style="margin-right: 15px;">
-
-                                <input
-                                    type="checkbox"
-                                    name="sizes"
-                                    value="<%= size %>"
-                                >
-
-                                <%= size %>
-
-                            </label>
-
-                        <% }) %>
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
-                    Add Product
-                </button>
-
-            </form>
+          <!-- Product Images -->
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Product Images <span class="required">*</span></label>
+            <div class="upload-area" id="uploadArea">
+              <input
+                type="file"
+                id="images"
+                name="images"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
+                multiple
+                hidden
+              >
+              <i class="fas fa-cloud-upload-alt"></i>
+              <p><strong>Choose files</strong> or drag and drop here</p>
+              <small>You can upload up to 5 images (JPG, PNG, WEBP).</small>
+            </div>
+          </div>
 
         </div>
+
+        <!-- Footer -->
+        <div class="form-footer">
+          <a href="/admin/products" class="btn btn-cancel">Cancel</a>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-plus"></i> Add Product
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== RIGHT COLUMN: SIDE PANEL ===== -->
+      <div class="side-panel">
+
+        <!-- Preview Images -->
+        <div class="side-card">
+          <h5 class="side-card-title">
+            <i class="far fa-image"></i> Preview Images
+          </h5>
+          <div class="preview-box" id="previewContainer">
+            <i class="far fa-image preview-icon"></i>
+            <p>No images selected</p>
+            <small>Your product images will appear here</small>
+          </div>
+        </div>
+
+        <!-- Guidelines -->
+        <div class="side-card guidelines-card">
+          <h5 class="side-card-title">
+            <i class="fas fa-info-circle"></i> Image Guidelines
+          </h5>
+          <ul>
+            <li>Supported formats: JPG, PNG, WEBP</li>
+            <li>Maximum 5 images per product</li>
+            <li>Recommended size: 800 × 800px or larger</li>
+            <li>Keep file size under 5MB each</li>
+          </ul>
+        </div>
+
+      </div>
+
     </div>
+  </form>
 
 </div>
 
+
+<!-- ============================================================ -->
+<!--  SCRIPTS                                                     -->
+<!-- ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-document.getElementById('addProductForm').addEventListener('submit', async function (e) {
+(function () {
+  'use strict';
 
-    e.preventDefault();
+  const form = document.getElementById('addProductForm');
+  const uploadArea = document.getElementById('uploadArea');
+  const fileInput = document.getElementById('images');
+  const previewContainer = document.getElementById('previewContainer');
 
-    const form = e.target;
+  // ==============================================
+  //  1. IMAGE UPLOAD & PREVIEW
+  // ==============================================
 
-    const formData = new FormData();
+  // Trigger file input click when clicking on the upload area
+  uploadArea.addEventListener('click', () => fileInput.click());
 
-    formData.append(
-        'productName',
-        form.productName.value.trim()
-    );
-
-    formData.append(
-        'description',
-        form.description.value.trim()
-    );
-
-    formData.append(
-        'category',
-        form.category.value
-    );
-
-    formData.append(
-        'brand',
-        form.brand.value.trim()
-    );
-
-    formData.append(
-        'shoeType',
-        form.shoeType.value
-    );
-
-    formData.append(
-        'price',
-        Number(form.price.value)
-    );
-
-    formData.append(
-        'stock',
-        Number(form.stock.value)
-    );
-
-
-    // Add selected sizes
-    const selectedSizes = form.querySelectorAll(
-        'input[name="sizes"]:checked'
-    );
-
-    selectedSizes.forEach(input => {
-        formData.append('sizes', input.value);
+  // Drag & Drop
+  ['dragenter', 'dragover'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
     });
+  });
 
-
-    // Add images
-    const imageInput = document.getElementById('images');
-
-    Array.from(imageInput.files).forEach(file => {
-        formData.append('images', file);
+  ['dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
     });
+  });
 
+  uploadArea.addEventListener('drop', (e) => {
+    const files = e.dataTransfer.files;
+    if (files.length) {
+      fileInput.files = files;
+      updatePreviews();
+    }
+  });
 
-    try {
+  fileInput.addEventListener('change', updatePreviews);
 
-        const response = await fetch(
-            '/admin/products/add-product',
-            {
-                method: 'POST',
-                credentials: 'include',
-                body: formData
-            }
-        );
+  // Update previews in the side panel
+  function updatePreviews() {
+    previewContainer.innerHTML = '';
+    const files = Array.from(fileInput.files);
 
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(
-                data.message || 'Failed to add product'
-            );
-        }
-
-        alert('Product added successfully');
-
-        window.location.href = '/admin/products';
-
-    } catch (err) {
-
-        console.error('ADD PRODUCT ERROR:', err);
-
-        alert(err.message);
-
+    if (files.length === 0) {
+      previewContainer.classList.remove('has-images');
+      previewContainer.innerHTML = `
+        <i class="far fa-image preview-icon"></i>
+        <p>No images selected</p>
+        <small>Your product images will appear here</small>
+      `;
+      return;
     }
 
-});
+    if (files.length > 5) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Too many files',
+        text: 'You can only upload up to 5 images.',
+        confirmButtonColor: '#88c8bc'
+      });
+      fileInput.value = '';
+      updatePreviews();
+      return;
+    }
+
+    previewContainer.classList.add('has-images');
+
+    files.forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = document.createElement('img');
+        img.src = e.target.result;
+        img.className = 'preview-thumb';
+        img.alt = file.name;
+        previewContainer.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ==============================================
+  //  2. FORM SUBMISSION
+  // ==============================================
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    // ---- Client-side validation ----
+    const selectedSizes = form.querySelectorAll('input[name="sizes"]:checked');
+    if (selectedSizes.length === 0) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Missing Sizes',
+        text: 'Please select at least one available size.',
+        confirmButtonColor: '#88c8bc'
+      });
+      return;
+    }
+
+    if (!fileInput.files.length) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Missing Images',
+        text: 'Please upload at least one product image.',
+        confirmButtonColor: '#88c8bc'
+      });
+      return;
+    }
+
+    // ---- Build FormData ----
+    const formData = new FormData();
+    formData.append('productName', form.productName.value.trim());
+    formData.append('description', form.description.value.trim());
+    formData.append('category', form.category.value);
+    formData.append('brand', form.brand.value.trim());
+    formData.append('shoeType', form.shoeType.value);
+    formData.append('price', Number(form.price.value));
+    formData.append('stock', Number(form.stock.value));
+
+    selectedSizes.forEach(input => formData.append('sizes', input.value));
+    Array.from(fileInput.files).forEach(file => formData.append('images', file));
+
+    // ---- Show Loading Modal ----
+    Swal.fire({
+      title: 'Saving Product...',
+      text: 'Please wait while we upload your product.',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      didOpen: () => Swal.showLoading()
+    });
+
+    try {
+      const response = await fetch('/admin/products/add-product', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to add product');
+      }
+
+      // ---- Success ----
+      await Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Product has been added successfully.',
+        confirmButtonColor: '#88c8bc',
+        timer: 1800,
+        timerProgressBar: true,
+        showConfirmButton: false
+      });
+
+      window.location.href = '/admin/products';
+
+    } catch (err) {
+      console.error('ADD PRODUCT ERROR:', err);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: err.message || 'Something went wrong. Please try again.',
+        confirmButtonColor: '#88c8bc'
+      });
+    }
+  });
+
+})();
 </script>
