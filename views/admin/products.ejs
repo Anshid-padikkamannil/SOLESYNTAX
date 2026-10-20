@@ -1,165 +1,837 @@
+<style>
+  /* =========================================
+     PRODUCTS PAGE — Brand-themed
+  ========================================= */
+
+  .products-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 26px;
+    flex-wrap: wrap;
+  }
+
+  .products-page-header h1 {
+    margin: 0 0 6px;
+    color: var(--dark);
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+
+  .products-page-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* ============ ADD PRODUCT BUTTON ============ */
+  .add-product-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 12px 22px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: #ffffff;
+    border: 1px solid var(--primary-dark);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 14px rgba(136, 200, 188, 0.3);
+    white-space: nowrap;
+  }
+  .add-product-btn:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(70, 105, 143, 0.35);
+    color: #ffffff;
+  }
+  .add-product-btn i { font-size: 13px; }
+
+  /* ============ FILTER TOOLBAR ============ */
+  .products-toolbar {
+    display: grid;
+    grid-template-columns: minmax(240px, 2.2fr) repeat(3, minmax(150px, 1fr)) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 18px;
+    margin-bottom: 22px;
+    border: 1px solid #eef1f4;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+  }
+
+  .product-search { position: relative; }
+
+  .product-search i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #8892a0;
+    font-size: 15px;
+    pointer-events: none;
+  }
+
+  .product-search input,
+  .products-toolbar select {
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border: 1.5px solid #e6ebf0;
+    border-radius: 10px;
+    outline: none;
+    background: #ffffff;
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    transition: all 0.2s ease;
+  }
+
+  .product-search input {
+    padding-left: 42px;
+  }
+
+  .product-search input:focus,
+  .products-toolbar select:focus {
+    border-color: var(--primary-dark);
+    box-shadow: 0 0 0 4px rgba(136, 200, 188, 0.18);
+  }
+
+  .products-toolbar select {
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 34px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3e%3cpath d='M1 1l5 5 5-5' stroke='%238892a0' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 12px;
+  }
+
+  /* ===== NEW: Button group ===== */
+  .filter-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filter-submit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 22px;
+    height: 44px;
+    border: 1px solid var(--secondary);
+    border-radius: 10px;
+    background: var(--secondary);
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+  }
+  .filter-submit-btn:hover {
+    background: var(--secondary-dark);
+    border-color: var(--secondary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(70, 105, 143, 0.3);
+  }
+
+  /* ===== NEW: Clear filter button ===== */
+  .clear-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 44px;
+    padding: 0 18px;
+    border: 1.5px solid #e6ebf0;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #6c757d;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .clear-filter-btn:hover {
+    background: #fff4e3;
+    border-color: #ffd29a;
+    color: #b35c00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 166, 35, 0.2);
+  }
+  .clear-filter-btn i { font-size: 11px; }
+
+  /* ============ PRODUCTS TABLE CARD ============ */
+  .products-table-card {
+    overflow: hidden;
+    border: 1px solid #eef1f4;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+    margin-bottom: 22px;
+  }
+
+  .products-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13.5px;
+  }
+
+  .products-table thead {
+    background: #f8fafb;
+  }
+
+  .products-table th {
+    padding: 16px 18px;
+    color: var(--dark);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid #eef1f4;
+  }
+
+  .products-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid #f4f6f8;
+    vertical-align: middle;
+  }
+
+  .products-table tbody tr:last-child td { border-bottom: none; }
+  .products-table tbody tr { transition: background 0.15s ease; }
+  .products-table tbody tr:hover { background: #f0f9f7; }
+
+  /* ============ PRODUCT CELL ============ */
+  .product-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 220px;
+  }
+
+  .product-thumbnail {
+    display: block;
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #f5f6f8;
+    object-fit: cover;
+    border: 1px solid #eef1f4;
+  }
+
+  .product-no-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #adb5bd;
+    font-size: 20px;
+  }
+
+  .product-details {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+  }
+
+  .product-name {
+    color: var(--dark);
+    font-weight: 600;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .product-type {
+    color: #8892a0;
+    font-size: 12px;
+  }
+
+  .product-price {
+    font-weight: 600;
+    color: var(--dark);
+    white-space: nowrap;
+  }
+
+  .product-stock-num {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ============ STATUS BADGES ============ */
+  .product-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    border: 1.5px solid transparent;
+    white-space: nowrap;
+  }
+
+  .product-status.active {
+    background: #e8f9ee;
+    color: #1b7a3a;
+    border-color: #a3d9b1;
+  }
+
+  .product-status.low-stock {
+    background: #fff4e3;
+    color: #b35c00;
+    border-color: #ffd29a;
+  }
+
+  .product-status.out-of-stock {
+    background: #ffeded;
+    color: #b83030;
+    border-color: #f5b5b5;
+  }
+
+  /* ============ ACTION BUTTONS ============ */
+  .product-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .product-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.2s ease;
+  }
+  .product-action-btn i { font-size: 11px; }
+
+  .edit-btn {
+    background: var(--secondary);
+    border-color: var(--secondary);
+    color: #ffffff;
+  }
+  .edit-btn:hover {
+    background: var(--secondary-dark);
+    border-color: var(--secondary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(70, 105, 143, 0.3);
+    color: #ffffff;
+  }
+
+  .delete-btn {
+    background: #af434c;
+    border-color: #e63946;
+    color: #ffffff;
+  }
+  .delete-btn:hover {
+    background: #cb2b38;
+    border-color: #cb2b38;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+    color: #ffffff;
+  }
+
+  /* Empty state */
+  .empty-products {
+    padding: 50px 20px !important;
+    color: #8892a0;
+    text-align: center;
+    font-size: 14px;
+  }
+  .empty-products i {
+    display: block;
+    font-size: 44px;
+    color: #dee2e6;
+    margin-bottom: 12px;
+  }
+
+  /* ============ PAGINATION ============ */
+  .products-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    background: #ffffff;
+    border: 1px solid #eef1f4;
+    border-radius: 14px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+    flex-wrap: wrap;
+  }
+
+  .pagination-info {
+    color: #8892a0;
+    font-size: 13px;
+  }
+  .pagination-info strong {
+    color: var(--dark);
+    font-weight: 600;
+  }
+
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 8px 14px;
+    border: 1px solid #e6ebf0;
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--secondary);
+    font-family: 'Poppins', sans-serif;
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+
+  a.pagination-btn:hover {
+    background: #f0f9f7;
+    border-color: var(--primary);
+    color: var(--secondary-dark);
+    transform: translateY(-1px);
+  }
+
+  .pagination-btn.disabled {
+    background: #f8f9fa;
+    color: #a0a6ae;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .pagination-btn i { font-size: 10px; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 1100px) {
+    .products-toolbar {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .product-search {
+      grid-column: 1 / -1;
+    }
+    .filter-buttons {
+      grid-column: 1 / -1;
+      justify-content: stretch;
+    }
+    .filter-submit-btn,
+    .clear-filter-btn {
+      flex: 1;
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .products-table { min-width: 850px; }
+    .products-page-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .add-product-btn { width: 100%; justify-content: center; }
+  }
+
+  @media (max-width: 576px) {
+    .products-toolbar {
+      grid-template-columns: 1fr;
+      padding: 14px;
+    }
+    .product-search { grid-column: auto; }
+    .filter-buttons {
+      flex-direction: column;
+    }
+    .filter-submit-btn,
+    .clear-filter-btn {
+      width: 100%;
+    }
+    .products-pagination {
+      flex-direction: column;
+      align-items: stretch;
+      text-align: center;
+    }
+    .pagination-controls { justify-content: center; }
+  }
+</style>
+
+
+<!-- ============================================================ -->
+<!--  PAGE CONTENT                                                -->
+<!-- ============================================================ -->
 <div class="admin-page">
 
-    <div class="page-header">
-        <div>
-            <h1>Products</h1>
-            <p>Manage your store products</p>
-        </div>
-
-        <a href="/admin/products/add-product" class="btn btn-primary">
-            <i class="fas fa-plus"></i>
-            Add Product
-        </a>
+  <div class="products-page-header">
+    <div>
+      <h1>Products</h1>
+      <p>Manage your products and inventory</p>
     </div>
 
+    <a href="/admin/products/add-product" class="add-product-btn">
+      <i class="fas fa-plus"></i>
+      <span>Add New Product</span>
+    </a>
+  </div>
+
+
+  <!-- ============ FILTER BAR ============ -->
+  <form action="/admin/products" method="GET" class="products-toolbar">
+
+    <div class="product-search">
+      <i class="fas fa-search"></i>
+      <input
+        type="search"
+        name="search"
+        placeholder="Search products by name, brand or category..."
+        aria-label="Search products"
+        value="<%= typeof search !== 'undefined' ? search : '' %>"
+      >
+    </div>
+
+    <select name="category" aria-label="Filter by category">
+      <option value="">All Categories</option>
+      <option value="Men"    <%= category === 'Men'    ? 'selected' : '' %>>Men</option>
+      <option value="Women"  <%= category === 'Women'  ? 'selected' : '' %>>Women</option>
+      <option value="Unisex" <%= category === 'Unisex' ? 'selected' : '' %>>Unisex</option>
+    </select>
+
+    <select name="brand" aria-label="Filter by brand">
+      <option value="">All Brands</option>
+      <% [...new Set((products || []).map(p => p.brand).filter(Boolean))].sort().forEach(b => { %>
+        <option value="<%= b %>" <%= b === (brandFilter || '') ? 'selected' : '' %>>
+          <%= b %>
+        </option>
+      <% }); %>
+    </select>
+
+    <select name="stockStatus" aria-label="Filter by stock status">
+      <option value=""            <%= !stockStatus                  ? 'selected' : '' %>>All Stock</option>
+      <option value="in-stock"    <%= stockStatus === 'in-stock'    ? 'selected' : '' %>>In Stock</option>
+      <option value="low-stock"   <%= stockStatus === 'low-stock'   ? 'selected' : '' %>>Low Stock</option>
+      <option value="out-of-stock" <%= stockStatus === 'out-of-stock' ? 'selected' : '' %>>Out of Stock</option>
+    </select>
+
+    <!-- ===== NEW: Button group (Apply + Clear) ===== -->
+    <div class="filter-buttons">
+
+      <button type="submit" class="filter-submit-btn">
+        <i class="fas fa-filter" style="margin-right:6px;"></i> Apply
+      </button>
+
+      <a href="/admin/products" class="clear-filter-btn" title="Clear all filters">
+        <i class="fas fa-times"></i> Clear
+      </a>
+
+    </div>
+
+  </form>
+
+
+  <!-- ============ PRODUCTS TABLE ============ -->
+  <div class="products-table-card">
     <div class="table-responsive">
+      <table class="products-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
 
-        <table class="table">
+        <tbody>
+          <% if (!products || products.length === 0) { %>
+            <tr>
+              <td colspan="7" class="empty-products">
+                <i class="fas fa-box-open"></i>
+                No products found.
+              </td>
+            </tr>
+          <% } else { %>
 
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Product</th>
-                    <th>Brand</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>Stock</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
+            <% products.forEach(product => { %>
 
-            <tbody>
+              <tr>
+                <td>
+                  <div class="product-info">
+                    <% if (product.images && product.images.length > 0) { %>
+                      <img
+                        class="product-thumbnail"
+                        src="<%= product.images[0] %>"
+                        alt="<%= product.productName %>"
+                      >
+                    <% } else { %>
+                      <div class="product-thumbnail product-no-image">
+                        <i class="fas fa-image"></i>
+                      </div>
+                    <% } %>
 
-                <% if (products.length === 0) { %>
+                    <div class="product-details">
+                      <span class="product-name"><%= product.productName %></span>
+                      <span class="product-type"><%= product.shoeType || 'Shoes' %></span>
+                    </div>
+                  </div>
+                </td>
 
-                    <tr>
-                        <td colspan="7" class="text-center">
-                            No products found.
-                        </td>
-                    </tr>
+                <td><%= product.category || '—' %></td>
+                <td><%= product.brand || '—' %></td>
 
-                <% } else { %>
+                <td class="product-price">
+                  ₹<%= Number(product.price || 0).toLocaleString('en-IN') %>
+                </td>
 
-                    <% products.forEach(product => { %>
+                <td class="product-stock-num">
+                  <%= product.stock || 0 %>
+                </td>
 
-                        <tr>
+                <td>
+                  <% if (product.stock <= 0) { %>
+                    <span class="product-status out-of-stock">Out of Stock</span>
+                  <% } else if (product.stock < 5) { %>
+                    <span class="product-status low-stock">Low Stock</span>
+                  <% } else { %>
+                    <span class="product-status active">Active</span>
+                  <% } %>
+                </td>
 
-                            <td>
-                                <% if (product.images && product.images.length > 0) { %>
+                <td>
+                  <div class="product-actions">
+                    <a
+                      href="/admin/products/edit-product/<%= product._id %>"
+                      class="product-action-btn edit-btn"
+                    >
+                      <i class="fas fa-pen"></i>
+                      <span>Edit</span>
+                    </a>
 
-                                    <img
-                                        src="<%= product.images[0] %>"
-                                        alt="<%= product.productName %>"
-                                        width="60"
-                                        height="60"
-                                    >
+                    <button
+                      type="button"
+                      class="product-action-btn delete-btn delete-product-btn"
+                      data-product-id="<%= product._id %>"
+                      data-product-name="<%= product.productName %>"
+                    >
+                      <i class="fas fa-trash"></i>
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
 
-                                <% } else { %>
+            <% }) %>
 
-                                    <span>No image</span>
-
-                                <% } %>
-                            </td>
-
-                            <td>
-                                <%= product.productName %>
-                            </td>
-
-                            <td>
-                                <%= product.brand %>
-                            </td>
-
-                            <td>
-                                <%= product.category %>
-                            </td>
-
-                            <td>
-                                ₹<%= product.price.toFixed(2) %>
-                            </td>
-
-                            <td>
-                                <%= product.stock %>
-                            </td>
-
-                            <td>
-
-                                <a
-                                    href="/admin/products/edit-product/<%= product._id %>"
-                                    class="btn btn-sm btn-primary"
-                                >
-                                    Edit
-                                </a>
-
-                                <button
-                                    type="button"
-                                    class="delete-product-btn"
-                                    data-product-id="<%= product._id %>">
-                                    Delete
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                    <% }) %>
-
-                <% } %>
-
-            </tbody>
-
-        </table>
-
+          <% } %>
+        </tbody>
+      </table>
     </div>
+  </div>
+
+
+  <!-- ============ PAGINATION ============ -->
+  <% if (pagination && pagination.totalPages > 1) { %>
+
+    <%
+      const qs = (page) => new URLSearchParams({
+        ...(search       ? { search }             : {}),
+        ...(category     ? { category }           : {}),
+        ...(brandFilter  ? { brand: brandFilter } : {}),
+        ...(stockStatus  ? { stockStatus }        : {}),
+        page,
+        limit: pagination.limit
+      }).toString();
+
+      const fromItem = ((pagination.page - 1) * pagination.limit) + 1;
+      const toItem   = Math.min(pagination.page * pagination.limit, pagination.total);
+    %>
+
+    <div class="products-pagination">
+
+      <div class="pagination-info">
+        Showing <strong><%= fromItem %></strong>
+        to <strong><%= toItem %></strong>
+        of <strong><%= pagination.total %></strong> products
+      </div>
+
+      <div class="pagination-controls">
+
+        <% if (pagination.hasPrev) { %>
+          <a class="pagination-btn" href="/admin/products?<%= qs(pagination.page - 1) %>">
+            <i class="fas fa-chevron-left"></i> Previous
+          </a>
+        <% } else { %>
+          <span class="pagination-btn disabled">
+            <i class="fas fa-chevron-left"></i> Previous
+          </span>
+        <% } %>
+
+        <% if (pagination.hasNext) { %>
+          <a class="pagination-btn" href="/admin/products?<%= qs(pagination.page + 1) %>">
+            Next <i class="fas fa-chevron-right"></i>
+          </a>
+        <% } else { %>
+          <span class="pagination-btn disabled">
+            Next <i class="fas fa-chevron-right"></i>
+          </span>
+        <% } %>
+
+      </div>
+    </div>
+
+  <% } %>
 
 </div>
 
+
+<!-- ============================================================ -->
+<!--  SCRIPTS                                                     -->
+<!-- ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-document.querySelectorAll('.delete-product-btn').forEach(button => {
+(function () {
+  'use strict';
 
-    button.addEventListener('click', async function () {
+  // ---- Flash messages from server ----
+  const flashSuccess = "<%= typeof success !== 'undefined' ? success : '' %>";
+  const flashError   = "<%= typeof error   !== 'undefined' ? error   : '' %>";
 
-        const productId = this.dataset.productId;
-
-        const confirmed = confirm(
-            'Are you sure you want to delete this product?'
-        );
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-
-            const response = await fetch(
-                `/admin/products/delete-product/${productId}`,
-                {
-                    method: 'DELETE',
-                    credentials: 'include'
-                }
-            );
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(
-                    data.message || 'Failed to delete product'
-                );
-            }
-
-            alert('Product deleted successfully');
-
-            // Refresh product list
-            window.location.reload();
-
-        } catch (err) {
-
-            console.error('DELETE PRODUCT ERROR:', err);
-
-            alert(err.message);
-
-        }
-
+  if (flashSuccess) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Success!',
+      text: flashSuccess,
+      confirmButtonColor: '#88c8bc',
+      timer: 2500,
+      timerProgressBar: true,
+      showConfirmButton: false
     });
+  }
 
-});
+  if (flashError) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: flashError,
+      confirmButtonColor: '#88c8bc'
+    });
+  }
+
+  // ---- Delete Product (SweetAlert2 flow) ----
+  document.querySelectorAll('.delete-product-btn').forEach(btn => {
+
+    btn.addEventListener('click', async function () {
+
+      const productId   = this.dataset.productId;
+      const productName = this.dataset.productName || 'this product';
+
+      // Step 1: Confirm
+      const confirmResult = await Swal.fire({
+        icon: 'warning',
+        title: 'Delete Product?',
+        html: `Are you sure you want to delete <strong>${productName}</strong>?<br>
+               <small style="color:#8892a0;">This action cannot be undone.</small>`,
+        showCancelButton: true,
+        confirmButtonColor: '#e63946',
+        cancelButtonColor: '#8892a0',
+        confirmButtonText: 'Yes, delete it',
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        focusCancel: true
+      });
+
+      if (!confirmResult.isConfirmed) return;
+
+      // Step 2: Loading
+      Swal.fire({
+        title: 'Deleting...',
+        text: 'Please wait',
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      try {
+        const response = await fetch(`/admin/products/delete-product/${productId}`, {
+          method: 'DELETE',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to delete product');
+        }
+
+        // Step 3: Success
+        await Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'Product has been deleted successfully.',
+          confirmButtonColor: '#88c8bc',
+          timer: 1800,
+          timerProgressBar: true,
+          showConfirmButton: false
+        });
+
+        // Remove the row from UI (smooth exit)
+        const row = btn.closest('tr');
+        if (row) {
+          row.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(-20px)';
+          setTimeout(() => row.remove(), 320);
+        }
+
+      } catch (err) {
+        console.error('DELETE PRODUCT ERROR:', err);
+
+        Swal.fire({
+          icon: 'error',
+          title: 'Delete Failed',
+          text: err.message || 'Something went wrong. Please try again.',
+          confirmButtonColor: '#88c8bc'
+        });
+      }
+    });
+  });
+
+})();
 </script>

@@ -58,7 +58,7 @@ const updateProduct = async (req, res) => {
 
   // chekc total image count 
   const existingImageCount = product.images.length;
-  const newImageCount = req.files?.lenth || 0;
+  const newImageCount = req.files?.length || 0;
 
   if (existingImageCount + newImageCount > 5) {
     //delete newly uploaded files
@@ -233,8 +233,46 @@ const getAllProducts = async (req, res) => {
 const getAdminProductsPage = async (req, res) => {
 
   try {
+
+    const filter = {};
+
+    if (req.query.brand) {
+      filter.brand = req.query.brand;
+
+    }
+
+    if (req.query.shoeType) {
+      filter.shoeType = req.query.shoeType
+    }
     
-    const  { data: products, pagination } = await paginate(Product, {}, {
+    if (req.query.category) {
+      filter.category = req.query.category
+    }
+
+    if (req.query.stockStatus === 'in-stock') {
+      filter.stock = { $gte: 5 };
+    }
+
+    if (req.query.stockStatus === 'low-stock') {
+      filter.stock = { $gt: 0, $lt: 5 };
+    }
+
+    if (req.query.stockStatus === 'out-of-stock') {
+      filter.stock = { $lte: 0 };
+    }
+
+    if (req.query.search) {
+      filter.$or = [
+        { productName: { $regex: req.query.search, $options: 'i' } },
+        { brand: { $regex: req.query.search, $options: 'i' } },
+        { category: { $regex: req.query.search, $options: 'i' } }
+      ];
+    }
+    
+    const  { data: products, pagination } = await paginate(
+    Product,
+    filter,
+    {
       page: req.query.page || 1,
       limit: req.query.limit || 5,
       sort: { createdAt: -1 }
@@ -246,6 +284,11 @@ const getAdminProductsPage = async (req, res) => {
       user: req.user,
       products,
       pagination,
+      search: req.query.search || '',
+      category: req.query.category || '',
+      brand: req.query.brand || '',
+      stockStatus: req.query.stockStatus || '',
+      brandFilter: req.query.brand || '',
       layout: 'layouts/admin-layout'
     });
 
