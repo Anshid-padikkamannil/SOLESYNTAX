@@ -4,10 +4,32 @@ const Product = require('../../models/productSchema');
 
 const getAdminCouponsPage = async (req, res) => {
   try {
+
+    const filter = {};
+    const now = new Date();
+
+    if (req.query.search) {
+      const search = req.query.search.trim();
+
+      filter.code = { $regex: search, $options: 'i'};
+    }
+
+    const statusFilter = req.query.status;
+    if (statusFilter === 'active') {
+      filter.isActive = true;
+      filter.startDate = { $lte: now };
+      filter.expiryDate = { $gte: now };
+    } else if (statusFilter === 'expired') {
+      filter.expiryDate = { $lt: now };
+    } else if (statusFilter === 'upcoming') {
+      filter.startDate = { $gt: now };
+    } else if (statusFilter === 'inactive') {
+      filter.isActive = false;
+    }
     
     const result = await paginate(
       Coupon,
-      {},
+      filter,
       {
         page: req.query.page,
         limit: req.query.limit || 5,
@@ -20,7 +42,9 @@ const getAdminCouponsPage = async (req, res) => {
       title: 'Coupons',
       currentPage: 'coupons',
       coupons: result.data,
-      pagination: result.pagination
+      pagination: result.pagination,
+      search: req.query.search || '',
+      statusFilter: req.query.status || ''
     });
 
   } catch (err) {
