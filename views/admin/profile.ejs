@@ -1,214 +1,627 @@
-<div class="container-fluid py-4">
+<div class="profile-page">
 
-  <!-- Page heading -->
-  <div class="mb-4">
-    <h2 class="fw-bold">Admin Profile</h2>
-    <p class="text-muted">View and manage your account information.</p>
-  </div>
+  <!-- Hero Section -->
+  <div class="profile-hero-card">
 
-  <!-- Profile card -->
-  <div class="card border-0 shadow-sm">
-    <div class="card-body p-4">
+    <% let avatarUrl = user?.profilePicture || user?.googleProfilePicture; %>
 
-      <div class="d-flex align-items-center gap-4 mb-4">
+    <div class="profile-hero-left">
 
-        <!-- Profile picture -->
-        <div class="profile-avatar">
-          <% let avatarUrl = user?.profilePicture || user?.googleProfilePicture; %>
+      <div class="avatar-wrapper">
 
-          <% if (avatarUrl) { %>
-            <img
-              src="<%= avatarUrl %>"
-              alt="Admin profile picture"
-              class="profile-avatar-image"
-            >
-          <% } else { %>
-            <span>
-              <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
-            </span>
-          <% } %>
-        </div>
+        <% if (avatarUrl) { %>
 
-        
-        <form
-          action="/admin/profile/picture"
-          method="POST"
-          enctype="multipart/form-data"
-          class="mt-3"
-        >
-          <label for="profilePicture" class="form-label">
-            Change Profile Picture
-          </label>
-
-          <input
-            type="file"
-            id="profilePicture"
-            name="profilePicture"
-            class="form-control"
-            accept="image/jpeg,image/png,image/webp"
-            required
+          <img
+            src="<%= avatarUrl %>"
+            alt="Profile"
+            class="profile-avatar"
           >
 
-          <small class="text-muted d-block mt-2">
-            Allowed formats: JPG, PNG, WEBP. Maximum size: 2 MB.
-          </small>
+        <% } else { %>
 
-          <button type="submit" class="btn btn-primary mt-3">
-            Upload Picture
-          </button>
-        </form>
+          <div class="profile-avatar profile-avatar-fallback">
+            <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+          </div>
 
-
-        <div>
-          <h4 class="mb-1"><%= user?.name || 'Admin' %></h4>
-          <p class="text-muted mb-0">Administrator</p>
-        </div>
+        <% } %>
 
       </div>
 
-      <hr>
+      <div>
 
-      <!-- Account information -->
+        <h2 class="profile-name">
+          <%= user?.name || 'Administrator' %>
+        </h2>
+
+        <div class="profile-meta">
+
+          <span class="role-badge">
+            Administrator
+          </span>
+
+          <span class="status-badge">
+            Active
+          </span>
+
+        </div>
+
+        <p class="profile-email">
+          <%= user?.email || 'No Email' %>
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Info Cards -->
+  <div class="info-grid">
+
+    <div class="info-card">
+      <span class="info-label">Email Address</span>
+      <strong><%= user?.email || 'N/A' %></strong>
+    </div>
+
+    <div class="info-card">
+      <span class="info-label">Role</span>
+      <strong><%= user?.role || 'Admin' %></strong>
+    </div>
+
+    <div class="info-card">
+      <span class="info-label">Login Method</span>
+      <strong>
+        <%= user?.authProvider === 'google'
+          ? 'Google'
+          : 'Email & Password' %>
+      </strong>
+    </div>
+
+    <div class="info-card">
+      <span class="info-label">Status</span>
+      <strong>Active</strong>
+    </div>
+
+  </div>
+
+  <div style="display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;">
+    <!-- Account Settings -->
+    <div class="settings-card">
+
+      <div class="section-header d-flex justify-content-between align-items-center">
+        <div>
+          <h4>Account Information</h4>
+          <p>Update your personal profile details.</p>
+        </div>
+        
+        <!-- ADDED: Edit button with secondary color -->
+        <button type="button" id="editProfileBtn" class="btn-secondary-custom" style="height: 38px; padding: 0 16px; font-size: 14px;">
+          <i class="fas fa-edit me-2"></i> Edit
+        </button>
+      </div>
+
       <form action="/admin/profile/update" method="POST">
 
-        <div class="row g-4 mt-2">
+        <div class="form-grid">
 
-          <div class="col-md-6">
-            <label for="name" class="form-label text-muted">Full Name</label>
+          <div class="form-group">
+            <label>Full Name</label>
+
+            <!-- MODIFIED: Added ID and readonly attribute -->
             <input
               type="text"
-              id="name"
+              id="nameInput"
               name="name"
-              class="form-control"
               value="<%= user?.name || '' %>"
               required
-              minlength="2"
-              maxlength="50"
+              readonly
+              style="background-color: #fafbfc; cursor: default;"
             >
           </div>
 
-          <div class="col-md-6">
-            <label class="form-label text-muted">Email Address</label>
-            <p class="fw-semibold">
-              <%= user?.email || 'Not available' %>
-            </p>
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label text-muted">Account Type</label>
-            <p class="fw-semibold">
-              <%= user?.role || 'admin' %>
-            </p>
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label text-muted">Login Method</label>
-            <p class="fw-semibold">
-              <%= user?.authProvider === 'google' ? 'Google' : 'Email and Password' %>
-            </p>
-          </div>
-
         </div>
 
-        <div class="mt-4">
-          <button type="submit" class="btn btn-primary">
-            Save Changes
-          </button>
-        </div>
+        <!-- MODIFIED: Save button hidden by default until Edit is clicked -->
+        <button type="submit" id="saveProfileBtn" class="btn-primary-custom d-none">
+          Save Changes
+        </button>
 
       </form>
-      
-      <!-- Change Password Section -->
-      <div class="card mt-4">
-        <div class="card-body">
-          <h4 class="card-title mb-3">Change Password</h4>
-
-          <p class="text-muted">
-            Enter your current password before choosing a new one.
-          </p>
-
-          <form action="/admin/profile/change-password" method="POST">
-
-            <div class="mb-3">
-              <label for="currentPassword" class="form-label">
-                Current Password
-              </label>
-              <input
-                type="password"
-                id="currentPassword"
-                name="currentPassword"
-                class="form-control"
-                autocomplete="current-password"
-                required
-              >
-            </div>
-
-            <div class="mb-3">
-              <label for="newPassword" class="form-label">
-                New Password
-              </label>
-              <input
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                class="form-control"
-                minlength="8"
-                autocomplete="new-password"
-                required
-              >
-              <small class="text-muted">
-                Use at least 8 characters.
-              </small>
-            </div>
-
-            <div class="mb-3">
-              <label for="confirmPassword" class="form-label">
-                Confirm New Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                class="form-control"
-                minlength="8"
-                autocomplete="new-password"
-                required
-              >
-            </div>
-
-            <button type="submit" class="btn btn-primary">
-              Change Password
-            </button>
-
-          </form>
-        </div>
-      </div>
-
 
     </div>
+
+    <!-- Profile Picture -->
+    <div class="settings-card">
+
+      <div class="section-header">
+        <h4>Profile Picture</h4>
+        <p>Upload a professional profile photo.</p>
+      </div>
+
+      <form
+        action="/admin/profile/picture"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+
+        <!-- MODIFIED: Custom drag-and-drop file upload area -->
+        <input
+          style="display: none;"
+          type="file"
+          name="profilePicture"
+          id="profilePicInput"
+          class="d-none"
+          accept="image/jpeg,image/png,image/webp"
+          required
+          onchange="updateFileName(this)"
+        >
+
+        <label for="profilePicInput" class="custom-file-upload">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <span id="fileLabel">Click to browse or drag an image here</span>
+          <small style="color: #6b7280; font-weight: 400; margin-top: 4px; font-size: 12px;">JPG, PNG, WEBP up to 2MB.</small>
+        </label>
+
+        <button
+          type="submit"
+          class="btn-primary-custom mt-3"
+        >
+          Upload Picture
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Security Section -->
+  <div class="settings-card">
+
+    <div class="section-header">
+      <h4>Security</h4>
+
+      <p>
+        Update your password to keep your account secure.
+      </p>
+
+    </div>
+
+    <!-- MODIFIED: Added ID to form for SweetAlert validation -->
+    <form
+      action="/admin/profile/change-password"
+      method="POST"
+      id="passwordForm"
+    >
+
+      <!-- MODIFIED: Added wrapper with relative positioning for eye icon -->
+      <div class="form-group" style="position: relative;">
+        <label>Current Password</label>
+
+        <input
+          type="password"
+          name="currentPassword"
+          id="currentPassword"
+          required
+        >
+        <i class="fas fa-eye toggle-password" data-target="currentPassword" style="position: absolute; right: 15px; top: 50px; cursor: pointer; color: #6b7280;"></i>
+      </div>
+
+      <div class="form-group" style="position: relative;">
+        <label>New Password</label>
+
+        <input
+          type="password"
+          name="newPassword"
+          id="newPassword"
+          minlength="8"
+          required
+        >
+        <i class="fas fa-eye toggle-password" data-target="newPassword" style="position: absolute; right: 15px; top: 50px; cursor: pointer; color: #6b7280;"></i>
+      </div>
+
+      <div class="form-group" style="position: relative;">
+        <label>Confirm Password</label>
+
+        <input
+          type="password"
+          name="confirmPassword"
+          id="confirmPassword"
+          minlength="8"
+          required
+        >
+        <i class="fas fa-eye toggle-password" data-target="confirmPassword" style="position: absolute; right: 15px; top: 50px; cursor: pointer; color: #6b7280;"></i>
+      </div>
+
+      <button
+        type="submit"
+        class="btn-primary-custom"
+      >
+        Change Password
+      </button>
+
+    </form>
+
   </div>
 
 </div>
 
 <style>
-  .profile-avatar {
-    width: 100px;
-    height: 100px;
+  .profile-page {
+    padding: 30px;
+}
+
+/* Hero Card */
+
+.profile-hero-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 32px;
+    margin-bottom: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border: 1px solid #edf1f5;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.03),
+        0 14px 40px rgba(0,0,0,0.06);
+}
+
+.profile-hero-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.avatar-wrapper {
+    position: relative;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
     border-radius: 50%;
-    overflow: hidden;
-    background: #f0f0f0;
+
+    border: 4px solid #fff;
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.15);
+}
+
+.profile-avatar-fallback {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
-    font-size: 36px;
-    font-weight: 600;
-  }
 
-  .profile-avatar-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    background: #46698f;
+    color: white;
+
+    font-size: 40px;
+    font-weight: 700;
+}
+
+.profile-name {
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.profile-email {
+    color: #6b7280;
+    margin-top: 10px;
+}
+
+/* Badges */
+
+.profile-meta {
+    display: flex;
+    gap: 10px;
+}
+
+.role-badge {
+    background: #eef2ff;
+    color: #4338ca;
+    padding: 6px 14px;
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status-badge {
+    background: #ecfdf5;
+    color: #15803d;
+    padding: 6px 14px;
+    border-radius: 999px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Info Grid */
+
+.info-grid {
+    display: grid;
+
+    grid-template-columns:
+      repeat(auto-fit, minmax(220px,1fr));
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+.info-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px;
+
+    border: 1px solid #edf1f5;
+
+    box-shadow:
+      0 2px 4px rgba(0,0,0,.03);
+}
+
+.info-label {
     display: block;
-  }
+
+    color: #6b7280;
+
+    font-size: 13px;
+
+    margin-bottom: 8px;
+}
+
+/* Cards */
+
+.settings-card {
+    background: #fff;
+
+    border-radius: 24px;
+
+    padding: 30px;
+
+    margin-bottom: 24px;
+
+    border: 1px solid #edf1f5;
+
+    box-shadow:
+      0 2px 6px rgba(0,0,0,.03),
+      0 10px 30px rgba(0,0,0,.04);
+}
+
+.section-header {
+    margin-bottom: 25px;
+}
+
+.section-header h4 {
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.section-header p {
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Forms */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: #374151;
+}
+
+.form-group input {
+    width: 100%;
+
+    height: 50px;
+
+    border: 1px solid #dbe2ea;
+
+    border-radius: 12px;
+
+    padding: 0 16px;
+
+    outline: none;
+
+    transition: .2s;
+}
+
+/* Prevent text overlap with eye icon */
+.form-group input[type="password"] {
+    padding-right: 45px;
+}
+
+.form-group input:focus {
+    border-color: #88c8bc;
+
+    box-shadow:
+      0 0 0 4px rgba(136,200,188,.18);
+}
+
+/* Buttons */
+
+.btn-primary-custom {
+    border: none;
+
+    /* CHANGED: Primary color */
+    background: #88c8bc;
+
+    color: white;
+
+    height: 48px;
+
+    padding: 0 24px;
+
+    border-radius: 12px;
+
+    font-weight: 600;
+
+    transition: .2s;
+}
+
+.btn-primary-custom:hover {
+    /* CHANGED: Primary dark color */
+    background: #66a59b;
+    transform: translateY(-2px);
+}
+
+/* ADDED: Secondary Edit Button Style */
+.btn-secondary-custom {
+    border: none;
+    background: #46698f;
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.btn-secondary-custom:hover {
+    background: #355275;
+    transform: translateY(-1px);
+}
+
+/* ADDED: Custom File Upload Styles */
+.custom-file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    border: 2px dashed #dbe2ea;
+    border-radius: 12px;
+    background: #fafbfc;
+    cursor: pointer;
+    transition: .2s;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.custom-file-upload:hover {
+    border-color: #88c8bc;
+    background: #f0f9f7;
+}
+
+.custom-file-upload i {
+    font-size: 24px;
+    color: #a0aec0;
+    margin-bottom: 10px;
+}
+
+.custom-file-upload span {
+    font-weight: 600;
+    color: #374151;
+    font-size: 14px;
+}
+
+/* Mobile */
+
+@media (max-width:768px) {
+
+    .profile-hero-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .profile-hero-left {
+        flex-direction: column;
+        text-align: center;
+        width: 100%;
+    }
+
+}
 </style>
+
+<!-- ADDED: SweetAlert2 Library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // --- 1. Edit Profile Logic ---
+  const editBtn = document.getElementById('editProfileBtn');
+  const nameInput = document.getElementById('nameInput');
+  const saveBtn = document.getElementById('saveProfileBtn');
+
+  editBtn.addEventListener('click', () => {
+    // Unlock input
+    nameInput.removeAttribute('readonly');
+    nameInput.style.backgroundColor = '#fff';
+    nameInput.style.cursor = 'text';
+    nameInput.style.borderColor = '#88c8bc';
+    nameInput.style.boxShadow = '0 0 0 4px rgba(136,200,188,.18)';
+    nameInput.focus();
+
+    // Toggle Buttons
+    editBtn.classList.add('d-none');
+    saveBtn.classList.remove('d-none');
+  });
+
+  // --- 2. Toggle Password Visibility ---
+  document.querySelectorAll('.toggle-password').forEach(icon => {
+    icon.addEventListener('click', function() {
+      const targetId = this.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        this.classList.remove('fa-eye');
+        this.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        this.classList.remove('fa-eye-slash');
+        this.classList.add('fa-eye');
+      }
+    });
+  });
+
+  // --- 3. SweetAlert Error Catching (Password Match) ---
+  const passwordForm = document.getElementById('passwordForm');
+  
+  passwordForm.addEventListener('submit', (e) => {
+    const newPass = document.getElementById('newPassword').value;
+    const confirmPass = document.getElementById('confirmPassword').value;
+
+    if (newPass !== confirmPass) {
+      e.preventDefault(); // Stop form submission
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Passwords Do Not Match',
+        text: 'Please ensure your new password and confirmation password are identical.',
+        confirmButtonColor: '#88c8bc',
+        confirmButtonText: 'Try Again'
+      });
+    }
+  });
+});
+
+// --- 4. Update File Name on Selection ---
+function updateFileName(input) {
+  const label = document.getElementById('fileLabel');
+  if (input.files && input.files.length > 0) {
+    label.innerHTML = `<i class="fas fa-check-circle" style="color: #15803d; margin-right: 6px;"></i> <span style="color: #15803d;">${input.files[0].name}</span>`;
+  } else {
+    label.innerHTML = 'Click to browse or drag an image here';
+  }
+}
+</script>
