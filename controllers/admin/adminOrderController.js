@@ -1,18 +1,68 @@
 const Order = require('../../models/orderSchema');
 const paginate = require('../../utils/pagination');
 const { generateInvoice } = require('../../services/invoiceService');
+const mongoose = require('mongoose');
+const User = require('../../models/userSchema');
 
 
 const getAdminOrdersPage = async (req, res) => {
   
   try {
 
+    const filter = {};
+
+    const validStatuses = [
+    'Pending',
+    'Processing',
+    'Shipped',
+    'Delivered',
+    'Cancelled',
+    'Return Request',
+    'Returned'
+  ];
+
+  if (validStatuses.includes(req.query.orderStatus)) {
+    filter.status = req.query.orderStatus;
+  }
+
+    if (req.query.search) {
+      const search = req.query.search.trim();
+
+      if (mongoose.Types.ObjectId.isValid(search)) {
+        filter._id = new mongoose.Types.ObjectId(search);
+      } else {
+        const users = await User.find({
+          $or: [
+            { name: { $regex: search, $options: 'i' } },
+            { email: { $regex: search, $options: 'i' } }
+          ]
+        }).select('_id');
+
+        filter.userId = {
+          $in: users.map(user => user._id)
+        };
+      }
+
+    }
+
+    const [
+      totalOrders,
+      pendingOrders,
+      processingOrders,
+      deliveredOrders
+    ] = await Promise.all([
+      Order.countDocuments(),
+      Order.countDocuments({ status: 'Pending' }),
+      Order.countDocuments({ status: 'Processing' }),
+      Order.countDocuments({ status: 'Delivered' })
+    ]);
+
     const result = await paginate(
       Order,
-      {},
+      filter,
       {
-        page: req.query.page,
-        limit: req.query.limit || 20,
+        page: req.query.page || 1,
+        limit: req.query.limit || 5,
         sort: { createdAt: -1 },
         populate: 'userId'
       }
@@ -23,7 +73,13 @@ const getAdminOrdersPage = async (req, res) => {
       title: 'Orders',
       currentPage: 'orders',
       orders: result.data,
-      pagination: result
+      pagination: result.pagination,
+      search: req.query.search || '',
+      orderStatus: req.query.orderStatus || '',
+      totalOrders,
+      pendingOrders,
+      processingOrders,
+      deliveredOrders,
     });
 
   } catch (err) {

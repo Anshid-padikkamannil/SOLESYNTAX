@@ -7,8 +7,8 @@
   --primary: #88c8bc;
   --primary-dark: #66a59b;
   --primary-light: #f0f9f7;
-  --secondary: #46698f;
-  --secondary-dark: #395884;
+  --secondary: #5795bc;
+  --secondary-dark: #397fab;
   --accent: #ff6b6b;
   --gold: #f5a623;
 
@@ -27,7 +27,7 @@
   --warning: #ffc107;
   --danger: #dc3545;
   --info: #17a2b8;
-
+--infoo: #6da1c2;
   /* Shadows */
   --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.05);
   --shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
