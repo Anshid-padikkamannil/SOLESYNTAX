@@ -1,335 +1,732 @@
+<style>
+  /* =========================================
+     CUSTOMER DETAILS PAGE — Brand-themed
+  ========================================= */
+
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 26px;
+    flex-wrap: wrap;
+  }
+
+  .page-header h1 {
+    margin: 0 0 6px;
+    color: var(--dark);
+    font-family: 'Rokkitt', Georgia, serif;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+
+  .page-header p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  .btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 1.5px solid #e6ebf0;
+    background: #ffffff;
+    color: #6c757d;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .btn-back:hover {
+    background: #f8f9fa;
+    color: var(--dark);
+    border-color: #cbd5e1;
+  }
+
+  /* ============ LAYOUT GRID ============ */
+  .customer-top-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  /* ============ CARDS ============ */
+  .detail-card {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 1px solid #eef1f4;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(0, 0, 0, 0.03);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .detail-card-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #eef1f4;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8fafb;
+  }
+
+  .detail-card-header h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--dark);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .detail-card-body {
+    padding: 24px;
+  }
+
+  /* ============ PROFILE INFO ============ */
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  .profile-avatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    border: 2px solid var(--primary);
+    flex-shrink: 0;
+  }
+
+  .profile-name {
+    margin: 0 0 4px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--dark);
+  }
+
+  .profile-email {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .info-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #eef1f4;
+  }
+  .info-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .info-row .label {
+    font-size: 13px;
+    color: #8892a0;
+    font-weight: 500;
+  }
+
+  .info-row .value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  /* ============ STATUS BADGES ============ */
+  .status-badge-active {
+    background: #e8f9ee; color: #1b7a3a; border: 1.5px solid #a3d9b1;
+    padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-block;
+  }
+  .status-badge-blocked {
+    background: #ffeded; color: #b83030; border: 1.5px solid #f5b5b5;
+    padding: 6px 14px; border-radius: 50px; font-size: 13px; font-weight: 600; display: inline-block;
+  }
+
+  /* ============ ACTION BUTTONS ============ */
+  .btn-block {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-danger {
+    background: #ffeded;
+    color: #b83030;
+    border-color: #f5b5b5;
+  }
+  .btn-danger:hover {
+    background: #b83030;
+    color: #ffffff;
+    border-color: #b83030;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(184, 48, 48, 0.3);
+  }
+
+  .btn-success {
+    background: #e8f9ee;
+    color: #1b7a3a;
+    border-color: #a3d9b1;
+  }
+  .btn-success:hover {
+    background: #1b7a3a;
+    color: #ffffff;
+    border-color: #1b7a3a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(27, 122, 58, 0.3);
+  }
+
+  /* ============ ADDRESS CARDS ============ */
+  .address-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .address-box {
+    background: #f8fafb;
+    border: 1px solid #eef1f4;
+    border-radius: 12px;
+    padding: 18px;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+  .address-box:hover {
+    border-color: var(--primary);
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  .address-box .address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .address-box .address-type {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .default-badge {
+    background: var(--primary);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 50px;
+    text-transform: uppercase;
+  }
+
+  .address-box p {
+    margin: 0 0 6px;
+    font-size: 13.5px;
+    color: #495057;
+    line-height: 1.5;
+  }
+  .address-box p:last-child { margin-bottom: 0; }
+  .address-box strong { color: var(--dark); }
+
+  /* ============ TABLE (Order History) ============ */
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--text);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13.5px;
+  }
+
+  .orders-table thead {
+    background: #f8fafb;
+  }
+
+  .orders-table th {
+    padding: 16px 18px;
+    color: var(--dark);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid #eef1f4;
+  }
+
+  .orders-table td {
+    padding: 16px 18px;
+    border-bottom: 1px solid #f4f6f8;
+    vertical-align: middle;
+  }
+
+  .orders-table tbody tr:last-child td { border-bottom: none; }
+  .orders-table tbody tr { transition: background 0.15s ease; }
+  .orders-table tbody tr:hover { background: #f0f9f7; }
+
+  /* Status Badges for Orders */
+  .order-status-badge {
+    display: inline-flex;
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1.5px solid transparent;
+    white-space: nowrap;
+  }
+  .order-status-badge.delivered { background: #e8f9ee; color: #1b7a3a; border-color: #a3d9b1; }
+  .order-status-badge.processing { background: #e8f2ff; color: #1c5a9e; border-color: #a4c8f0; }
+  .order-status-badge.shipped { background: #f1f0ff; color: #635bff; border-color: #dcd9ff; }
+  .order-status-badge.pending { background: #fff4e3; color: #b35c00; border-color: #ffd29a; }
+  .order-status-badge.cancelled { background: #ffeded; color: #b83030; border-color: #f5b5b5; }
+  .order-status-badge.return-request { background: #fff8e0; color: #8a6d00; border-color: #f0d68c; }
+  .order-status-badge.returned { background: #f0f2f5; color: #5a6472; border-color: #cfd6de; }
+
+  .btn-view-order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 16px;
+    border: 1.5px solid #e6ebf0;
+    border-radius: 8px;
+    background: #ffffff;
+    color: var(--dark);
+    font-size: 12.5px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+  .btn-view-order:hover {
+    background: #f8fafb;
+    border-color: #cbd5e1;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #8892a0;
+    font-size: 14px;
+  }
+  .empty-state i {
+    display: block;
+    font-size: 36px;
+    color: #dee2e6;
+    margin-bottom: 10px;
+  }
+
+  /* ============ PAGINATION ============ */
+  .orders-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    border-top: 1px solid #eef1f4;
+    background: #ffffff;
+    flex-wrap: wrap;
+  }
+  .pagination-info { color: #8892a0; font-size: 13px; }
+  .pagination-info strong { color: var(--dark); font-weight: 600; }
+  .pagination-controls { display: flex; align-items: center; gap: 6px; }
+  .pagination-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-height: 36px; min-width: 36px; padding: 8px 14px;
+    border: 1px solid #e6ebf0; border-radius: 8px; background: #ffffff;
+    color: var(--secondary); font-family: 'Poppins', sans-serif; font-size: 12.5px; font-weight: 600;
+    text-decoration: none; transition: all 0.2s ease; cursor: pointer;
+  }
+  a.pagination-btn:hover {
+    background: #f0f9f7; border-color: var(--primary); color: var(--secondary-dark); transform: translateY(-1px);
+  }
+  .pagination-btn.disabled {
+    background: #f8f9fa; color: #a0a6ae; cursor: not-allowed; pointer-events: none;
+  }
+  .page-numbers { display: flex; align-items: center; gap: 6px; }
+  .pagination-btn.active {
+    background: var(--primary); border-color: var(--primary-dark); color: #ffffff; font-weight: 700;
+    pointer-events: none; box-shadow: 0 2px 8px rgba(136, 200, 188, 0.3);
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 991px) {
+    .customer-top-grid {
+      grid-template-columns: 1fr;
+    }
+    /* Mobile Table Conversion */
+    .orders-table thead { display: none; }
+    .orders-table tbody, .orders-table tr, .orders-table td { display: block; width: 100%; }
+    .orders-table tr {
+      margin-bottom: 16px; border: 1px solid #eef1f4; border-radius: 14px;
+      background: #ffffff; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03); padding: 16px;
+    }
+    .orders-table td {
+      padding: 10px 0; border-bottom: 1px dashed #f4f6f8;
+      display: flex; justify-content: space-between; align-items: center; text-align: right;
+    }
+    .orders-table td:last-child { border-bottom: none; padding-bottom: 0; }
+    .orders-table td::before {
+      content: attr(data-label); font-weight: 600; color: #8892a0; font-size: 12px;
+      text-transform: uppercase; letter-spacing: 0.5px; padding-right: 16px; text-align: left;
+    }
+    .orders-table td.td-action { padding-top: 16px; }
+    .orders-table td.td-action::before { display: none; }
+    .btn-view-order {
+      width: 100%; padding: 10px; font-size: 13.5px;
+      background: var(--primary-light); border-color: var(--primary); color: var(--secondary-dark);
+    }
+    .btn-view-order:hover { background: var(--primary); color: #ffffff; }
+  }
+
+  @media (max-width: 576px) {
+    .orders-pagination { flex-direction: column; align-items: stretch; text-align: center; }
+    .pagination-controls { justify-content: center; }
+    .page-numbers { display: none; }
+  }
+</style>
+
+
+<!-- ============================================================ -->
+<!--  PAGE CONTENT                                                -->
+<!-- ============================================================ -->
 <div class="admin-page">
 
-    <!-- Page Header -->
-    <div class="page-header">
-
-        <div>
-            <h1>Customer Details</h1>
-            <p>View customer account information</p>
-        </div>
-
-        <a
-            href="/admin/customers"
-            class="btn btn-secondary">
-            Back to Customers
-        </a>
-
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Customer Details</h1>
+      <p>View account information and order history</p>
     </div>
+    <a href="/admin/customers" class="btn-back">
+      <i class="fas fa-arrow-left"></i> Back to Customers
+    </a>
+  </div>
 
 
-    <!-- Customer Information -->
-    <div class="admin-card">
-
-        <div class="card-header">
-            <h2>Customer Information</h2>
+  <!-- ============ TOP GRID (Profile & Account) ============ -->
+  <div class="customer-top-grid">
+    
+    <!-- Profile Info -->
+    <div class="detail-card" style="margin-bottom: 0;">
+      <div class="detail-card-header">
+        <h2>Profile Information</h2>
+      </div>
+      <div class="detail-card-body">
+        
+        <div class="profile-header">
+          <div class="profile-avatar">
+            <%= customer.name ? customer.name.charAt(0).toUpperCase() : 'U' %>
+          </div>
+          <div>
+            <h3 class="profile-name"><%= customer.name || 'Guest User' %></h3>
+            <div class="profile-email"><%= customer.email || 'No email provided' %></div>
+          </div>
         </div>
 
-        <div class="customer-info-grid">
-
-            <div>
-                <span>Name</span>
-                <strong>
-                    <%= customer.name || 'N/A' %>
-                </strong>
-            </div>
-
-            <div>
-                <span>Email</span>
-                <strong>
-                    <%= customer.email || 'N/A' %>
-                </strong>
-            </div>
-
-            <div>
-                <span>Role</span>
-                <strong>
-                    <%= customer.role %>
-                </strong>
-            </div>
-
-            <div>
-                <span>Joined</span>
-                <strong>
-                    <%= new Date(customer.createdAt)
-                        .toLocaleDateString('en-IN') %>
-                </strong>
-            </div>
-
+        <div class="info-list">
+          <div class="info-row">
+            <span class="label">Role</span>
+            <span class="value" style="text-transform: capitalize;"><%= customer.role %></span>
+          </div>
+          <div class="info-row">
+            <span class="label">Joined Date</span>
+            <span class="value">
+              <%= new Date(customer.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="label">Account Status</span>
+            <span class="value">
+              <% if (customer.isBlocked) { %>
+                <span class="status-badge-blocked">Blocked</span>
+              <% } else { %>
+                <span class="status-badge-active">Active</span>
+              <% } %>
+            </span>
+          </div>
         </div>
-
-    </div>
-
-
-    <!-- Account Status -->
-    <div class="admin-card">
-
-        <div class="card-header">
-            <h2>Account</h2>
-        </div>
-
-        <div class="customer-status">
-
-          <span>Account Status</span>
-
-          <% if (customer.isBlocked) { %>
-
-              <span class="status-badge status-blocked">
-                  Blocked
-              </span>
-
-          <% } else { %>
-
-              <span class="status-badge status-active">
-                  Active
-              </span>
-
-          <% } %>
 
       </div>
-
-      
-        <div class="customer-actions">
-
-            <form
-                action="/admin/customers/<%= customer._id %>/toggle-block"
-                method="POST">
-
-                <% if (customer.isBlocked) { %>
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary">
-                        Unblock Customer
-                    </button>
-
-                <% } else { %>
-
-                    <button
-                        type="submit"
-                        class="btn btn-danger">
-                        Block Customer
-                    </button>
-
-                <% } %>
-
-            </form>
-
-        </div>
-
     </div>
 
-    <!-- Saved Addresses -->
-    <div class="admin-card">
+    <!-- Account Actions -->
+    <div class="detail-card" style="margin-bottom: 0;">
+      <div class="detail-card-header">
+        <h2>Account Actions</h2>
+      </div>
+      <div class="detail-card-body">
+        <p style="font-size: 13.5px; color: #6c757d; margin-top: 0; margin-bottom: 20px;">
+          <% if (customer.isBlocked) { %>
+            This customer is currently blocked. They cannot log in or place new orders.
+          <% } else { %>
+            This customer is active. Blocking them will prevent them from logging in or placing orders.
+          <% } %>
+        </p>
 
-        <div class="card-header">
-            <h2>Saved Addresses</h2>
-        </div>
-
-        <% if (addresses.length === 0) { %>
-
-            <div class="empty-state">
-                This customer has no saved addresses.
-            </div>
-
-        <% } else { %>
-
-            <div class="customer-addresses">
-
-                <% addresses.forEach(address => { %>
-
-                    <div class="address-card">
-
-                        <div class="address-card-header">
-
-                            <div>
-                                <strong>
-                                    <%= address.addressType %>
-                                </strong>
-
-                                <% if (address.isDefault) { %>
-
-                                    <span class="status-badge status-active">
-                                        Default
-                                    </span>
-
-                                <% } %>
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="address-card-body">
-
-                            <strong>
-                                <%= address.name %>
-                            </strong>
-
-                            <p>
-                                <%= address.addressLine1 %>
-                            </p>
-
-                            <% if (address.addressLine2) { %>
-
-                                <p>
-                                    <%= address.addressLine2 %>
-                                </p>
-
-                            <% } %>
-
-                            <% if (address.landmark) { %>
-
-                                <p>
-                                    Landmark: <%= address.landmark %>
-                                </p>
-
-                            <% } %>
-
-                            <p>
-                                <%= address.city %>,
-                                <%= address.state %>
-                                - <%= address.pincode %>
-                            </p>
-
-                            <p>
-                                Phone: <%= address.phone %>
-                            </p>
-
-                            <% if (address.altPhone) { %>
-
-                                <p>
-                                    Alternate Phone:
-                                    <%= address.altPhone %>
-                                </p>
-
-                            <% } %>
-
-                        </div>
-
-                    </div>
-
-                <% }) %>
-
-            </div>
-
-        <% } %>
-
+        <form id="toggleBlockForm" action="/admin/customers/<%= customer._id %>/toggle-block" method="POST">
+          <% if (customer.isBlocked) { %>
+            <button type="button" class="btn-block btn-success" onclick="confirmToggleBlock(false)">
+              <i class="fas fa-unlock"></i> Unblock Customer
+            </button>
+          <% } else { %>
+            <button type="button" class="btn-block btn-danger" onclick="confirmToggleBlock(true)">
+              <i class="fas fa-ban"></i> Block Customer
+            </button>
+          <% } %>
+        </form>
+      </div>
     </div>
 
-    <!-- Order History -->
-    <div class="admin-card">
-
-        <div class="card-header">
-            <h2>Order History</h2>
-        </div>
-
-        <div class="table-responsive">
-
-            <table class="admin-table">
-
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Date</th>
-                        <th>Total</th>
-                        <th>Payment</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-
-                    <% if (orders.length === 0) { %>
-
-                        <tr>
-                            <td colspan="6" class="empty-state">
-                                This customer has no orders.
-                            </td>
-                        </tr>
-
-                    <% } else { %>
-
-                        <% orders.forEach(order => { %>
-
-                            <tr>
-
-                                <td>
-                                    #<%= order._id %>
-                                </td>
-
-                                <td>
-                                    <%= new Date(order.createdAt)
-                                        .toLocaleDateString('en-IN') %>
-                                </td>
-
-                                <td>
-                                    ₹<%= order.finalAmount %>
-                                </td>
-
-                                <td>
-                                    <%= order.paymentMethod %>
-                                </td>
-
-                                <td>
-                                    <span class="status-badge">
-                                        <%= order.status %>
-                                    </span>
-                                </td>
-
-                                <td>
-                                    <a
-                                        href="/admin/orders/<%= order._id %>"
-                                        class="btn-view-order">
-                                        View
-                                    </a>
-                                </td>
-
-                            </tr>
-
-                        <% }) %>
-
-                    <% } %>
-
-                </tbody>
-
-            </table>
-
-        </div>
+  </div>
 
 
-        <!-- Order Pagination -->
-        <% if (pagination.totalPages > 1) { %>
-
-            <div class="admin-pagination">
-
-                <% if (pagination.hasPrev) { %>
-
-                    <a href="/admin/customers/<%= customer._id %>?page=<%= pagination.page - 1 %>">
-                        Previous
-                    </a>
-
-                <% } %>
-
-
-                <span>
-                    Page <%= pagination.page %>
-                    of <%= pagination.totalPages %>
-                </span>
-
-
-                <% if (pagination.hasNext) { %>
-
-                    <a href="/admin/customers/<%= customer._id %>?page=<%= pagination.page + 1 %>">
-                        Next
-                    </a>
-
-                <% } %>
-
-            </div>
-
-        <% } %>
-
+  <!-- ============ SAVED ADDRESSES ============ -->
+  <div class="detail-card">
+    <div class="detail-card-header">
+      <h2>Saved Addresses</h2>
     </div>
+    <div class="detail-card-body">
+      <% if (!addresses || addresses.length === 0) { %>
+        <div class="empty-state">
+          <i class="fas fa-map-marker-alt"></i>
+          This customer has no saved addresses.
+        </div>
+      <% } else { %>
+        <div class="address-grid">
+          <% addresses.forEach(address => { %>
+            <div class="address-box">
+              <div class="address-header">
+                <span class="address-type"><%= address.addressType %></span>
+                <% if (address.isDefault) { %>
+                  <span class="default-badge">Default</span>
+                <% } %>
+              </div>
+              <p><strong><%= address.name %></strong></p>
+              <p><%= address.addressLine1 %></p>
+              <% if (address.addressLine2) { %>
+                <p><%= address.addressLine2 %></p>
+              <% } %>
+              <% if (address.landmark) { %>
+                <p>Landmark: <%= address.landmark %></p>
+              <% } %>
+              <p><%= address.city %>, <%= address.state %> - <%= address.pincode %></p>
+              <p style="margin-top: 12px; font-size: 13px;">
+                <i class="fas fa-phone" style="color: var(--primary); margin-right: 6px;"></i> <%= address.phone %>
+              </p>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+
+
+  <!-- ============ ORDER HISTORY ============ -->
+  <div class="detail-card">
+    <div class="detail-card-header">
+      <h2>Order History</h2>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Total Amount</th>
+            <th>Payment</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!orders || orders.length === 0) { %>
+            <tr>
+              <td colspan="6" class="empty-state">
+                <i class="fas fa-shopping-bag"></i>
+                This customer has not placed any orders yet.
+              </td>
+            </tr>
+          <% } else { %>
+            <% orders.forEach(order => { %>
+              <tr>
+                
+                <td data-label="Order ID">
+                  <span style="font-weight: 600; color: var(--secondary);">
+                    #<%= String(order._id).slice(-6).toUpperCase() %>
+                  </span>
+                </td>
+
+                <td data-label="Date">
+                  <%= new Date(order.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %>
+                </td>
+
+                <td data-label="Total" style="font-weight: 600; color: var(--dark);">
+                  ₹<%= Number(order.finalAmount || 0).toLocaleString('en-IN') %>
+                </td>
+
+                <td data-label="Payment">
+                  <%= order.paymentMethod || '—' %>
+                </td>
+
+                <td data-label="Status">
+                  <%
+                    const statusClass = (order.status || 'Pending').toLowerCase().replace(/\s+/g, '-');
+                  %>
+                  <span class="order-status-badge <%= statusClass %>">
+                    <%= order.status %>
+                  </span>
+                </td>
+
+                <td class="td-action">
+                  <a href="/admin/orders/<%= order._id %>" class="btn-view-order">
+                    View
+                  </a>
+                </td>
+
+              </tr>
+            <% }) %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ============ PAGINATION ============ -->
+    <% if (pagination && pagination.totalPages > 1) { %>
+
+      <%
+        const qs = (page) => new URLSearchParams({
+          page,
+          limit: pagination.limit
+        }).toString();
+
+        const fromItem = ((pagination.page - 1) * pagination.limit) + 1;
+        const toItem   = Math.min(pagination.page * pagination.limit, pagination.total);
+
+        const totalPages = pagination.totalPages;
+        const currentPage = pagination.page;
+        const maxVisible = 5;
+
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+
+        if (endPage - startPage + 1 < maxVisible) {
+          startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+      %>
+
+      <div class="orders-pagination">
+        <div class="pagination-info">
+          Showing <strong><%= fromItem %></strong>
+          to <strong><%= toItem %></strong>
+          of <strong><%= pagination.total %></strong> orders
+        </div>
+
+        <div class="pagination-controls">
+          <% if (pagination.hasPrev) { %>
+            <a class="pagination-btn" href="/admin/customers/<%= customer._id %>?<%= qs(pagination.page - 1) %>">
+              <i class="fas fa-chevron-left"></i> Previous
+            </a>
+          <% } else { %>
+            <span class="pagination-btn disabled">
+              <i class="fas fa-chevron-left"></i> Previous
+            </span>
+          <% } %>
+
+          <div class="page-numbers">
+            <% for (let i = startPage; i <= endPage; i++) { %>
+              <% if (i === currentPage) { %>
+                <span class="pagination-btn active"><%= i %></span>
+              <% } else { %>
+                <a class="pagination-btn" href="/admin/customers/<%= customer._id %>?<%= qs(i) %>"><%= i %></a>
+              <% } %>
+            <% } %>
+          </div>
+
+          <% if (pagination.hasNext) { %>
+            <a class="pagination-btn" href="/admin/customers/<%= customer._id %>?<%= qs(pagination.page + 1) %>">
+              Next <i class="fas fa-chevron-right"></i>
+            </a>
+          <% } else { %>
+            <span class="pagination-btn disabled">
+              Next <i class="fas fa-chevron-right"></i>
+            </span>
+          <% } %>
+        </div>
+      </div>
+
+    <% } %>
+
+  </div>
 
 </div>
+
+
+<!-- ============================================================ -->
+<!--  SCRIPTS                                                     -->
+<!-- ============================================================ -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  function confirmToggleBlock(isBlocking) {
+    const title = isBlocking ? 'Block Customer?' : 'Unblock Customer?';
+    const text = isBlocking 
+      ? "This customer will no longer be able to log in or place orders." 
+      : "This customer will regain access to their account.";
+    const confirmBtnText = isBlocking ? 'Yes, block them' : 'Yes, unblock them';
+    const confirmBtnColor = isBlocking ? '#dc3545' : '#28a745';
+
+    Swal.fire({
+      icon: 'warning',
+      title: title,
+      text: text,
+      showCancelButton: true,
+      confirmButtonColor: confirmBtnColor,
+      cancelButtonColor: '#8892a0',
+      confirmButtonText: confirmBtnText,
+      cancelButtonText: 'Cancel',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Show loading on the button
+        Swal.fire({
+          title: 'Updating...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
+        // Submit the form
+        document.getElementById('toggleBlockForm').submit();
+      }
+    });
+  }
+</script>

@@ -5,13 +5,33 @@ const Address = require('../../models/addressSchema');
 
 const getAdminCustomersPage = async (req, res) => {
   try {
+
+    const filter = {};
+
+    // 1. Always restrict to 'user' role (exclude admins)
+    filter.role = 'user'
+
+    if (req.query.userStatus === 'isBlocked') {
+      filter.isBlocked = true;
+    } else if (req.query.userStatus === 'unblocked') {
+      filter.isBlocked = false;
+    }
+
+    if (req.query.search) {
+      const search  = req.query.search.trim();
+
+      filter.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ]
+    }
     
     const result = await paginate(
       User,
-      { role: 'user' },
+      filter,
       {
-        page: req.query.page,
-        limit: req.query.limit,
+        page: req.query.page || 1,
+        limit: req.query.limit || 10,
         sort: { createdAt: -1 },
         select: '-password'
       }
@@ -19,10 +39,12 @@ const getAdminCustomersPage = async (req, res) => {
 
     res.render('admin/customers', {
       layout: 'layouts/admin-layout',
-      title: 'Customsers',
+      title: 'Customers',
       currentPage: 'customers',
       customers: result.data,
-      pagination: result.pagination
+      pagination: result.pagination,
+      userStatus: req.query.userStatus || '',
+      search: req.query.search || '',
     })
 
   } catch (err) {
@@ -60,7 +82,7 @@ const getCustomerById = async (req, res) => {
       Order,
       { userId: customer._id},
       {
-        page: req.query.page,
+        page: req.query.page || 1,
         limit: req.query.limit || 10,
         sort: { createdAt: -1 }
       }
