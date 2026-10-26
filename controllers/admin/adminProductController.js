@@ -281,7 +281,6 @@ const getAdminProductsPage = async (req, res) => {
     res.render('admin/products', {
       title: 'Products',
       currentPage: 'products',
-      user: req.user,
       products,
       pagination,
       search: req.query.search || '',
