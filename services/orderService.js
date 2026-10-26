@@ -6,6 +6,7 @@ const paginate = require('../utils/pagination');
 const { applyCouponToOrder, applyCouponValidation } = require('../utils/couponHelper');
 const { recordCouponUsage } = require('./couponService');
 const { refundPayment } = require('./paymentService');
+const { createNotification } = require('../controllers/admin/notificationController');
 
 const getOrderData = async (userId, addressId) => {
 
@@ -200,16 +201,62 @@ const createOrder = async ({
       );
     }
 
-    // Reduce product stock
+    // Reduce stock and create notifications
     for (const item of orderItems) {
-      await Product.findByIdAndUpdate(
-        item.product,
-        {
-          $inc: {
-            stock: -item.quantity
+
+      try {
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+          item.product,
+          {
+            $inc: {
+              stock: -item.quantity
+            }
+          },
+          {
+            returnDocument: 'after'
           }
+        );
+
+        if (!updatedProduct) {
+          continue;
         }
-      );
+
+        const remainingStock = updatedProduct.stock;
+        const previousStock = remainingStock + item.quantity;
+
+        // Out of stock
+        if (previousStock > 0 && remainingStock <= 0) {
+          await createNotification({
+            type: 'out_of_stock',
+            title: 'Product Out of Stock',
+            message: `${updatedProduct.productName} is now out of stock.`,
+            link: `/admin/products/edit-product/${updatedProduct._id}`
+          });
+        }
+
+        // Low stock
+        else if (previousStock >= 5 && remainingStock > 0 &&
+          remainingStock < 5
+        ) {
+          await createNotification({
+            type: 'low_stock',
+            title: 'Low Stock Alert',
+            message: `${updatedProduct.productName} has only ${remainingStock} item(s) left.`,
+            link: `/admin/products/edit-product/${updatedProduct._id}`
+          });
+        }
+
+      } catch (notificationError) {
+
+        // Notification failure should never break order creation
+        console.error(
+          'STOCK NOTIFICATION ERROR:',
+          notificationError
+        );
+
+      }
+
     }
 
     // Clear cart

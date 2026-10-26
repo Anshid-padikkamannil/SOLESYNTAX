@@ -2,10 +2,12 @@ const razorpay = require('../config/razorpay');
 const Order = require('../models/orderSchema');
 const Product = require('../models/productSchema');
 const Coupon = require('../models/couponSchema');
-const Cart = require('../models/cartSchema');
 const crypto = require('crypto');
 const { recordCouponUsage } = require('./couponService');
 const { removeOrderedItemsFromCart } = require('./cartService');
+const {
+  createNotification
+} = require('../controllers/admin/notificationController');
 
 
 /**
@@ -77,11 +79,20 @@ const verifyPayment = async (payload) => {
     throw new Error('Order not found');
   }
 
+  if (order.paymentDetails?.status === 'Success') {
+    return {
+      success: true,
+      message: 'Payment has already been verified',
+      order
+    };
+  }
+
   // 4. Update payment details and move order status forward
   order.paymentDetails = {
     razorpayOrderId: razorpay_order_id,
     razorpayPaymentId: razorpay_payment_id,
-    status: 'Success'
+    status: 'Success',
+    paidAt: new Date()
   };
 
   //5. record coupon useage
@@ -103,14 +114,60 @@ const verifyPayment = async (payload) => {
 
   //6 reduce product stock
   for (const item of order.orderItems) {
-    await Product.findByIdAndUpdate(
-      item.product,
-      {
-        $inc: {
-          stock: -item.quantity
+
+    try {
+
+      const updatedProduct = await Product.findByIdAndUpdate(
+        item.product,
+        {
+          $inc: {
+            stock: -item.quantity
+          }
+        },
+        {
+          returnDocument: 'after'
         }
+      );
+
+      if (!updatedProduct) {
+        continue;
       }
-    );
+
+      const remainingStock = updatedProduct.stock;
+      const previousStock = remainingStock + item.quantity;
+
+      // Out of stock
+      if (previousStock > 0 && remainingStock <= 0) {
+        await createNotification({
+          type: 'out_of_stock',
+          title: 'Product Out of Stock',
+          message: `${updatedProduct.productName} is now out of stock.`,
+          link: `/admin/products/edit-product/${updatedProduct._id}`
+        });
+      }
+
+      // Low stock
+      else if (previousStock >= 5 && remainingStock > 0 &&
+        remainingStock < 5
+      ) {
+        await createNotification({
+          type: 'low_stock',
+          title: 'Low Stock Alert',
+          message: `${updatedProduct.productName} has only ${remainingStock} item(s) left.`,
+          link: `/admin/products/edit-product/${updatedProduct._id}`
+        });
+      }
+
+    } catch (notificationError) {
+
+      // Notification failure should never break order creation
+      console.error(
+        'STOCK NOTIFICATION ERROR:',
+        notificationError
+      );
+
+    }
+
   }
 
   // 7 clear cart
@@ -123,6 +180,22 @@ const verifyPayment = async (payload) => {
   order.status = 'Processing';
 
   await order.save();
+
+  //notify the admin after payment verification succeeds
+  try {
+    await createNotification({
+    type: 'new_order',
+    title: 'Razorpay Payment Successful',
+    message: `Payment received for order ${order._id}.`,
+    link: `/admin/orders/${order._id}`
+  });
+    
+  } catch (notificationError) {
+    console.error(
+    'RAZORPAY NOTIFICATION ERROR:',
+    notificationError
+  );
+  }
 
   return {
     success: true,

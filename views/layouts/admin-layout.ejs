@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,24 +6,249 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %> | SOLESYNTAX Admin</title>
 
-  <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Rokkitt:wght@100;300;400;700&display=swap" rel="stylesheet">
-
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
-  <!-- Admin CSS -->
   <link rel="stylesheet" href="/css/admin.css">
+
+  <style>
+    /* Notification dropdown */
+    .notification-wrapper {
+      position: relative;
+    }
+
+    .topbar-notif {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #46698f;
+      font-size: 19px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .topbar-notif:hover,
+    .topbar-notif[aria-expanded="true"] {
+      background: #f0f9f7;
+      color: #397f73;
+    }
+
+    .notification-count {
+      position: absolute;
+      top: 0;
+      right: -2px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      border: 2px solid #fff;
+      border-radius: 20px;
+      background: #dc3545;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 14px;
+      text-align: center;
+    }
+
+    .notification-count[hidden] {
+      display: none;
+    }
+
+    .notification-dropdown {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: -65px;
+      z-index: 200;
+      width: 370px;
+      max-width: calc(100vw - 24px);
+      background: #fff;
+      border: 1px solid #e6ebed;
+      border-radius: 14px;
+      box-shadow: 0 12px 36px rgba(26, 26, 46, 0.16);
+      overflow: hidden;
+    }
+
+    .notification-dropdown[hidden] {
+      display: none;
+    }
+
+    .notification-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 17px 18px;
+      border-bottom: 1px solid #edf0f2;
+    }
+
+    .notification-header h3 {
+      margin: 0;
+      color: #1a1a2e;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .notification-header button {
+      color: #468b7f;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .notification-header button:hover {
+      color: #2d655b;
+      text-decoration: underline;
+    }
+
+    .notification-list {
+      max-height: 390px;
+      overflow-y: auto;
+    }
+
+    .notification-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 15px 18px;
+      border-bottom: 1px solid #f0f2f4;
+      color: #333;
+      text-decoration: none;
+      transition: background 0.2s ease;
+    }
+
+    .notification-item:last-child {
+      border-bottom: none;
+    }
+
+    .notification-item:hover {
+      background: #f5faf8;
+      color: #333;
+    }
+
+    .notification-item.unread {
+      background: #f0f9f7;
+    }
+
+    .notification-icon {
+      display: flex;
+      flex: 0 0 38px;
+      width: 38px;
+      height: 38px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 11px;
+      background: #e1f2ed;
+      color: #397f73;
+      font-size: 15px;
+    }
+
+    .notification-icon.warning {
+      background: #fff3df;
+      color: #ad711b;
+    }
+
+    .notification-icon.danger {
+      background: #fce9e9;
+      color: #bd4141;
+    }
+
+    .notification-icon.purple {
+      background: #f0eafb;
+      color: #7953a6;
+    }
+
+    .notification-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .notification-title {
+      margin: 0 0 4px;
+      color: #24243e;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .notification-message {
+      margin: 0;
+      color: #6c757d;
+      font-size: 11px;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+    }
+
+    .notification-time {
+      display: block;
+      margin-top: 6px;
+      color: #929ba4;
+      font-size: 10px;
+    }
+
+    .notification-unread-dot {
+      flex: 0 0 7px;
+      width: 7px;
+      height: 7px;
+      margin-top: 5px;
+      border-radius: 50%;
+      background: #66a59b;
+    }
+
+    .notification-unread-dot[hidden] {
+      display: none;
+    }
+
+    .notification-empty,
+    .notification-loading,
+    .notification-error {
+      padding: 35px 18px;
+      text-align: center;
+      color: #7b8490;
+      font-size: 12px;
+    }
+
+    .notification-empty i {
+      display: block;
+      margin-bottom: 12px;
+      color: #88c8bc;
+      font-size: 27px;
+    }
+
+    .notification-footer {
+      padding: 12px;
+      border-top: 1px solid #edf0f2;
+      text-align: center;
+    }
+
+    .notification-footer button {
+      color: #46698f;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .notification-footer button:hover {
+      color: #2f4f73;
+    }
+
+    @media (max-width: 480px) {
+      .notification-dropdown {
+        position: fixed;
+        top: 78px;
+        right: 12px;
+        width: 370px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-
 <div class="admin-wrapper">
 
-  <!-- ===== SIDEBAR ===== -->
+  <!-- Sidebar -->
   <aside class="admin-sidebar" id="adminSidebar">
-
-    <!-- Logo -->
     <div class="admin-logo">
       <div class="admin-logo-icon">
         <i class="fas fa-shoe-prints"></i>
@@ -33,7 +259,6 @@
       </div>
     </div>
 
-    <!-- Nav -->
     <nav class="admin-nav">
       <a href="/admin" class="<%= currentPage === 'dashboard' ? 'active' : '' %>">
         <i class="fas fa-th-large"></i> Dashboard
@@ -61,21 +286,15 @@
       </a>
     </nav>
 
-    <!-- Sidebar Footer (User Info) -->
     <div class="admin-sidebar-footer">
       <div class="avatar">
-          <% let avatarUrl = user?.profilePicture || user?.googleProfilePicture; %>
-
-          <% if (avatarUrl) { %>
-            <img
-              src="<%= avatarUrl %>"
-              alt="Admin profile"
-              class="avatar-image"
-            >
-          <% } else { %>
-            <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
-          <% } %>
-        </div>
+        <% const avatarUrl = user?.profilePicture || user?.googleProfilePicture; %>
+        <% if (avatarUrl) { %>
+          <img src="<%= avatarUrl %>" alt="Admin profile" class="avatar-image">
+        <% } else { %>
+          <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
+        <% } %>
+      </div>
       <div class="info">
         <div class="name"><%= user?.name || 'Admin' %></div>
         <div class="email"><%= user?.email || 'admin@solesyntax.com' %></div>
@@ -86,63 +305,85 @@
     </div>
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
   </aside>
 
-  <!-- ===== MAIN CONTAINER ===== -->
+  <!-- Main container -->
   <div class="admin-container">
 
-    <!-- ===== TOPBAR ===== -->
+    <!-- Topbar -->
     <header class="admin-topbar">
-
       <button
         type="button"
         class="sidebar-toggle"
         id="sidebarToggle"
         aria-label="Toggle admin navigation"
         aria-controls="adminSidebar"
-        aria-expanded="false"
-      >
+        aria-expanded="false">
         <i class="fas fa-bars"></i>
       </button>
 
       <!-- Notifications -->
-      <div class="topbar-notif" title="Notifications">
-        <i class="far fa-bell"></i>
-        <span class="badge-dot"></span>
+      <div class="notification-wrapper" id="notificationWrapper">
+        <button
+          type="button"
+          class="topbar-notif"
+          id="notificationToggle"
+          aria-label="Notifications"
+          aria-controls="notificationDropdown"
+          aria-expanded="false">
+          <i class="far fa-bell"></i>
+          <span class="notification-count" id="notificationCount" hidden>0</span>
+        </button>
+
+        <section
+          class="notification-dropdown"
+          id="notificationDropdown"
+          aria-label="Notifications"
+          hidden>
+
+          <div class="notification-header">
+            <h3>Notifications</h3>
+            <button type="button" id="markAllNotificationsRead">
+              Mark all as read
+            </button>
+          </div>
+
+          <div class="notification-list" id="notificationList" aria-live="polite">
+            <div class="notification-loading">Loading notifications...</div>
+          </div>
+
+          <div class="notification-footer">
+            <button type="button" id="refreshNotifications">
+              <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+          </div>
+        </section>
       </div>
 
-      <!-- User dropdown -->
+      <!-- Admin profile -->
       <a href="/admin/profile">
         <div class="topbar-user">
           <div class="avatar">
-            <%  avatarUrl = user?.profilePicture || user?.googleProfilePicture; %>
-
-            <% if (avatarUrl) { %>
-              <img
-                src="<%= avatarUrl %>"
-                alt="Admin profile"
-                class="avatar-image"
-              >
+            <% const topbarAvatarUrl = user?.profilePicture || user?.googleProfilePicture; %>
+            <% if (topbarAvatarUrl) { %>
+              <img src="<%= topbarAvatarUrl %>" alt="Admin profile" class="avatar-image">
             <% } else { %>
               <%= user?.name ? user.name.charAt(0).toUpperCase() : 'A' %>
             <% } %>
           </div>
           <span class="name"><%= user?.name || 'Admin' %></span>
-          <!-- <i class="fas fa-chevron-down chevron"></i> -->
         </div>
-      </a>  
-
+      </a>
     </header>
 
-    <!-- ===== CONTENT ===== -->
+    <!-- Page content -->
     <main class="admin-main">
       <div class="admin-content">
         <%- body %>
       </div>
     </main>
 
-    <!-- ===== FOOTER ===== -->
+    <!-- Footer -->
     <footer class="admin-footer">
       <div class="footer-left">
         © <%= new Date().getFullYear() %> Solesyntax. All rights reserved.
@@ -153,59 +394,334 @@
         <span>v1.0.0</span>
       </div>
     </footer>
-
   </div>
-
 </div>
 
 <script>
+  // Responsive sidebar
   const sidebar = document.getElementById('adminSidebar');
   const sidebarToggle = document.getElementById('sidebarToggle');
   const sidebarOverlay = document.getElementById('sidebarOverlay');
 
   function openSidebar() {
-    sidebar.classList.add('show');
-    sidebarOverlay.classList.add('show');
-    sidebarToggle.setAttribute('aria-expanded', 'true');
+    sidebar?.classList.add('show');
+    sidebarOverlay?.classList.add('show');
+    sidebarToggle?.setAttribute('aria-expanded', 'true');
   }
 
   function closeSidebar() {
-    sidebar.classList.remove('show');
-    sidebarOverlay.classList.remove('show');
-    sidebarToggle.setAttribute('aria-expanded', 'false');
+    sidebar?.classList.remove('show');
+    sidebarOverlay?.classList.remove('show');
+    sidebarToggle?.setAttribute('aria-expanded', 'false');
   }
 
   sidebarToggle?.addEventListener('click', () => {
-    sidebar.classList.contains('show')
-      ? closeSidebar()
-      : openSidebar();
+    sidebar?.classList.contains('show') ? closeSidebar() : openSidebar();
   });
 
-  // Close when clicking the overlay.
   sidebarOverlay?.addEventListener('click', closeSidebar);
 
-  // Close when clicking anywhere outside the sidebar and toggle button.
   document.addEventListener('click', (event) => {
     if (
       window.innerWidth <= 991 &&
-      sidebar.classList.contains('show') &&
+      sidebar?.classList.contains('show') &&
       !sidebar.contains(event.target) &&
-      !sidebarToggle.contains(event.target)
+      !sidebarToggle?.contains(event.target)
     ) {
       closeSidebar();
     }
   });
 
-  // Close when pressing Escape.
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeSidebar();
+    if (event.key === 'Escape') {
+      closeSidebar();
+      closeNotificationDropdown();
+    }
   });
 
-  // Reset mobile menu state on desktop.
   window.addEventListener('resize', () => {
     if (window.innerWidth > 991) closeSidebar();
   });
 </script>
 
+<script src="/socket.io/socket.io.js"></script>
+
+<script>
+  // Notifications
+  (() => {
+    const toggle = document.getElementById('notificationToggle');
+    const dropdown = document.getElementById('notificationDropdown');
+    const wrapper = document.getElementById('notificationWrapper');
+    const countBadge = document.getElementById('notificationCount');
+    const list = document.getElementById('notificationList');
+    const markAllButton = document.getElementById('markAllNotificationsRead');
+    const refreshButton = document.getElementById('refreshNotifications');
+
+    let notificationsLoaded = false;
+    let loading = false;
+
+    const socket = io();
+
+    socket.on('newNotification', (notification) => {
+      loadNotifications(false);
+    });
+
+    const escapeHtml = (value) => {
+      const div = document.createElement('div');
+      div.textContent = value == null ? '' : String(value);
+      return div.innerHTML;
+    };
+
+    const iconForType = (type) => {
+      const icons = {
+        new_order: ['fa-shopping-bag', ''],
+        low_stock: ['fa-exclamation-triangle', 'warning'],
+        out_of_stock: ['fa-times-circle', 'danger'],
+        new_review: ['fa-star', 'purple'],
+        return_request: ['fa-undo', 'warning']
+      };
+
+      return icons[type] || ['fa-bell', ''];
+    };
+
+    const formatTime = (dateValue) => {
+      const date = new Date(dateValue);
+      if (Number.isNaN(date.getTime())) return '';
+
+      const seconds = Math.max(0, Math.floor((Date.now() - date.getTime()) / 1000));
+
+      if (seconds < 60) return 'Just now';
+      if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+      if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+      if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+
+      return date.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    };
+
+    const updateUnreadCount = (count) => {
+      const unread = Math.max(0, Number(count) || 0);
+
+      countBadge.textContent = unread > 99 ? '99+' : String(unread);
+      countBadge.hidden = unread === 0;
+      toggle.setAttribute(
+        'aria-label',
+        unread ? `Notifications, ${unread} unread` : 'Notifications'
+      );
+    };
+
+    const renderNotifications = (notifications) => {
+      if (!Array.isArray(notifications) || notifications.length === 0) {
+        list.innerHTML = `
+          <div class="notification-empty">
+            <i class="far fa-bell"></i>
+            <div>You're all caught up!</div>
+            <div>No notifications yet.</div>
+          </div>
+        `;
+        return;
+      }
+
+      list.innerHTML = notifications.map((notification) => {
+        const [icon, colorClass] = iconForType(notification.type);
+        const unread = !notification.isRead;
+        const link = typeof notification.link === 'string'
+          ? notification.link
+          : '';
+
+        return `
+          <a
+            class="notification-item ${unread ? 'unread' : ''}"
+            href="${escapeHtml(link || '#')}"
+            data-notification-id="${escapeHtml(notification._id)}"
+            data-notification-link="${escapeHtml(link)}"
+          >
+            <span class="notification-icon ${colorClass}">
+              <i class="fas ${icon}"></i>
+            </span>
+
+            <span class="notification-content">
+              <span class="notification-title">${escapeHtml(notification.title)}</span>
+              <span class="notification-message">${escapeHtml(notification.message)}</span>
+              <span class="notification-time">${escapeHtml(formatTime(notification.createdAt))}</span>
+            </span>
+
+            <span
+              class="notification-unread-dot"
+              ${unread ? '' : 'hidden'}
+              aria-label="${unread ? 'Unread' : 'Read'}"
+            ></span>
+          </a>
+        `;
+      }).join('');
+    };
+
+    async function loadNotifications(showLoading = true) {
+      if (loading) return;
+      loading = true;
+
+      if (showLoading) {
+        list.innerHTML = '<div class="notification-loading">Loading notifications...</div>';
+      }
+
+      try {
+        const response = await fetch('/admin/notifications', {
+          method: 'GET',
+          credentials: 'same-origin',
+          headers: { Accept: 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.message || 'Unable to load notifications.');
+        }
+
+        renderNotifications(data.notifications);
+        updateUnreadCount(data.unreadCount);
+        notificationsLoaded = true;
+      } catch (error) {
+        console.error('LOAD NOTIFICATIONS ERROR:', error);
+        list.innerHTML = `
+          <div class="notification-error">
+            Unable to load notifications. Please try refreshing.
+          </div>
+        `;
+      } finally {
+        loading = false;
+      }
+    }
+
+    async function markOneAsRead(notificationId) {
+      const response = await fetch(
+        `/admin/notifications/${encodeURIComponent(notificationId)}/read`,
+        {
+          method: 'PATCH',
+          credentials: 'same-origin',
+          headers: { Accept: 'application/json' }
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Unable to mark notification as read.');
+      }
+    }
+
+    async function markAllAsRead() {
+      markAllButton.disabled = true;
+
+      try {
+        const response = await fetch('/admin/notifications/read-all', {
+          method: 'PATCH',
+          credentials: 'same-origin',
+          headers: { Accept: 'application/json' }
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || 'Unable to mark notifications as read.');
+        }
+
+        await loadNotifications(false);
+      } catch (error) {
+        console.error('MARK ALL READ ERROR:', error);
+        list.insertAdjacentHTML(
+          'afterbegin',
+          '<div class="notification-error">Could not mark notifications as read.</div>'
+        );
+      } finally {
+        markAllButton.disabled = false;
+      }
+    }
+
+    function openNotificationDropdown() {
+      dropdown.hidden = false;
+      toggle.setAttribute('aria-expanded', 'true');
+
+      if (!notificationsLoaded) {
+        loadNotifications();
+      } else {
+        // Refresh when opening, so the badge and list stay up to date.
+        loadNotifications(false);
+      }
+    }
+
+    function closeNotificationDropdown() {
+      dropdown.hidden = true;
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+
+    toggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+
+      if (dropdown.hidden) {
+        openNotificationDropdown();
+      } else {
+        closeNotificationDropdown();
+      }
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!wrapper.contains(event.target)) {
+        closeNotificationDropdown();
+      }
+    });
+
+    list.addEventListener('click', async (event) => {
+      const item = event.target.closest('[data-notification-id]');
+      if (!item) return;
+
+      const notificationId = item.dataset.notificationId;
+      const destination = item.dataset.notificationLink;
+
+      // Keep the current page if the notification has no destination.
+      event.preventDefault();
+
+      try {
+        if (item.classList.contains('unread')) {
+          await markOneAsRead(notificationId);
+        }
+
+        if (destination && destination.startsWith('/')) {
+          window.location.assign(destination);
+        } else {
+          await loadNotifications(false);
+        }
+      } catch (error) {
+        console.error('MARK NOTIFICATION READ ERROR:', error);
+        list.insertAdjacentHTML(
+          'afterbegin',
+          '<div class="notification-error">Unable to update this notification.</div>'
+        );
+      }
+    });
+
+    markAllButton.addEventListener('click', markAllAsRead);
+    refreshButton.addEventListener('click', () => loadNotifications());
+
+    // Load the unread count when the admin layout first loads.
+    loadNotifications(false);
+
+    // Keep the badge reasonably fresh while the admin page is open.
+    window.setInterval(() => {
+      if (!document.hidden && !loading) {
+        loadNotifications(false);
+      }
+    }, 60000);
+
+    // Make closeNotificationDropdown available to the Escape handler above.
+    window.closeNotificationDropdown = closeNotificationDropdown;
+  })();
+</script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 const Product = require('../../models/productSchema');
 const productService = require('../../services/productService');
 const wishlistService = require('../../services/wishlistService');
+const { createNotification } = require('../../controllers/admin/notificationController');;
 
 const getShop = async (req, res) => {
 
@@ -97,6 +98,23 @@ const postReviews = async (req, res) => {
     }
 
     const result = await productService.addProductReview(userId, id, rating, comment);
+
+    //admin notification after saving the review
+     try {
+      await createNotification({
+        type: 'new_review',
+        title: 'New Product Review',
+        message: `A customer reviewed ${result.review.productId}. Rating: ${result.review.rating}/5.`,
+        link: '/admin/reviews'
+      });
+      
+    } catch (notificationError) {
+      // Notification failure should not undo a successful review
+      console.error(
+        'REVIEW NOTIFICATION ERROR:',
+        notificationError
+      );
+    }
 
     res.status(201).json({
       success: true,

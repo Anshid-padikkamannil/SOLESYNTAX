@@ -1,6 +1,9 @@
 const Order = require('../../models/orderSchema');
 const { generateInvoice } = require('../../services/invoiceService');
 const orderService = require('../../services/orderService');
+const {
+  createNotification
+} = require('../../controllers/admin/notificationController');
 
 const createOrder  = async (req, res) => {
 
@@ -73,6 +76,16 @@ const createOrder  = async (req, res) => {
       couponDiscount,
       couponId,
     });
+
+    //create a notification for the admin
+    if (paymentMethod === 'COD') {
+      await createNotification({
+        type: 'new_order',
+        title: 'New Order Received',
+        message: `A new COD order has been placed. Order ID: ${order._id}`,
+        link: `/admin/orders/${order._id}`
+      });
+    }
 
     return res.status(201).json({
       success: true,

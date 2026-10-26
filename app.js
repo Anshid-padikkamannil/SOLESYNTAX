@@ -2,6 +2,9 @@ const express = require('express');
 const cookiesParser = require('cookie-parser');
 const dotenv = require('dotenv').config();
 const passport = require('./config/passport');
+const http = require('http');
+const { Server } = require('socket.io');
+const socketAuth = require('./middlewares/socketAuth');
 
 const path = require("path");
 
@@ -11,10 +14,28 @@ connectDB();
 
 const app = express();
 require('./services/emailService');
+
+//Socket.IO
+const server = http.createServer(app);
+const io = new Server(server);
+const { initializeSocket } = require('./services/socketService');
+initializeSocket(io);
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookiesParser());
+
+const cookieParserMiddleware = cookiesParser();
+app.use(cookieParserMiddleware);
+io.engine.use(cookieParserMiddleware);
+io.use(socketAuth);
+
+io.on('connection', (socket) => {
+  socket.join('admins');
+  
+  socket.on('disconnect', () => {});
+})
+
 app.use(passport.initialize());
 
 app.set("view engine", "ejs");
@@ -47,6 +68,7 @@ const reviewRouter = require('./routes/admin/reviewRouter');
 const userCouponRouter = require('./routes/User/couponRouter');
 const checkoutRouter = require('./routes/checkoutRouter');
 const reportRouter = require('./routes/admin/reportRouter');
+const notificationRoutes = require('./routes/admin/notificationsRounter');
 const attachUser = require('./middlewares/attachUser');
 const { title } = require('process');
 
@@ -73,6 +95,7 @@ app.use('/admin', customerRouter);
 app.use('/admin/coupons', adminCouponRouter);
 app.use('/admin/reviews', reviewRouter);
 app.use('/admin/reports', reportRouter);
+app.use('/admin/notifications', notificationRoutes);
 
 // 404 handler 
 app.use((req, res) => {
@@ -99,6 +122,6 @@ app.use((err, req, res, next) => {
 })
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port http://localhost:${PORT}`);
 });
