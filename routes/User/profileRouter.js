@@ -21,7 +21,7 @@ const { getAccountWishlist, accountAddToCartFromWishlist, accountRemoveFromWishl
 
 const { getAccountCoupon } = require('../../controllers/user/couponController');
 
-const { changePassword, getPasswordPage } = require('../../controllers/authController');
+const { changePassword, getPasswordPage } = require('../../controllers/user/authController');
 
 const { isLoggedIn } = require('../../middlewares/auth');
 router.use(isLoggedIn);

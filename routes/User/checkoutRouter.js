@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { isLoggedIn } = require('../middlewares/auth');
+const { isLoggedIn } = require('../../middlewares/auth');
 const { 
   createRazorpayOrder,
   verifyPayment,
   getCheckout, 
   applyCheckoutCoupon,
-} = require('../controllers/user/checkoutController');
+} = require('../../controllers/user/checkoutController');
 
-const { createOrder } = require('../controllers/user/orederController');
+const { createOrder } = require('../../controllers/user/orederController');
 
 
 router.use(isLoggedIn);

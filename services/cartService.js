@@ -18,6 +18,11 @@ const addItemToCart = async (userId, productId, quantity, size) => {
   if (!product) {
     throw new Error('Product not found.');
   }
+  
+
+  if (product.stock <= 0) {
+    throw new Error('This product is currently out of stock.');
+  }
 
   // Maximum quantity allowed per product
   const maxPerOrder = 10;

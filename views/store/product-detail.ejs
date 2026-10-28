@@ -528,7 +528,9 @@
         <p class="product-description"><%= product.description %></p>
         <div class="product-meta">
           <span><i class="fas fa-tag"></i> Category: <%= product.categoryName || 'Sneakers' %></span>
-          <span><i class="fas fa-box"></i> <%= (product.stock && product.stock > 0) ? 'In Stock' : 'Out of Stock' %></span>
+          <span class="<%= (product.stock && product.stock > 0) ? 'text-success' : 'text-danger' %>">
+            <i class="fas fa-box"></i> <%= (product.stock && product.stock > 0) ? 'In Stock' : 'Out of Stock' %>
+          </span>
         </div>
 
         <!-- Size -->

@@ -10,7 +10,7 @@ const {
   resendVerificationEmail,
   forgotPassword,
   resetPassword
-} = require('../../controllers/authController');
+} = require('../../controllers/user/authController');
 
 const passport = require('../../config/passport');
 

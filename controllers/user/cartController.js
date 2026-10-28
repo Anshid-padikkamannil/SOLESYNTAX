@@ -1,6 +1,3 @@
-const User = require('../../models/userSchema');
-const Product = require('../../models/productSchema');
-const Cart = require('../../models/cartSchema');
 const {
   addItemToCart,
   getUserCart,
@@ -31,7 +28,7 @@ const addToCart = async (req, res) => {
 
 
   } catch (err) {
-    res.status(500).json({ message: 'Error adding product to cart', error: err.message });
+    res.status(500).json({ message: err.message });
   }
 
 }

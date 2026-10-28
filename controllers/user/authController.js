@@ -1,5 +1,5 @@
-const generateTokenAndSetCookie = require('../utils/jwt');
-const authService = require('../services/authService');
+const generateTokenAndSetCookie = require('../../utils/jwt');
+const authService = require('../../services/authService');
 
 // Register a new user
 const registerUser = async (req, res) => {
