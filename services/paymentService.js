@@ -22,6 +22,14 @@ const createRazorpayOrder = async (appOrderId, userId) => {
     throw new Error('Order not found or does not belong to user');
   }
 
+  if (order.status === 'Cancelled') {
+    throw new Error('This order has been cancelled and cannot be paid.');
+  }
+
+  if (order.paymentDetails?.status === 'Success') {
+    throw new Error('This order has already been paid.');
+  }
+
   // 2. Prepare the options for Razorpay
   const options = {
     amount: Math.round(order.finalAmount * 100), // Convert ₹ to paise. why {It expects the smallest unit of the currency in our case 1 Rupee = 100 Paise so we multiply by 100}

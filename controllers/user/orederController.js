@@ -59,6 +59,10 @@ const createOrder  = async (req, res) => {
     const finalAmount =
       totalPrice + shipping - couponDiscount;
 
+    if (paymentMethod === 'COD') {
+      await orderService.cancelPendingRazorpayOrders(userId);
+    }  
+
     // 7. Validate payment method
     orderService.validatePaymentMethod(paymentMethod);
 

@@ -333,17 +333,20 @@ const cancelOrder = async (userId, orderId, cancellationReason) => {
   }
 
   // Restore product stock
-  for (const item of order.orderItems) {
+  if (order.paymentMethod === 'COD' ||
+  order.paymentDetails?.status === 'Success') {
+    for (const item of order.orderItems) {
 
-    await Product.findByIdAndUpdate(
-      item.product,
-      {
-        $inc: {
-          stock: item.quantity
+      await Product.findByIdAndUpdate(
+        item.product,
+        {
+          $inc: {
+            stock: item.quantity
+          }
         }
-      }
-    );
+      );
 
+    }
   }
 
   // Update order status
@@ -403,17 +406,47 @@ const findReusableRazorpayOrder = async (userId, cart) => {
   const sameCart = isSameOrderItems(pendingOrder.orderItems, cart);
 
   if (!sameCart) {
-    const error = new Error(
-      'You already have a pending Razorpay payment. Please complete or cancel that order first.'
-    );
+    pendingOrder.status = 'Cancelled';
 
-    error.pendingOrderId = pendingOrder._id;
+    pendingOrder.cancellationReason =
+      'Cart changed before payment completion';
 
-    throw error;
+    pendingOrder.cancellationRequestedAt = new Date();
+    pendingOrder.cancellationApprovedAt = new Date();
+
+    pendingOrder.paymentDetails = {
+      ...(pendingOrder.paymentDetails || {}),
+      status: 'Failed'
+    };
+
+    await pendingOrder.save();
+
+    return null;
   }
 
   return pendingOrder;
 }
+
+const cancelPendingRazorpayOrders = async (userId) => {
+
+  await Order.updateMany(
+    {
+      userId,
+      paymentMethod: 'Razorpay',
+      status: 'Pending',
+      'paymentDetails.status': 'Pending'
+    },
+    {
+      $set: {
+        status: 'Cancelled',
+        cancellationReason: 'User selected another payment method',
+        cancellationRequestedAt: new Date(),
+        cancellationApprovedAt: new Date(),
+        'paymentDetails.status': 'Failed'
+      }
+    }
+  );
+};
 
 const generateInvoiceNumber = () => {
   const year = new Date().getFullYear();
@@ -435,5 +468,6 @@ module.exports = {
   getPendingRazorpayOrder,
   isSameOrderItems,
   findReusableRazorpayOrder,
+  cancelPendingRazorpayOrders,
   generateInvoiceNumber
 };
