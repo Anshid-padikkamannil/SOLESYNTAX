@@ -51,7 +51,5 @@ sizeOptions.forEach(option => {
     e.preventDefault();
 
     selectedSize = Number(this.dataset.size);
-
-    // console.log("Selected Size:", selectedSize);
   });
 });

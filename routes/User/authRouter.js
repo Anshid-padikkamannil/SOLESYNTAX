@@ -61,8 +61,6 @@ router.get('/auth/google/callback', (req, res, next) => {
   })(req, res, next);
 },
   (req,res) => {
-    console.log('Google authentication successful');
-    console.log(req.user);
 
     generateTokenAndSetCookie(req.user, res);
 

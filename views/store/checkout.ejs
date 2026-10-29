@@ -977,7 +977,6 @@
         }
 
         appliedCouponCode = result.appliedCouponCode;
-        console.log('Applied coupon:', appliedCouponCode);
 
         // ---- Get DOM elements ----
         const discountEl = document.getElementById('discount');
@@ -1162,9 +1161,6 @@
           },
           modal: {
             ondismiss: function() {
-              console.log(
-                'Resumed Razorpay checkout closed by user'
-              );
 
               Swal.fire({
                 icon: 'warning',
@@ -1260,7 +1256,6 @@
 
         // RAZORPAY
         // -------------------------------- //
-        console.log('Internal order created:', result.orderId);
 
         const razorpayResponse = await fetch('/checkout/create-order', {
           method: 'POST',
@@ -1278,7 +1273,6 @@
           throw new Error( razorpayResult.message || 'Unable to create Razorpay order');
         }
 
-        console.log('Razorpay order created:', razorpayResult);
         // Open Razorpay Checkout
         const options = {
           key: razorpayResult.key_id,
@@ -1289,7 +1283,6 @@
           order_id: razorpayResult.order.id,
 
           handler: async function (response) {
-            console.log('Razorpay payment response:', response);
 
             try {
               
@@ -1307,8 +1300,6 @@
               });
 
               const verifyResult = await verifyResponse.json();
-
-              console.log('Payment verification result:', verifyResult);
 
               if (!verifyResponse.ok || !verifyResult.success) {
                 throw new Error(verifyResult.message || 'Payment verification failed');
@@ -1340,7 +1331,6 @@
 
           modal: {
             ondismiss: function() {
-              console.log('Razorpay checkout closed by user');
 
               showToast('Payment was not completed. You can try again.', 'warning');
 
