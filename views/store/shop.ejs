@@ -80,10 +80,12 @@
       background-color: var(--light);
       border-radius: 50px;
       overflow: hidden;
-      width: 317px;
+      width: 100%;
+      max-width: 317px;
       transition: all 0.3s ease;
       border: 1px solid var(--gray);
     }
+
     .search-form:focus-within {
       box-shadow: 0 0 0 2px rgba(136,200,188,0.3);
       border-color: var(--primary);
@@ -479,6 +481,35 @@
       .product-grid { grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 15px; }
       .product-card h4 { font-size: 15px; }
       .sale-price { font-size: 15px; }
+    }
+
+    @media (max-width: 419px) {
+
+      .shop-topbar {
+        padding: 12px;
+      }
+
+      .search-bar {
+        width: 100%;
+      }
+
+      .search-form {
+        width: 100%;
+        max-width: none;
+      }
+
+      .search-input {
+        min-width: 0;
+        padding: 10px 14px;
+      }
+
+      .search-button {
+        padding: 10px 14px;
+        font-size: 14px;
+        white-space: nowrap;
+        margin-right: 2px;
+      }
+
     }
   </style>
 </head>
