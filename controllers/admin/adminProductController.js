@@ -310,7 +310,7 @@ const getAddProductPage = async (req, res) => {
   res.render('admin/add-product', {
     title: 'Add Product',
     currentPage: 'products',
-    user: req.user,
+    // user: req.user,
     layout: 'layouts/admin-layout'
   });
   
@@ -333,7 +333,7 @@ const getEditProductPage = async (req, res) => {
     res.render('admin/edit-product', {
       title: 'Edit Product',
       currentPage: 'products',
-      user: req.user,
+      // user: req.user,
       product,
       layout: 'layouts/admin-layout'
     });
